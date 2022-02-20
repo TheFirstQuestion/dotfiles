@@ -1,0 +1,46 @@
+"*":
+  "atom-ide-terminal":
+    core:
+      shell: "/usr/bin/zsh"
+    style:
+      fontSize: "17"
+  core:
+    audioBeep: false
+    autoHideMenuBar: true
+    closeDeletedFileTabs: true
+    disabledPackages: [
+      "language-conky"
+      "tree-view-sort"
+      "MagicPython"
+      "atom-ide-terminal"
+      "tree-view-filter"
+      "wakatime"
+    ]
+    packagesWithKeymapsDisabled: []
+    projectHome: "/home/sophie/Archive/04\\ Projects"
+    restorePreviousWindowsOnStart: "no"
+    telemetryConsent: "no"
+    themes: [
+      "dracula-ui"
+      "dracula-syntax"
+    ]
+  editor:
+    fontSize: 19
+    scrollPastEnd: true
+    showIndentGuide: true
+    softWrap: true
+    softWrapHangingIndent: 2
+    tabLength: 4
+    zoomFontWhenCtrlScrolling: false
+  "exception-reporting":
+    userId: "982a6352-4454-40e9-95ca-3d5efd0b1d48"
+  "tree-view": {}
+  "tree-view-filter":
+    caseInsensitive: true
+    globalFilter: "!*.pdf !.DS_Store !node_modules/"
+    liveUpdate: true
+  wakatime:
+    apikey: "a0191896-b48b-4853-ae74-5274792db3c8"
+    debug: true
+  welcome:
+    showOnStartup: false
