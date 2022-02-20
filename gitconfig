@@ -1,0 +1,8 @@
+[user]
+	email = sophieopferman6@gmail.com
+	name = Sophie G. Opferman
+[credential]
+	helper = cache --timeout=31536000
+[core]
+	pager = diff-so-fancy | less --tabs=4 -RFX
+	excludesfile = /home/sophie/.gitignore_global

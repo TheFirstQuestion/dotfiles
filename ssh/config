@@ -1,0 +1,9 @@
+Host *
+    ServerAliveInterval 60
+
+Host myth myth.stanford.edu
+    HostName myth.stanford.edu
+    User sophiego
+    ControlMaster auto
+    ControlPath ~/.ssh/%r@%h:%p
+    ControlPersist yes
