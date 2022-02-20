@@ -10,11 +10,20 @@
     ~/.gitconfig: gitconfig
     ~/.ssh/config:
         path: ssh/config
-    ~/.zshrc: zshrc
+    ~/.zshrc:
+        path: zshrc
+        force: true
     ~/.atom/config.cson:
         path: atom/config.cson
+        force: true
     ~/.atom/styles.less:
         path: atom/styles.less
+        force: true
+    ~/.p10k.zsh:
+        path: p10k.zsh
+        force: true
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
+
+# omz path on sMac = /Users/smac/.oh-my-zsh
