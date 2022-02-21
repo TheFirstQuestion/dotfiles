@@ -116,14 +116,22 @@ source $ZSH/oh-my-zsh.sh
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-###################### I ADDED BELOW
+############################## I ADDED BELOW #############################
 # https://dev.to/abdfnx/oh-my-zsh-powerlevel10k-cool-terminal-1no0
 if [ -x "$(command -v exa)" ]; then
     alias ls="exa"
     alias la="exa --long --all --group"
 fi
-# https://github.com/rupa/z
-# . ~/.z.sh
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    export DOTFILE_DIR="/home/steven/dotfiles"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    export DOTFILE_DIR="/Users/smac/dotfiles/"
+fi
+
+alias log="sh $DOTFILE_DIR/scripts/log-to-keybase.sh"
+alias dotbot="sh $DOTFILE_DIR/install"
+
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!

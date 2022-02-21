@@ -25,6 +25,7 @@
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
+  - [keybase chat send sophie_opferman --channel logs "dotbotted successfully from $(hostname)", Logged to Keybase]
 
 # omz path on sMac = /Users/smac/.oh-my-zsh
 # plugins:
