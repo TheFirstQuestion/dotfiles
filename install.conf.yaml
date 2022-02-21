@@ -27,8 +27,20 @@
   - [git submodule update --init --recursive, Installing submodules]
   - [keybase chat send sophie_opferman --channel logs "dotbotted successfully from $(hostname)", Logged to Keybase]
 
+# - git:
+#     '/Users/smac/.oh-my-zsh/custom/plugins/zsh-autosuggestions':
+#         url: 'https://github.com/zsh-users/zsh-autosuggestions'
+#         description: 'oh my zsh - autosuggestions'
+
+
 # omz path on sMac = /Users/smac/.oh-my-zsh
 # plugins:
     # https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md#oh-my-zsh
     # https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/INSTALL.md#oh-my-zsh
     #
+# git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+# [oh-my-zsh] plugin 'zsh-autosuggestions' not found
+# [oh-my-zsh] plugin 'zsh-syntax-highlighting' not found
+# [oh-my-zsh] plugin 'git-auto-status' not found
+# [oh-my-zsh] theme 'powerlevel10k/powerlevel10k' not found

@@ -129,8 +129,8 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     export DOTFILE_DIR="/Users/smac/dotfiles/"
 fi
 
+alias dotbot="sh $DOTFILE_DIR/install --plugin-dir $DOTFILE_DIR/plugins"
 alias log="sh $DOTFILE_DIR/scripts/log-to-keybase.sh"
-alias dotbot="sh $DOTFILE_DIR/install"
 
 
 # >>> conda initialize >>>
