@@ -14,6 +14,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     export ZSH="/home/steven/.oh-my-zsh"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     export ZSH="/Users/smac/.oh-my-zsh"
+    export ZSH_CUSTOM="/Users/smac/.oh-my-zsh"
 fi
 
 # Set name of the theme to load --- if set to "random", it will
@@ -138,4 +139,3 @@ fi
 # fi
 # unset __conda_setup
 # <<< conda initialize <<<
-POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
