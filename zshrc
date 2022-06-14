@@ -142,7 +142,11 @@ dotbot() {
 # Play a sound (helpful to chain after a long-running command)
 # TODO: Linux?
 notify() {
-    afplay /System/Library/Sounds/Submarine.aiff -v 10
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        paplay /home/steven/.minecraft/assets/objects/01/0113fbf3e047f4fa4ef680ae7781326427e30f02
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        afplay /System/Library/Sounds/Submarine.aiff -v 10
+    fi
 }
 
 # Log a message to Keybase
