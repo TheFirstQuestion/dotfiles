@@ -3,41 +3,45 @@
       create: true
       relink: true
 
-- clean: ['~']
+- clean: ["~"]
 
+# These are all symlinks -- so changes in this directory are live
 - link:
     ~/.bashrc: bashrc
     ~/.gitconfig: gitconfig
     ~/.ssh/config:
-        path: ssh/config
+      path: ssh/config
     ~/.zshrc:
-        path: zshrc
-        force: true
+      path: zshrc
+      force: true
     ~/.atom/config.cson:
-        path: atom/config.cson
-        force: true
+      path: atom/config.cson
+      force: true
     ~/.atom/styles.less:
-        path: atom/styles.less
-        force: true
+      path: atom/styles.less
+      force: true
     ~/.p10k.zsh:
-        path: p10k.zsh
-        force: true
+      path: p10k.zsh
+      force: true
+    ~/.condarc:
+      path: condarc
 
 - shell:
-  - [git submodule update --init --recursive, Installing submodules]
-  - [keybase chat send sophie_opferman --channel logs "dotbotted successfully from $(hostname)", Logged to Keybase]
-
+    - [git submodule update --init --recursive, Installing submodules]
+    - [
+        keybase chat send sophie_opferman --channel logs "dotbotted successfully from $(hostname)",
+        Logged to Keybase,
+      ]
 # - git:
 #     '/Users/smac/.oh-my-zsh/custom/plugins/zsh-autosuggestions':
 #         url: 'https://github.com/zsh-users/zsh-autosuggestions'
 #         description: 'oh my zsh - autosuggestions'
 
-
 # omz path on sMac = /Users/smac/.oh-my-zsh
 # plugins:
-    # https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md#oh-my-zsh
-    # https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/INSTALL.md#oh-my-zsh
-    #
+# https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md#oh-my-zsh
+# https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/INSTALL.md#oh-my-zsh
+#
 # git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
 # [oh-my-zsh] plugin 'zsh-autosuggestions' not found

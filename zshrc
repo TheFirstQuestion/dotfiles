@@ -13,6 +13,7 @@ fi
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     export ZSH="/home/steven/.oh-my-zsh"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
+    # For some reason ~/... doesn't work here
     export ZSH="/Users/smac/.oh-my-zsh"
     export ZSH_CUSTOM="/Users/smac/.oh-my-zsh"
 fi
@@ -58,7 +59,7 @@ zstyle ':omz:update' mode auto      # update automatically without asking
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
 # Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
 # COMPLETION_WAITING_DOTS="true"
 
@@ -83,13 +84,21 @@ zstyle ':omz:update' mode auto      # update automatically without asking
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git colored-man-pages safe-paste lol zsh-autosuggestions zsh-syntax-highlighting git-auto-status z)
+plugins=(
+    git
+    colored-man-pages
+    safe-paste
+    lol
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    git-auto-status
+    z
+)
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
+export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -108,42 +117,97 @@ source $ZSH/oh-my-zsh.sh
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-############################## I ADDED BELOW #############################
-# https://dev.to/abdfnx/oh-my-zsh-powerlevel10k-cool-terminal-1no0
-if [ -x "$(command -v exa)" ]; then
-    alias ls="exa"
-    alias la="exa --long --all --group"
-fi
 
+
+############################## I ADDED BELOW #############################
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     export DOTFILE_DIR="/home/steven/dotfiles"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    export DOTFILE_DIR="/Users/smac/dotfiles/"
+    export DOTFILE_DIR="/Users/smac/dotfiles"
 fi
 
-alias dotbot="sh $DOTFILE_DIR/install --plugin-dir $DOTFILE_DIR/plugins"
-alias log="sh $DOTFILE_DIR/scripts/log-to-keybase.sh"
+
+# functions are better than aliases according to https://stackoverflow.com/a/7131683
+
+######################### Command Shortcuts #########################
+# Do dotbot install, so my things are all symlinked properly
+dotbot() {
+    sh $DOTFILE_DIR/install --plugin-dir $DOTFILE_DIR/plugins
+}
+
+# Play a sound (helpful to chain after a long-running command)
+# TODO: Linux?
+notify() {
+    afplay /System/Library/Sounds/Submarine.aiff -v 10
+}
+
+# Log a message to Keybase
+# Parameter: the message you want to send
+log() {
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    	WHO="$(hostname)"
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+    	WHO='sMac'
+    fi
+
+    WHEN="$(date '+%A, %B %d, %Y, %I:%M:%S %p %Z')"
+    keybase chat send sophie_opferman --channel logs "$WHO -- $WHEN -- $1"
+}
+
+# Show/hide hidden files in Finder
+# (adapted from https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/macos/macos.plugin.zsh)
+hidden_files_show() {
+    defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder
+}
+
+hidden_files_hide() {
+    defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder
+}
+
+# Remove .DS_Store files recursively in a directory, default .
+# (via https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/macos/macos.plugin.zsh)
+rm_DS_Store() {
+  find "${@:-.}" -type f -name .DS_Store -delete
+}
+
+
+######################### Templates #########################
+# General function for copying template
+# Parameter: the name of the file in dotfiles/templates/
+template() {
+    cp $DOTFILE_DIR/templates/$1 ./$1
+    # Rename as appropriate
+    if [ $1 = "gitignore" ]; then
+    	mv gitignore .gitignore
+    elif [ $1 = "README" ]; then
+    	mv README README.md
+    fi
+}
+
+
+######################### Scripts #########################
+# General function for running one of my scripts
+# Parameter: the name of the script in dotfiles/scripts/ (without the .sh)
+run-script() {
+    bash $DOTFILE_DIR/scripts/$1.sh
+}
 
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-# __conda_setup="$('/home/sophie/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-# if [ $? -eq 0 ]; then
-#     eval "$__conda_setup"
-# else
-#     if [ -f "/home/sophie/miniconda3/etc/profile.d/conda.sh" ]; then
-#         . "/home/sophie/miniconda3/etc/profile.d/conda.sh"
-#     else
-#         export PATH="/home/sophie/miniconda3/bin:$PATH"
-#     fi
-# fi
-# unset __conda_setup
+__conda_setup="$('/Users/smac/opt/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/smac/opt/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/smac/opt/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/smac/opt/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
 # <<< conda initialize <<<

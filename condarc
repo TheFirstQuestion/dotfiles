@@ -1,0 +1,4 @@
+# don't ask for confirmation (e.g. for conda install)
+always_yes: true
+# via https://stackoverflow.com/a/57522799
+pip_interop_enabled: true

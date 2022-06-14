@@ -6,3 +6,6 @@
 [core]
 	pager = diff-so-fancy | less --tabs=4 -RFX
 	excludesfile = /home/sophie/.gitignore_global
+[init]
+	defaultBranch = main
+	

@@ -9,9 +9,8 @@
  * http://lesscss.org
  */
 
-
 /*
- * Examples
+ * Examples:
  * (To see them, uncomment and save)
  */
 
@@ -31,16 +30,25 @@ atom-text-editor .cursor {
   // border-color: red;
 }
 
+/* ############################ Things I Actually Use ############################ */
+
 // Comments turn red
 atom-text-editor .syntax--comment {
-    color: #CC3333;
-    font-style: italic;
+  color: #cc3333;
+  font-style: italic;
 }
 
-// This styles comment punctuation (i.e. //, and /.../)
-.syntax--punctuation.syntax--definition.syntax--comment {
-    color: #CC3333;
-    font-style: italic;
+// The punctuation that begins a comment (i.e. //, and /.../)
+.syntax--punctuation.syntax--definition.syntax--comment,
+.syntax--comment .syntax--punctuation {
+  color: #cc3333;
+  font-style: italic;
+}
+
+// Links within comments
+.syntax--comment .syntax--markup.syntax--link {
+  color: #cc3333;
+  font-style: italic;
 }
 
 // Highlighted text
