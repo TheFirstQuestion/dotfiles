@@ -37,13 +37,14 @@
   "ftp-remote-edit":
     config: "031977d55afc2de5de130bb86539a71ad2ce782723278e8d161b7288094c70e4818ca731184f0aec7ccf85f60f148c21827a3b2f8cc49b3db2fc57720e06b3345fc569863a3b80ec60adbe095b4ab8bea5960a8f8c4db924b2c2bec396f9724b530136cbccbb19d444dfd6e08ec88b5035171b2444d9e3b23cfc7aefcddd2a3c9cd5b7a399bda7cac4e714008cbc4b74a2b1c8ac8d9f5f7151fac173a78c4064fb7f8ae792ecf7cb82c1c5787fb26a916a79990fec870d20f23b0c87f7d4bb5d9986c82b504d849ad0a1397c10f3809783014953873f9092acafb0000cfadbaf0778d9989c3d9d073bb6cbe0e7ec35e4c432acec26e547e7a154f2de120ac8a961aef2dc6ad761b6c4456baa0ab4"
     password: "305e6ddc47af13e5c25d55b364"
+  "linter-ui-default":
+    showPanel: true
   "markdown-preview":
     useGitHubStyle: true
   "prettier-atom":
     formatOnSaveOptions:
       enabled: true
       showInStatusBar: true
-    useEslint: true
   "tree-view": {}
   "tree-view-filter":
     caseInsensitive: true

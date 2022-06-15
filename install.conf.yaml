@@ -8,23 +8,29 @@
 # These are all symlinks -- so changes in this directory are live
 - link:
     ~/.bashrc: bashrc
-    ~/.gitconfig: gitconfig
-    ~/.ssh/config:
-      path: ssh/config
     ~/.zshrc:
       path: zshrc
       force: true
+    ~/.p10k.zsh:
+      path: p10k.zsh
+      force: true
+
+    ~/.gitconfig: gitconfig
+    ~/.ssh/config:
+      path: ssh/config
+    ~/.condarc: condarc
+
     ~/.atom/config.cson:
       path: atom/config.cson
       force: true
     ~/.atom/styles.less:
       path: atom/styles.less
       force: true
-    ~/.p10k.zsh:
-      path: p10k.zsh
-      force: true
-    ~/.condarc:
-      path: condarc
+
+    ~/.prettierrc.js:
+      path: prettier/prettierrc.js
+    ~/.prettierrc.yaml:
+      path: prettier/prettierrc.yaml
 
 - shell:
     - [git submodule update --init --recursive, Installing submodules]
