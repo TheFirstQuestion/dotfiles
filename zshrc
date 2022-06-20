@@ -85,7 +85,7 @@ plugins=(
     git-auto-status
     z
 )
-source $ZSH/plugins/auto-ls.zsh
+source $ZSH/plugins/auto-ls-zsh/auto-ls.zsh
 
 source $ZSH/oh-my-zsh.sh
 
