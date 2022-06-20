@@ -146,14 +146,7 @@ notify() {
 # Log a message to Keybase
 # Parameter: the message you want to send
 log() {
-    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    	WHO="$(hostname)"
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-    	WHO='sMac'
-    fi
-
-    WHEN="$(date '+%A, %B %d, %Y, %I:%M:%S %p %Z')"
-    keybase chat send sophie_opferman --channel logs "$WHO -- $WHEN -- $1"
+    sh $DOTFILE_DIR/scripts/log-to-keybase.sh "$1"
 }
 
 # Show/hide hidden files in Finder
