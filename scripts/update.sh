@@ -13,4 +13,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     brew upgrade
 fi
 
+# Update dotbot itself
+cd $HOME/dotfiles/dotbot && git fetch && git checkout origin/master
+
 echo 'Update script finished!'
