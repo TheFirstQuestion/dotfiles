@@ -9,15 +9,6 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-# Identify OS: https://stackoverflow.com/a/8597411
-# if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-#     export ZSH="$HOME/.oh-my-zsh"
-# elif [[ "$OSTYPE" == "darwin"* ]]; then
-#     # For some reason ~/... doesn't work here
-#     export ZSH="/Users/smac/.oh-my-zsh"
-#     export ZSH_CUSTOM="/Users/smac/.oh-my-zsh"
-# fi
-
 export ZSH="$HOME/.oh-my-zsh"
 export ZSH_CUSTOM="$HOME/.oh-my-zsh"
 
@@ -94,6 +85,7 @@ plugins=(
     git-auto-status
     z
 )
+source $ZSH/plugins/auto-ls.zsh
 
 source $ZSH/oh-my-zsh.sh
 

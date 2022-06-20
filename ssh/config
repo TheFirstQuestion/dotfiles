@@ -3,7 +3,7 @@ Host *
     # via https://github.com/anishathalye/dotbot/wiki/Tips-and-Tricks#automatically-install-or-update-dotfiles-when-sshing-into-a-remote-machine-or-let-my-dotfiles-follow-me
     #PermitLocalCommand yes
     # Unfortunately ssh does not support line breaks in config files
-    #LocalCommand ssh -o PermitLocalCommand=no %n "which git >/dev/null && ([[ -d ~/dotfiles ]] && (echo "Updating dotfiles on %h ..." && cd ~/dotfiles && git pull -q && ./install >/dev/null) || (echo "Installing dotfiles on %h ..." && git clone -q https://github.com/TheFirstQuestion/dotfiles && ./dotfiles/install >/dev/null))"
+    #LocalCommand ssh -o PermitLocalCommand=no %n "which git >/dev/null && ([[ -d $HOME/dotfiles ]] && (echo "Updating dotfiles on %h ..." && cd ~/dotfiles && git pull -q && ./install >/dev/null) || (echo "Installing dotfiles on %h ..." && git clone -q https://github.com/TheFirstQuestion/dotfiles && ./dotfiles/install >/dev/null)) && ./dotfiles/scripts/omz-install.sh"
 
 Host myth myth.stanford.edu
     HostName myth.stanford.edu

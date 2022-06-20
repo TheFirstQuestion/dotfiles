@@ -7,7 +7,9 @@
 
 # These are all symlinks -- so changes in this directory are live
 - link:
-      ~/.bashrc: bashrc
+      ~/.bashrc:
+          path: bashrc
+          force: true
       ~/.zshrc:
           path: zshrc
           force: true
