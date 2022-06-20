@@ -123,8 +123,9 @@ ZSH_CUSTOM_AUTOUPDATE_QUIET=true
 # functions are better than aliases according to https://stackoverflow.com/a/7131683
 
 ######################### Command Shortcuts #########################
-# Do dotbot install, so my things are all symlinked properly, reload oh-my-zsh, so any functions here will be live
+# Do a fresh pull and install, so everything is updated and symlinked properly
 dotbot() {
+    git -C "$DOTFILE_DIR" pull origin main
     $DOTFILE_DIR/install --plugin-dir $DOTFILE_DIR/plugins
 }
 
@@ -189,10 +190,10 @@ __conda_setup="$('/Users/smac/opt/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/Users/smac/opt/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/smac/opt/miniconda3/etc/profile.d/conda.sh"
+    if [ -f "$HOME/opt/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "$HOME/opt/miniconda3/etc/profile.d/conda.sh"
     else
-        export PATH="/Users/smac/opt/miniconda3/bin:$PATH"
+        export PATH="$HOME/opt/miniconda3/bin:$PATH"
     fi
 fi
 unset __conda_setup
