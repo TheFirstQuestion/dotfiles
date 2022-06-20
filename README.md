@@ -64,22 +64,35 @@ I have specific settings and tweaks for my tools that I like. They also (maybe) 
 -   syntax highlighting
 -   auto `ls` and `git status` (super convenient!!!)
 -   ssh shortcuts for my frequent servers
+    -   `ssh pi`
+    -   `ssh nas`
+    -   `ssh myth`
 -   move around the filesystem way more easily
+    -   `z <part of folder name>`
 -   paste stuff into the terminal without accidentally running anything
 -   show and hide hidden files easily on macOS
+    -   `hidden_files_show`
+    -   `hidden_files_hide`
 
 ### Templates:
 
 -   GitHub README.md (like this one!)
+    -   `template README`
 -   `.gitignore` that works for just about anything
+    -   `template gitignore`
 
 ### Scripts:
 
 -   update all of the everything
+    -   `run-script update`
 -   log anything to the specific channel in my specific workspace
--   create a file from a template
+    -   `log <message>`
 -   play a beep (helpful to chain after long-ish running commands)
+    -   `sleep 10; notify`
 -   initialize my personal folder structure
+    -   `run-script init-archive`
+-   make sure all of these dotfiles are up-to-date and properly linked
+    -   `dotbot`
 
 ### Atom Upgrades:
 
@@ -124,10 +137,10 @@ These instructions will get you a copy of the project up and running.
 -   [ ] `backup` script to sync files with my external hard drive
 -   [ ] cron jobs to schedule certain scripts (i.e. `update`)
 -   [ ] different configurations for desktop vs. server
--   install all dependencies
+-   [ ] install all dependencies
     -   [ ] Atom plugins
     -   [ ] Keybase
--   Better integration with Winston?
+-   [ ] Better integration with Winston?
 
 <!--
 See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
