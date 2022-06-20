@@ -10,13 +10,16 @@ fi
 
 # Path to your oh-my-zsh installation.
 # Identify OS: https://stackoverflow.com/a/8597411
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    export ZSH="/home/steven/.oh-my-zsh"
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    # For some reason ~/... doesn't work here
-    export ZSH="/Users/smac/.oh-my-zsh"
-    export ZSH_CUSTOM="/Users/smac/.oh-my-zsh"
-fi
+# if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+#     export ZSH="$HOME/.oh-my-zsh"
+# elif [[ "$OSTYPE" == "darwin"* ]]; then
+#     # For some reason ~/... doesn't work here
+#     export ZSH="/Users/smac/.oh-my-zsh"
+#     export ZSH_CUSTOM="/Users/smac/.oh-my-zsh"
+# fi
+
+export ZSH="$HOME/.oh-my-zsh"
+export ZSH_CUSTOM="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -119,11 +122,12 @@ export MANPATH="/usr/local/man:$MANPATH"
 
 
 ############################## I ADDED BELOW #############################
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    export DOTFILE_DIR="/home/steven/dotfiles"
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    export DOTFILE_DIR="/Users/smac/dotfiles"
-fi
+# if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+#     export DOTFILE_DIR="/home/steven/dotfiles"
+# elif [[ "$OSTYPE" == "darwin"* ]]; then
+#     export DOTFILE_DIR="/Users/smac/dotfiles"
+# fi
+export DOTFILE_DIR="$HOME/dotfiles"
 
 
 # functions are better than aliases according to https://stackoverflow.com/a/7131683
@@ -137,7 +141,7 @@ dotbot() {
 # Play a sound (helpful to chain after a long-running command)
 notify() {
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        paplay /home/steven/.minecraft/assets/objects/01/0113fbf3e047f4fa4ef680ae7781326427e30f02
+        paplay "$HOME/.minecraft/assets/objects/01/0113fbf3e047f4fa4ef680ae7781326427e30f02"
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         afplay /System/Library/Sounds/Submarine.aiff -v 10
     fi
