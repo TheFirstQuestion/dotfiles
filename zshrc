@@ -84,6 +84,7 @@ plugins=(
     zsh-syntax-highlighting
     git-auto-status
     z
+    autoupdate
 )
 source $ZSH/plugins/auto-ls-zsh/auto-ls.zsh
 
@@ -114,13 +115,10 @@ export MANPATH="/usr/local/man:$MANPATH"
 
 
 ############################## I ADDED BELOW #############################
-# if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-#     export DOTFILE_DIR="/home/steven/dotfiles"
-# elif [[ "$OSTYPE" == "darwin"* ]]; then
-#     export DOTFILE_DIR="/Users/smac/dotfiles"
-# fi
 export DOTFILE_DIR="$HOME/dotfiles"
 
+# Plugins are automatically updated quietly.
+ZSH_CUSTOM_AUTOUPDATE_QUIET=true
 
 # functions are better than aliases according to https://stackoverflow.com/a/7131683
 
