@@ -125,7 +125,7 @@ ZSH_CUSTOM_AUTOUPDATE_QUIET=true
 ######################### Command Shortcuts #########################
 # Do dotbot install, so my things are all symlinked properly, reload oh-my-zsh, so any functions here will be live
 dotbot() {
-    sh $DOTFILE_DIR/install --plugin-dir $DOTFILE_DIR/plugins
+    $DOTFILE_DIR/install --plugin-dir $DOTFILE_DIR/plugins
 }
 
 # Play a sound (helpful to chain after a long-running command)
