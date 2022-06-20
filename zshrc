@@ -25,8 +25,7 @@ fi
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
+# Setting this variable when ZSH_THEME=random will cause zsh to load a theme from this variable instead of looking in $ZSH/themes/
 # If set to an empty array, this variable will have no effect.
 # ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
@@ -68,12 +67,10 @@ zstyle ':omz:update' mode auto      # update automatically without asking
 # much, much faster.
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
+# Uncomment the following line if you want to change the command execution time stamp shown in the history command output.
 # You can set one of the optional three formats:
 # "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
+# or set a custom format using the strftime function format specifications, see 'man strftime' for details.
 # HIST_STAMPS="mm/dd/yyyy"
 
 # Would you like to use another custom folder than $ZSH/custom?
@@ -113,9 +110,7 @@ export MANPATH="/usr/local/man:$MANPATH"
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# Set personal aliases, overriding those provided by oh-my-zsh libs, plugins, and themes. Aliases can be placed here, though oh-my-zsh users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -134,13 +129,12 @@ fi
 # functions are better than aliases according to https://stackoverflow.com/a/7131683
 
 ######################### Command Shortcuts #########################
-# Do dotbot install, so my things are all symlinked properly
+# Do dotbot install, so my things are all symlinked properly, reload oh-my-zsh, so any functions here will be live
 dotbot() {
     sh $DOTFILE_DIR/install --plugin-dir $DOTFILE_DIR/plugins
 }
 
 # Play a sound (helpful to chain after a long-running command)
-# TODO: Linux?
 notify() {
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         paplay /home/steven/.minecraft/assets/objects/01/0113fbf3e047f4fa4ef680ae7781326427e30f02
@@ -196,8 +190,9 @@ template() {
 ######################### Scripts #########################
 # General function for running one of my scripts
 # Parameter: the name of the script in dotfiles/scripts/ (without the .sh)
+# pass along all the arguments except for $0 ("run-script") and $1 (name of the script)
 run-script() {
-    bash $DOTFILE_DIR/scripts/$1.sh
+    $DOTFILE_DIR/scripts/$1.sh "${@:2}" && log "$1 script finished successfully" || log "$1 script FAILED"
 }
 
 

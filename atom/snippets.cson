@@ -1,0 +1,42 @@
+# Atom snippets allow you to enter a simple prefix in the editor and hit tab to
+# expand the prefix into a larger code block with templated values.
+#
+# You can create a new snippet in this file by typing "snip" and then hitting
+# tab.
+#
+# Each scope (e.g. '.source.coffee' above) can only be declared once.
+
+# the $1 indicates that you jump to this after the snippet is inserted
+
+# Long lines of comment characters, mostly used to divide sections of code
+'*':
+  '# Long Comment Line':
+    'prefix': '###'
+    'body': '############################## $1 #############################'
+  '/* Long Comment Line':
+    'prefix': '/**'
+    'body': '/* ############################## $1 ############################# */'
+
+
+# A little box to demarcate constant config variables at the top of my python file
+'.source.python':
+  'Constants Box':
+    'prefix': 'Constants'
+    'body': """
+    ####################### Constants #######################
+    $1
+    #########################################################
+    \n
+    """
+
+
+# Bash "strict mode" -- via http://redsymbol.net/articles/unofficial-bash-strict-mode/
+'.source.shell':
+  'Strict Mode':
+    'prefix': 'bash'
+    'body': """
+    #!/bin/bash
+    set -euo pipefail
+    IFS=$'\\\\n\\\\t'
+    \n
+    """
