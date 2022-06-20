@@ -15,7 +15,7 @@
 </p>
 -->
 
-<h1 align="center">Project Title</h1>
+<h1 align="center">Dotfiles</h1>
 
 <!--
 The cute little icon things.
@@ -31,8 +31,8 @@ The cute little icon things.
 -->
 
 <p align="center">
-Few lines describing your project.
-<br>
+Settings for everything:
+by me, for me.
 </p>
 
 ## Table of Contents
@@ -46,13 +46,47 @@ Few lines describing your project.
 
 ## About <a name="about"></a>
 
-Write about a paragraph describing the purpose of your project.
+I have specific settings and tweaks for my tools that I like. They also (maybe) help me to be productive and consistent. They're here so that:
+
+-   I can easily keep them in sync across lots of different machines.
+-   I can refer back to a working version if something breaks.
+-   If I change my mind, I can easily undo an edit.
+-   Others can see what works for me, and figure out what works for them.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Usage <a name="usage"></a>
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+### Terminal Upgrades:
+
+-   powerlevel10k theme, with cool colors and icons
+-   autosuggestions for commands
+-   syntax highlighting
+-   auto `ls` and `git status` (super convenient!!!)
+-   ssh shortcuts for my frequent servers
+-   move around the filesystem way more easily
+-   paste stuff into the terminal without accidentally running anything
+-   show and hide hidden files easily on macOS
+
+### Templates:
+
+-   GitHub README.md (like this one!)
+-   `.gitignore` that works for just about anything
+
+### Scripts:
+
+-   update all of the everything
+-   log anything to the specific channel in my specific workspace
+-   create a file from a template
+-   play a beep (helpful to chain after long-ish running commands)
+-   initialize my personal folder structure
+
+### Atom Upgrades:
+
+-   helpful snippets and syntax highlighting (especially for comments)
+-   settings for plugins
+
+![usage screenshot](https://raw.githubusercontent.com/TheFirstQuestion/dotfiles/main/screenshot.png)
 
 <!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
 
@@ -62,43 +96,38 @@ Use this space to show useful examples of how a project can be used. Additional 
 
 These instructions will get you a copy of the project up and running.
 
-### Prerequisites
-
-The things you need to use the software and how to install them.
-
--   npm
-    ```sh
-    npm install npm@latest -g
-    ```
-
 ### Installation
 
-1. Clone the repo
+1. Clone the repo:
 
     ```sh
-    git clone https://github.com/github_username/repo_name.git
+    git clone https://github.com/TheFirstQuestion/dotfiles.git && cd dotfiles
     ```
 
-2. Install NPM packages
+2. Run the install script:
 
     ```sh
-    npm install
+    ./install
     ```
 
-3. Enter your API in `config.js`
+3. In the future, you can update and reinstall just by running:
 
-    ```js
-    const API_KEY = "ENTER YOUR API";
+    ```sh
+    dotbot
     ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Roadmap <a name="roadmap"></a>
 
--   [ ] Feature 1
--   [ ] Feature 2
--   [ ] Feature 3
-    -   [ ] Nested Feature
+-   [ ] `checkin` command that runs on startup
+-   [ ] `backup` script to sync files with my external hard drive
+-   [ ] cron jobs to schedule certain scripts (i.e. `update`)
+-   [ ] different configurations for desktop vs. server
+-   install all dependencies
+    -   [ ] Atom plugins
+    -   [ ] Keybase
+-   Better integration with Winston?
 
 <!--
 See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
@@ -120,8 +149,7 @@ Feel free to do any of the following:
 
 ## Acknowledgements <a name="acknowledgements"></a>
 
--   Hat tip to anyone whose code was used
--   Inspiration
--   References
+-   The rationale for managing dotfiles this way is explained wonderfully here: https://www.anishathalye.com/2014/08/03/managing-your-dotfiles/
+-   This repo is basically a wrapper around Dotbot: https://github.com/anishathalye/dotbot
 
 <p align="right">(<a href="#top">back to top</a>)</p>
