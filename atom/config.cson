@@ -20,6 +20,7 @@
       "atom-dbex-mysql"
       "Hydrogen"
       "language-gfm"
+      "ftp-remote-edit"
     ]
     restorePreviousWindowsOnStart: "no"
     telemetryConsent: "no"
@@ -40,7 +41,6 @@
   "linter-ui-default":
     gutterPosition: "Left"
     panelHeight: 96
-    showPanel: true
   "markdown-preview":
     useGitHubStyle: true
   "prettier-atom":

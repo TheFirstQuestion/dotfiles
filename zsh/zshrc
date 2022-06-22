@@ -97,11 +97,11 @@ export MANPATH="/usr/local/man:$MANPATH"
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='nano'
+else
+  export EDITOR='nano'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -111,8 +111,6 @@ export MANPATH="/usr/local/man:$MANPATH"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-
 
 ############################## I ADDED BELOW #############################
 export DOTFILE_DIR="$HOME/dotfiles"
@@ -141,8 +139,15 @@ notify() {
 # Log a message to Keybase
 # Parameter: the message you want to send
 log() {
-    sh $DOTFILE_DIR/scripts/log-to-keybase.sh "$1"
+    sh $DOTFILE_DIR/scripts/keybase-log.sh "$1"
 }
+
+# Log a message to Keybase
+# Parameter: the message you want to send
+kb-alert() {
+    sh $DOTFILE_DIR/scripts/keybase-alert.sh "$1"
+}
+
 
 # Show/hide hidden files in Finder
 # (adapted from https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/macos/macos.plugin.zsh)

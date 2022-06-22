@@ -1,9 +1,5 @@
 Host *
     ServerAliveInterval 60
-    # via https://github.com/anishathalye/dotbot/wiki/Tips-and-Tricks#automatically-install-or-update-dotfiles-when-sshing-into-a-remote-machine-or-let-my-dotfiles-follow-me
-    #PermitLocalCommand yes
-    # Unfortunately ssh does not support line breaks in config files
-    #LocalCommand ssh -o PermitLocalCommand=no %n "which git >/dev/null && ([[ -d $HOME/dotfiles ]] && (echo "Updating dotfiles on %h ..." && cd ~/dotfiles && git pull -q && ./install >/dev/null) || (echo "Installing dotfiles on %h ..." && git clone -q https://github.com/TheFirstQuestion/dotfiles && ./dotfiles/install >/dev/null)) && ./dotfiles/scripts/omz-install.sh"
 
 Host myth myth.stanford.edu
     HostName myth.stanford.edu
@@ -12,14 +8,15 @@ Host myth myth.stanford.edu
     ControlPath ~/.ssh/%r@%h:%p
     ControlPersist yes
 
-Host pi raspberrypi.local
+Host pi mypi raspberrypi raspberrypi.local
     HostName raspberrypi.local
     User pi
     ControlMaster auto
     ControlPersist yes
 
-Host nas NAS.local
+Host nas NAS NAS.local
     HostName NAS.local
     User main
     ControlMaster auto
     ControlPersist yes
+    Port 50683

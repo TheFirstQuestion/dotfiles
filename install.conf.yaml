@@ -7,20 +7,18 @@
 
 # These are all symlinks -- so changes in this directory are live
 - link:
-      ~/.bashrc:
-          path: bashrc
-          force: true
       ~/.zshrc:
-          path: zshrc
+          path: zsh/zshrc
           force: true
       ~/.p10k.zsh:
-          path: p10k.zsh
+          path: zsh/p10k.zsh
           force: true
 
-      ~/.gitconfig: gitconfig
+      ~/.gitconfig:
+          path: git/gitconfig
       ~/.ssh/config:
           path: ssh/config
-      ~/.condarc: condarc
+      ~/.condarc: conda/condarc
 
       ~/.atom/config.cson:
           path: atom/config.cson
@@ -48,7 +46,7 @@
         description: Ensuring Oh-My-Zsh exists...
         quiet: true
 
-      - command: scripts/log-to-keybase.sh 'dotbotted successfully!'
+      - command: scripts/keybase-log.sh 'dotbotted successfully!'
         description: Logging to Keybase...
         quiet: true
 
