@@ -144,7 +144,7 @@ log() {
 
 # Log a message to Keybase
 # Parameter: the message you want to send
-kb-alert() {
+alert() {
     sh $DOTFILE_DIR/scripts/keybase-alert.sh "$1"
 }
 

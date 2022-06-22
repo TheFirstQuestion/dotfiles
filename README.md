@@ -87,6 +87,8 @@ I have specific settings and tweaks for my tools that I like. They also (maybe) 
     -   `run-script update`
 -   log anything to the specific channel in my specific workspace
     -   `log <message>`
+-   alert me via notification on all my devices
+    -   `alert <message>`
 -   play a beep (helpful to chain after long-ish running commands)
     -   `sleep 10; notify`
 -   initialize my personal folder structure
@@ -136,6 +138,7 @@ These instructions will get you a copy of the project up and running.
 -   [ ] `checkin` command that runs on startup
 -   [ ] `backup` script to sync files with my external hard drive
 -   [ ] cron jobs to schedule certain scripts (i.e. `update`)
+-   [ ] look into [xxh](https://github.com/xxh/xxh)
 -   [ ] different configurations for desktop vs. server
 -   [ ] install all dependencies
     -   [ ] Atom plugins

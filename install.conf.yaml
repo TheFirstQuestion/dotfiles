@@ -49,7 +49,3 @@
       - command: scripts/keybase-log.sh 'dotbotted successfully!'
         description: Logging to Keybase...
         quiet: true
-
-      - command: exec zsh
-        description: Restarting Zsh...
-        quiet: true
