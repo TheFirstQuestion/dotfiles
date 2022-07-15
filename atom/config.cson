@@ -21,6 +21,7 @@
       "Hydrogen"
       "language-gfm"
       "ftp-remote-edit"
+      "remember-folds"
     ]
     restorePreviousWindowsOnStart: "no"
     telemetryConsent: "no"

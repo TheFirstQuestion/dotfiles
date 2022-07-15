@@ -8,13 +8,15 @@
 
 ########################### Node ###########################
 # Optional npm cache directory
-.npm
+.npm/
 # Optional eslint cache
 .eslintcache
 # Node
 node_modules/
 # React
 compiled/
+# Expo (React Native)
+.expo/
 
 
 ########################## Python ##########################
