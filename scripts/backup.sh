@@ -2,9 +2,6 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-# TODO: write logic around this
-DESTINATION="/Volumes/DriveB"
-
 
 diveIntoDir() {
     # Identify git repo
@@ -52,6 +49,29 @@ processFiles() {
 
 ############################## EXECUTION BEGINS HERE #############################
 
+# Check that (a) a drive is connected and (b) the computer is charging
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    for i in /mnt/media/Drive*; do
+        if [ -d "$i" ]; then
+            DESTINATION="$i"
+            break
+        fi
+    done
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    # Adapted from https://apple.stackexchange.com/a/116435
+    isCharging=$(system_profiler SPPowerDataType | grep -A3 -B7 'Condition' | grep "Charging" | awk '{print $2}')
+    if [ $isCharging != "Yes" ]; then
+        echo 'error: computer is not currently charging'
+        exit 1
+    fi
+    for i in /Volumes/Drive*; do
+        if [ -d "$i" ]; then
+            DESTINATION="$i"
+            break
+        fi
+    done
+fi
+
 # Confirm that DESTINATION exists and is valid
 if [ ! -d "$DESTINATION" ]; then
     echo 'error: Destination not found'
@@ -65,6 +85,7 @@ if [ ! -d "$HOME/Archive" ]; then
 fi
 
 # Log that we are starting, because it may take a while
+echo "beginning backup to $DESTINATION"
 sh "$DOTFILE_DIR/scripts/keybase-log.sh" "beginning backup to $DESTINATION"
 
 # Call init-archive script on Archive and Destination, to ensure we have the right directories
@@ -72,11 +93,10 @@ sh "$DOTFILE_DIR/scripts/init-archive.sh" "$HOME/Archive"
 sh "$DOTFILE_DIR/scripts/init-archive.sh" "$DESTINATION"
 echo
 
+
 # Start recursing
 # diveIntoDir "$HOME/Archive"
-rsync -vhmPCa --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" "$HOME/Archive" "$DESTINATION"
-# TODO: this puts an Archive folder on root of drive, want it to just put top-level folders
-
+rsync -vhmPCa --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" $HOME/Archive/* "$DESTINATION"
 
 
 # Print out size information
@@ -85,3 +105,5 @@ echo
 df -H "$HOME/Archive/" "$DESTINATION"
 echo
 du -hsc $HOME/Archive/* | sort -hr | head -n 10
+
+exit 0
