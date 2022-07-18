@@ -41,5 +41,6 @@ mkdir -p '06 Backups/Sessions'
 mkdir -p '07 Application Files/Calibre Library'
 mkdir -p '07 Application Files/Zotero'
 
+mkdir -p '99 Trash'
 
 echo "set up Archive in $rootOfArchive!"
