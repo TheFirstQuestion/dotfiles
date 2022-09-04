@@ -1,7 +1,6 @@
-##!/bin/bash
+#!/bin/bash
 set -euo pipefail
 IFS=$'\n\t'
-
 
 diveIntoDir() {
     # Identify git repo
@@ -14,8 +13,7 @@ diveIntoDir() {
     processFiles "$1"
 
     # And recurse downwards
-    for thisDirPath in $(find "$1" -type d -maxdepth 1)
-    do
+    for thisDirPath in $(find "$1" -type d -maxdepth 1); do
         nameOf1=$(basename $1)
         thisDir=$(basename $thisDirPath)
 
@@ -28,7 +26,6 @@ diveIntoDir() {
         diveIntoDir "$thisDirPath"
     done
 }
-
 
 processFiles() {
     # for thisFilePath in $(find "$1" -type f -maxdepth 1)
@@ -45,7 +42,6 @@ processFiles() {
     # done
     rsync -vhmPCa --dry-run --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" "$1" "$DESTINATION"
 }
-
 
 ############################## EXECUTION BEGINS HERE #############################
 
@@ -93,11 +89,9 @@ sh "$DOTFILE_DIR/scripts/init-archive.sh" "$HOME/Archive"
 sh "$DOTFILE_DIR/scripts/init-archive.sh" "$DESTINATION"
 echo
 
-
 # Start recursing
 # diveIntoDir "$HOME/Archive"
 rsync -vhmPCa --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" $HOME/Archive/* "$DESTINATION"
-
 
 # Print out size information
 echo "\n\nStorage:"

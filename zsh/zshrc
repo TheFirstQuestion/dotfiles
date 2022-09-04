@@ -118,17 +118,15 @@ export DOTFILE_DIR="$HOME/dotfiles"
 # Plugins are automatically updated quietly.
 ZSH_CUSTOM_AUTOUPDATE_QUIET=true
 
-# functions are better than aliases according to https://stackoverflow.com/a/7131683
 
 ######################### Command Shortcuts #########################
-
-# Add functions to scope
-source $DOTFILE_DIR/functions/*
-
-# log is a built-in program that we're overwriting, so it goes here rather than in functions
-log() {
-  sh $DOTFILE_DIR/scripts/keybase-log.sh "$1"
-}
+# functions are better than aliases according to https://stackoverflow.com/a/7131683
+# Add all functions to scope 
+# (loop necessary bc source doesn't do wildcards)
+for thisFilePath in $DOTFILE_DIR/functions/*
+do
+   source "$thisFilePath"
+done
 
 
 ######################### Templates #########################
