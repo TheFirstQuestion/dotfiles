@@ -1,0 +1,1 @@
+ls $DOTFILE_DIR/scripts

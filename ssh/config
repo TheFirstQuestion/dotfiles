@@ -20,3 +20,9 @@ Host nas NAS NAS.local
     ControlMaster auto
     ControlPersist yes
     Port 50683
+
+Host sLaptop slaptop
+    HostName 10.30.83.168
+    User steven
+    ControlMaster auto
+    ControlPersist yes

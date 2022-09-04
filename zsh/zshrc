@@ -121,48 +121,13 @@ ZSH_CUSTOM_AUTOUPDATE_QUIET=true
 # functions are better than aliases according to https://stackoverflow.com/a/7131683
 
 ######################### Command Shortcuts #########################
-# Do a fresh pull and install, so everything is updated and symlinked properly
-dotbot() {
-    git -C "$DOTFILE_DIR" pull origin main
-    $DOTFILE_DIR/install --plugin-dir $DOTFILE_DIR/plugins
-}
 
-# Play a sound (helpful to chain after a long-running command)
-notify() {
-    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        paplay "$HOME/.minecraft/assets/objects/01/0113fbf3e047f4fa4ef680ae7781326427e30f02"
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-        afplay /System/Library/Sounds/Submarine.aiff -v 10
-    fi
-}
+# Add functions to scope
+source $DOTFILE_DIR/functions/*
 
-# Log a message to Keybase
-# Parameter: the message you want to send
+# log is a built-in program that we're overwriting, so it goes here rather than in functions
 log() {
-    sh $DOTFILE_DIR/scripts/keybase-log.sh "$1"
-}
-
-# Log a message to Keybase
-# Parameter: the message you want to send
-alert() {
-    sh $DOTFILE_DIR/scripts/keybase-alert.sh "$1"
-}
-
-
-# Show/hide hidden files in Finder
-# (adapted from https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/macos/macos.plugin.zsh)
-hidden_files_show() {
-    defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder
-}
-
-hidden_files_hide() {
-    defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder
-}
-
-# Remove .DS_Store files recursively in a directory, default .
-# (via https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/macos/macos.plugin.zsh)
-rm_DS_Store() {
-  find "${@:-.}" -type f -name .DS_Store -delete
+  sh $DOTFILE_DIR/scripts/keybase-log.sh "$1"
 }
 
 
@@ -183,10 +148,32 @@ template() {
 ######################### Scripts #########################
 # General function for running one of my scripts
 # Parameter: the name of the script in dotfiles/scripts/ (without the .sh)
-# pass along all the arguments except for $0 ("run-script") and $1 (name of the script)
 run-script() {
+    # pass along all the arguments except for $0 ("run-script") and $1 (name of the script)
     $DOTFILE_DIR/scripts/$1.sh "${@:2}" && log "$1 script finished successfully" || log "$1 script FAILED"
 }
+
+# this is a custom function that provides matches for the bash autocompletion
+# adapted from https://stackoverflow.com/a/39705866
+_scripts_autocomplete() {
+    # Special case: if nothing has been typed, we want to list everything
+    if [[ -z "$2" ]]; then
+        prefix=""
+    elif [[ -n "$string" ]]; then
+       prefix="$2"
+    fi
+
+    local file
+    # iterate all files that start with our search string
+    for file in $DOTFILE_DIR/scripts/*"$prefix"*; do
+        # If the glob doesn't match, we'll get the glob itself, so make sure we have an existing file. This check also skips entries that are not a file.
+        [[ -f $file ]] || continue
+        # add the file (without the path prefix and without extension) to the list of autocomplete suggestions
+        COMPREPLY+=( $(basename "${file}" .sh) )
+    done
+}
+# Call our custom function to tab-complete when typing run-script
+complete -F _scripts_autocomplete run-script
 
 
 # >>> conda initialize >>>
