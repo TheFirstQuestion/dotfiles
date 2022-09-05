@@ -1,0 +1,7 @@
+{
+  "Constants Box": {
+    "prefix": ["Constants"],
+    "body": ["####################### Constants #######################\n $1 \n #########################################################\n\n"],
+    "description": "A little box to demarcate constant config variables at the top of my python file"
+  }
+}

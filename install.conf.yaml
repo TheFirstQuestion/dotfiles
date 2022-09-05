@@ -1,51 +1,64 @@
 - defaults:
-      link:
-          create: true
-          relink: true
+    link:
+      create: true
+      relink: true
 
 - clean: ["~"]
 
 # These are all symlinks -- so changes in this directory are live
 - link:
-      ~/.zshrc:
-          path: zsh/zshrc
-          force: true
-      ~/.p10k.zsh:
-          path: zsh/p10k.zsh
-          force: true
+    ~/.zshrc:
+      path: zsh/zshrc
+      force: true
+    ~/.p10k.zsh:
+      path: zsh/p10k.zsh
+      force: true
 
-      ~/.gitconfig:
-          path: git/gitconfig
-      ~/.ssh/config:
-          path: ssh/config
-      ~/.condarc: conda/condarc
+    ~/.gitconfig:
+      path: git/gitconfig
+    ~/.ssh/config:
+      path: ssh/config
+    ~/.condarc: conda/condarc
 
-      ~/.atom/config.cson:
-          path: atom/config.cson
-          force: true
-      ~/.atom/styles.less:
-          path: atom/styles.less
-          force: true
-      ~/.atom/snippets.cson:
-          path: atom/snippets.cson
-          force: true
+    ~/.atom/config.cson:
+      path: atom/config.cson
+      force: true
+    ~/.atom/styles.less:
+      path: atom/styles.less
+      force: true
+    ~/.atom/snippets.cson:
+      path: atom/snippets.cson
+      force: true
 
-      ~/.prettierrc.js:
-          path: prettier/prettierrc.js
-      ~/.prettierrc.yaml:
-          path: prettier/prettierrc.yaml
+    ~/Library/Application Support/Code/User/settings.json:
+      path: vscode/settings.json
+      force: true
+    ~/Library/Application Support/Code/User/snippets/global.code-snippets:
+      path: vscode/global.code-snippets
+      force: true
+    ~/Library/Application Support/Code/User/snippets/python.json:
+      path: vscode/python.json
+      force: true
+    ~/Library/Application Support/Code/User/snippets/shellscript.json:
+      path: vscode/shellscript.json
+      force: true
+
+    ~/.prettierrc.js:
+      path: prettier/prettierrc.js
+    ~/.prettierrc.yaml:
+      path: prettier/prettierrc.yaml
 
 - shell:
-      - command: git submodule update --init --recursive
-        description: Installing submodules...
-        quiet: true
+    - command: git submodule update --init --recursive
+      description: Installing submodules...
+      quiet: true
 
-      - command: scripts/omz-install.sh
-        stdin: true
-        stdout: true
-        description: Ensuring Oh-My-Zsh exists...
-        quiet: true
+    - command: scripts/omz-install.sh
+      stdin: true
+      stdout: true
+      description: Ensuring Oh-My-Zsh exists...
+      quiet: true
 
-      - command: scripts/keybase-log.sh 'dotbotted successfully!'
-        description: Logging to Keybase...
-        quiet: true
+    - command: functions/keybase-log.sh 'dotbotted successfully!'
+      description: Logging to Keybase...
+      quiet: true

@@ -1,0 +1,132 @@
+{
+    "telemetry.telemetryLevel": "off",
+    "workbench.startupEditor": "welcomePageInEmptyWorkbench",
+    "files.autoSave": "afterDelay",
+    "editor.fontSize": 18,
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.formatOnSave": true,
+    "terminal.external.osxExec": "iTerm2.app",
+    "editor.fontFamily": "MesloLGF NF, Menlo, Monaco, 'Courier New', monospace",
+    "terminal.integrated.fontSize": 16,
+    "update.showReleaseNotes": false,
+    "workbench.colorTheme": "An Old Hope",
+    "files.exclude": {
+        "**.pdf": true,
+        "**/.ipynb_checkpoints": true
+    },
+    "python.defaultInterpreterPath": "/Users/smac/opt/miniconda3/bin/python",
+    "window.zoomLevel": 0.6,
+    "explorer.compactFolders": false,
+    "explorer.decorations.badges": false,
+    "breadcrumbs.enabled": false,
+    "json.format.keepLines": true,
+    "python.formatting.blackPath": "/Users/smac/opt/miniconda3/bin/black",
+    "python.formatting.provider": "black",
+    "editor.tabSize": 2,
+    "workbench.activityBar.visible": false,
+    "zenMode.hideLineNumbers": false,
+    "search.showLineNumbers": true,
+    "jupyter.askForKernelRestart": false,
+    "notebook.cellFocusIndicator": "border",
+    "notebook.cellToolbarVisibility": "hover",
+    "notebook.output.textLineLimit": 100,
+    "editor.renderWhitespace": "none",
+    "workbench.editor.untitled.hint": "hidden",
+    "workbench.editor.enablePreview": false,
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "workbench.colorCustomizations": {
+        "[An Old Hope]": {
+            "statusBar.foreground": "#aaa",
+            "statusBar.background": "#282828",
+            "sideBar.border": "#444",
+            "list.inactiveSelectionBackground": "#97f8573b",
+            "tree.indentGuidesStroke": "#787878",
+            "tree.tableColumnsBorder": "#787878",
+            "tab.activeForeground": "#fff",
+            "tab.activeBackground": "#363636",
+            "tab.border": "#444",
+            "tab.hoverBackground": "#343434",
+            "tab.hoverForeground": "#ccc"
+        }
+    },
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "comment",
+                "settings": {
+                    "fontStyle": "italic",
+                    "foreground": "#ff0000"
+                }
+            },
+            {
+                "scope": "comment.line.double-slash",
+                "settings": {
+                    "fontStyle": "italic",
+                    "foreground": "#ff0000"
+                }
+            }
+        ]
+    },
+    "terminal.integrated.inheritEnv": false,
+    "indentRainbow.lightIndicatorStyleLineWidth": 4,
+    "indentRainbow.colors": [
+        "rgba(0, 0, 0, 0.03)",
+        "rgba(255, 255, 255, 0.03)",
+    ],
+    "indentRainbow.errorColor": "",
+    "indentRainbow.ignoreErrorLanguages": [
+        "*"
+    ],
+    "eslint.alwaysShowStatus": true,
+    "editor.matchBrackets": "never",
+    "subtleBrackets.style": {
+        "borderWidth": "26px",
+        "borderColor": "rgba(255, 255, 255, 0.4)",
+    },
+    "subtleBrackets.disableNative": false,
+    "[markdown]": {
+        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.wordWrapColumn": 86,
+    "editor.wrappingIndent": "deepIndent",
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.lightbulb.enabled": false,
+    "emmet.showAbbreviationSuggestions": false,
+    "emmet.excludeLanguages": [
+        "markdown",
+        "*"
+    ],
+    "emmet.showExpandedAbbreviation": "never",
+    "editor.minimap.renderCharacters": false,
+    "editor.minimap.showSlider": "always",
+    "editor.minimap.enabled": false,
+    "notebook.lineNumbers": "on",
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "none",
+        "reportMissingModuleSource": "none"
+    },
+    "workbench.editor.restoreViewState": false,
+    "window.restoreFullscreen": true,
+    "window.restoreWindows": "none",
+    "explorer.confirmDragAndDrop": false,
+    "extensions.ignoreRecommendations": true,
+    "markdownlint.config": {
+        "no-inline-html": false
+    },
+    "rainbow_csv.csv_lint_detect_trailing_spaces": true,
+    "rainbow_csv.enable_context_menu_head": true,
+    "rainbow_csv.enable_context_menu_tail": true,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "alex-linter.noBinary": true,
+    "editor.tabCompletion": "on",
+    "editor.snippetSuggestions": "top"
+}

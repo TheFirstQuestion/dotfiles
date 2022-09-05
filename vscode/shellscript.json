@@ -1,0 +1,7 @@
+{
+  "Strict Mode": {
+    "prefix": ["bash"],
+    "body": ["#!/bin/bash\nset -euo pipefail\nIFS=$'\\\\n\\\\t'\n\n"],
+    "description": "Bash 'strict mode' -- via http://redsymbol.net/articles/unofficial-bash-strict-mode/"
+  }
+}
