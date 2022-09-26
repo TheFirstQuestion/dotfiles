@@ -1,6 +1,4 @@
-#!/bin/bash
-set -euo pipefail
-IFS=$'\n\t'
+source $SOURCE_ALL_FUNCTIONS
 
 diveIntoDir() {
     # Identify git repo
@@ -82,11 +80,11 @@ fi
 
 # Log that we are starting, because it may take a while
 echo "beginning backup to $DESTINATION"
-sh "$DOTFILE_DIR/scripts/keybase-log.sh" "beginning backup to $DESTINATION"
+log "beginning backup to $DESTINATION"
 
 # Call init-archive script on Archive and Destination, to ensure we have the right directories
-sh "$DOTFILE_DIR/scripts/init-archive.sh" "$HOME/Archive"
-sh "$DOTFILE_DIR/scripts/init-archive.sh" "$DESTINATION"
+run_script init-archive "$HOME/Archive"
+run_script init-archive "$DESTINATION"
 echo
 
 # Start recursing
