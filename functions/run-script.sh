@@ -1,6 +1,6 @@
 source $DOTFILE_DIR/functions/keybase-log.sh
-# Make sure scripts are executable
-chmod +x $DOTFILE_DIR/scripts/*
+
+# TODO: on dotbot, make sure all scripts are executable
 
 # General function for running one of my scripts
 # Parameter: the name of the script in dotfiles/scripts/ (without the .sh)
