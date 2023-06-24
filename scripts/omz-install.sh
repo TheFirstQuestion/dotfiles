@@ -2,10 +2,10 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-
 # Ensure zsh exists and is the default shell
 if [[ "$SHELL" != *"zsh"* ]]; then
     echo "Installing ZSH..."
+    # TODO: fix for Fedora
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         sudo apt install -y zsh
     elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -17,7 +17,6 @@ if [[ "$SHELL" != *"zsh"* ]]; then
     echo "Default shell has been changed to ZSH."
 fi
 
-
 # Install Oh-My-Zsh
 if [[ ! -d $HOME/.oh-my-zsh ]]; then
     echo "Installing Oh-My-Zsh..."
@@ -25,14 +24,12 @@ if [[ ! -d $HOME/.oh-my-zsh ]]; then
     echo "Oh-My-Zsh has been installed."
 fi
 
-
 # Install theme
 if [[ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k ]]; then
     echo "Installing theme..."
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
     echo "Powerlevel10k has been installed."
 fi
-
 
 # Install plugins
 if [[ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ]]; then
@@ -51,7 +48,7 @@ if [[ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/git-auto-status ]]; th
 fi
 
 if [[ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/auto-ls-zsh ]]; then
-    git clone https://github.com/rocktimsaikia/auto-ls-zsh.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/auto-ls-zsh
+    git clone https://github.com/desyncr/auto-ls.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/auto-ls-zsh
     echo "Installed auto-ls."
 fi
 

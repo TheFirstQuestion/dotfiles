@@ -82,15 +82,15 @@ I have specific settings and tweaks for my tools that I like. They also (maybe) 
 ### Scripts
 
 - update all of the everything
-  - `run-script update`
+  - `run_script update`
 - log anything to the specific channel in my specific workspace
   - `log <message>`
 - alert me via notification on all my devices
   - `alert <message>`
 - play a beep (helpful to chain after long-ish running commands)
-  - `sleep 10; notify`
+  - `<do something>; notify`
 - initialize my personal folder structure
-  - `run-script init-archive`
+  - `run_script init-archive`
 - make sure all of these dotfiles are up-to-date and properly linked
   - `dotbot`
 
@@ -102,6 +102,11 @@ I have specific settings and tweaks for my tools that I like. They also (maybe) 
 ![usage screenshot](https://raw.githubusercontent.com/TheFirstQuestion/dotfiles/main/screenshot.png)
 
 <!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
+
+### Other Scripts I Use
+
+- [autorandr](https://github.com/phillipberndt/autorandr/) automatically selects a display configuration based on connected devices
+- [tzupdate](https://github.com/cdown/tzupdate) is a fully automated utility to set the system time using geolocation
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

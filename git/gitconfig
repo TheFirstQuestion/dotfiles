@@ -1,11 +1,13 @@
 [user]
-	email = sophieopferman6@gmail.com
-	name = S. G. Opferman
+email = steven.g.opferman@gmail.com
+name = Steven G. Opferman
 [credential]
-	helper = cache --timeout=31536000
+helper = cache --timeout=31536000
 [core]
-	excludesfile = ~/dotfiles/gitignore
+excludesfile = ~/dotfiles/gitignore
 [init]
-	defaultBranch = main
+defaultBranch = main
 [pull]
-	rebase = false
+rebase = false
+[push]
+autoSetupRemote = true

@@ -45,7 +45,15 @@ processFiles() {
 
 # Check that (a) a drive is connected and (b) the computer is charging
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Mint
     for i in /mnt/media/Drive*; do
+        if [ -d "$i" ]; then
+            DESTINATION="$i"
+            break
+        fi
+    done
+    # Fedora
+    for i in /run/media/steven/Drive*; do
         if [ -d "$i" ]; then
             DESTINATION="$i"
             break
@@ -97,5 +105,7 @@ echo
 df -H "$HOME/Archive/" "$DESTINATION"
 echo
 du -hsc $HOME/Archive/* | sort -hr | head -n 10
+
+notify-send 'Backup completed!'
 
 exit 0

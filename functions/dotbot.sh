@@ -2,4 +2,6 @@
 dotbot() {
     git -C "$DOTFILE_DIR" pull origin main
     $DOTFILE_DIR/install --plugin-dir $DOTFILE_DIR/plugins
+    sh ~/dotfiles/scripts/omz-install.sh
+    omz reload
 }

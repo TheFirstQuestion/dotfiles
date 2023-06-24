@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Notify that we've changed display modes
+notify-send -i display "Display Profile Changed" "$AUTORANDR_CURRENT_PROFILE"
+
+# Update wallpapers
+~/.fehbg
+
+# Restart polybar
+sh /home/steven/dotfiles/polybar/launch.sh
+
