@@ -74,6 +74,8 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     done
 fi
 
+# Mount destination
+
 # Confirm that DESTINATION exists and is valid
 if [ ! -d "$DESTINATION" ]; then
     echo 'error: Destination not found'
@@ -100,12 +102,14 @@ echo
 rsync -vhmPCa --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" $HOME/Archive/* "$DESTINATION"
 
 # Print out size information
-echo "\n\nStorage:"
+echo
+echo
+echo "Storage:"
 echo
 df -H "$HOME/Archive/" "$DESTINATION"
 echo
 du -hsc $HOME/Archive/* | sort -hr | head -n 10
 
-notify-send 'Backup completed!'
+notify 'Backup completed!'
 
 exit 0
