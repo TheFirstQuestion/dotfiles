@@ -54,7 +54,9 @@ exec --no-startup-id xset 300 60
 set $refresh_i3status killall -SIGUSR1 i3status
 
 # Set wallpaper on start and restarts
-exec_always --no-startup-id ~/.fehbg 
+exec_always --no-startup-id /home/steven/dotfiles/theme-files/fehbg
+# Start autorandr to detect monitor setup
+exec_always --no-startup-id autorandr --change
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod

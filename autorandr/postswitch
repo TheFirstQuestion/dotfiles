@@ -4,8 +4,7 @@
 notify-send -i display "Display Profile Changed" "$AUTORANDR_CURRENT_PROFILE"
 
 # Update wallpapers
-~/.fehbg
+sh /home/steven/dotfiles/theme-files/fehbg
 
 # Restart polybar
 sh /home/steven/dotfiles/polybar/launch.sh
-

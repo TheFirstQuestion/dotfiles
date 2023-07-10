@@ -2,6 +2,7 @@
     link:
       create: true
       relink: true
+      force: true
 
 - clean: ["~"]
 
@@ -10,13 +11,10 @@
     # Shell stuff
     ~/.zshrc:
       path: zsh/zshrc
-      force: true
     ~/.p10k.zsh:
       path: zsh/p10k.zsh
-      force: true
     ~/.config/terminator/config:
       path: zsh/terminator-config
-      force: true
 
     ~/.gitconfig:
       path: git/gitconfig
@@ -27,27 +25,21 @@
     # Atom
     ~/.atom/config.cson:
       path: atom/config.cson
-      force: true
     ~/.atom/styles.less:
       path: atom/styles.less
-      force: true
     ~/.atom/snippets.cson:
       path: atom/snippets.cson
-      force: true
 
     # VS Code (Mac)
     # ~/Library/Application Support/Code/User/settings.json:
     #   path: vscode/settings.json
-    #   force: true
     # ~/Library/Application Support/Code/User/snippets/global.code-snippets:
     #   path: vscode/global.code-snippets
-    #   force: true
     # ~/Library/Application Support/Code/User/snippets/python.json:
     #   path: vscode/python.json
-    #   force: true
     # ~/Library/Application Support/Code/User/snippets/shellscript.json:
     #   path: vscode/shellscript.json
-    #   force: true
+    #
 
     # Prettier
     ~/.prettierrc.js:
@@ -58,18 +50,21 @@
     # i3
     ~/.config/i3/config:
       path: i3/i3-config
-      force: true
+
     # Polybar
     ~/.config/polybar/config.ini:
       path: polybar/config.ini
-      force: true
     ~/.config/polybar/launch.sh:
       path: polybar/launch.sh
-      force: true
+
+    # feh (wallpaper)
+    ~/.fehbg:
+      path: theme-files/fehbg
+
     # Autorandr
-    ~/.config/autorandr/postswitch:
-      path: autorandr/postswitch
-      force: true
+    ~/.config/autorandr:
+      path: autorandr
+      create: true
 
     # Templates
     ~/Templates/README.md:
@@ -97,3 +92,5 @@
     - command: functions/keybase-log.sh 'dotbotted successfully!'
       description: Logging to Keybase...
       quiet: true
+# TODO: run archive-init script
+# TODO: ensure mode set correctly for executables
