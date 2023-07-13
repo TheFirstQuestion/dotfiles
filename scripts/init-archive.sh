@@ -13,6 +13,8 @@ cd "$rootOfArchive"
 
 # -p = make parent directories as needed
 
+mkdir -p '.backups'
+
 mkdir -p '01 Personal/00 Records/00 Important Documents'
 mkdir -p '01 Personal/00 Records/01 Error Messages'
 mkdir -p '01 Personal/00 Records/02 Confirmation Messages'
@@ -38,6 +40,7 @@ mkdir -p '05 Downloaded Files/Music'
 mkdir -p '05 Downloaded Files/TV Shows'
 mkdir -p '05 Downloaded Files/Websites'
 
+mkdir -p '06 Backups/eBook Annotations'
 mkdir -p '06 Backups/Sessions'
 
 mkdir -p '07 Application Files/Calibre Library'

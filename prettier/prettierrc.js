@@ -6,4 +6,5 @@ module.exports = {
 	singleQuote: false,
 	proseWrap: "never",
 	useTabs: true,
+	arrowParens: "always",
 };

@@ -43,6 +43,20 @@ processFiles() {
 
 ############################## EXECUTION BEGINS HERE #############################
 
+# Confirm that Archive exists and is a valid directory
+if [ ! -d "$HOME/Archive" ]; then
+    echo 'error: ~/Archive not found'
+    exit 1
+fi
+
+# Create the timestamped directory
+timestamp=$(date +"%Y-%m-%d_%P%-I-%M")
+thisBackupLogDir="$HOME/Archive/.backups/${timestamp}"
+mkdir -p "$thisBackupLogDir"
+
+# Redirect output to both terminal and file
+exec > >(tee "${thisBackupLogDir}/00_script_output.txt") 2>&1
+
 # Check that (a) a drive is connected and (b) the computer is charging
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # Mint
@@ -53,6 +67,9 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         fi
     done
     # Fedora
+    # Mount the drive
+    # TODO: make more robust (not throw error if already mounted, mount more drives, etc)
+    udisksctl mount -b /dev/sda1
     for i in /run/media/steven/Drive*; do
         if [ -d "$i" ]; then
             DESTINATION="$i"
@@ -74,17 +91,9 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     done
 fi
 
-# Mount destination
-
 # Confirm that DESTINATION exists and is valid
 if [ ! -d "$DESTINATION" ]; then
     echo 'error: Destination not found'
-    exit 1
-fi
-
-# Confirm that Archive exists and is a valid directory
-if [ ! -d "$HOME/Archive" ]; then
-    echo 'error: ~/Archive not found'
     exit 1
 fi
 
@@ -110,6 +119,41 @@ df -H "$HOME/Archive/" "$DESTINATION"
 echo
 du -hsc $HOME/Archive/* | sort -hr | head -n 10
 
+echo
+echo
+
+# Back up the list of packages installed
+echo 'Backing up package lists...'
+# Packages installed via dnf
+dnf history userinstalled >"${thisBackupLogDir}/package_list.txt"
+echo 'Backed up dnf packages!'
+
+################################################ Conda environments and packages
+source ~/miniconda3/etc/profile.d/conda.sh
+
+# Get the list of Conda environments
+envs=$(conda env list --json | jq -r '.envs[]')
+# Manually adjust the envs list
+envs="${envs//$HOME\/miniconda3/}" # Remove specific path
+envs="${envs// \/miniconda3/}"     # Remove leading space and path
+envs+=" base"                      # Add base environment
+
+# Iterate through each environment
+for env in $envs; do
+    # Extract the environment name from the full path
+    env_name=$(basename "$env")
+
+    # Activate the environment
+    conda activate "$env_name"
+
+    # Export the environment specifications to a YAML file
+    conda env export --name "$env_name" >"${thisBackupLogDir}/conda_environment_${env_name}.yml"
+done
+echo 'Backed up conda envs!'
+
+echo 'Done backing up package lists!'
+
 notify 'Backup completed!'
+# TODO: send log files to Keybase
 
 exit 0

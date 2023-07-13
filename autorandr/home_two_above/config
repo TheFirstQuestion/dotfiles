@@ -24,7 +24,7 @@ x-prop-non_desktop 0
 output eDP-1
 crtc 1
 mode 1920x1200
-pos 2520x0
+pos 3360x0
 rate 60.00
 x-prop-broadcast_rgb Automatic
 x-prop-colorspace Default
