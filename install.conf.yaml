@@ -75,7 +75,7 @@
       path: templates/env
 
     # Firefox
-    ~/home/steven/.cache/mozilla/firefox/0uo64nlk.default-release/chrome/userChrome.css:
+    ~/.mozilla/firefox/0uo64nlk.default-release/chrome/userChrome.css:
       path: firefox/userChrome.css
 
 - shell:

@@ -1,2 +1,2 @@
 #!/bin/sh
-feh --no-fehbg --bg-scale '/home/steven/dotfiles/assets/spiderman_artwork.jpg' '/home/steven/dotfiles/assets/spidey_sense.jpg' '/home/steven/dotfiles/assets/spiderman_miles_swinging.jpg'
+feh --no-fehbg --bg-scale '/home/steven/dotfiles/assets/spiderman_artwork.jpg' '/home/steven/dotfiles/assets/spidey_sense.png' '/home/steven/dotfiles/assets/spiderman_miles_swinging.jpg'

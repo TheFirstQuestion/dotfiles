@@ -1,83 +1,132 @@
+/* Hide the right-side tab arrow */
+#alltabs-button {
+	display: none;
+}
+
+/* Completely hide the "title changed" notification dot on pinned tabs (https://support.mozilla.org/en-US/questions/1181537) */
+.tabbrowser-tab > .tab-stack > .tab-content[pinned][titlechanged] {
+	background-image: none !important;
+}
+
+/* Remove space between pinned and unpinned tabs */
+#tabbrowser-tabs[haspinnedtabs]:not([positionpinnedtabs]) > #tabbrowser-arrowscrollbox > .tabbrowser-tab[first-visible-unpinned-tab] {
+  margin-inline-start: 0 !important;;
+}
+
+.browser-toolbar {
+	background-color: #111 !important;
+}
+
+
+#nav-bar-customization-target > :is(toolbarbutton, toolbaritem):first-child, #nav-bar-customization-target > :is(toolbarbutton, toolbaritem):last-child {
+	padding-inline-start: 0 !important;
+}
+
+#tracking-protection-icon-container {
+	display: none
+}
+
+#TabsToolbar {
+  --toolbarbutton-inner-padding: 0 !important;;
+}
+
+#tabbrowser-arrowscrollbox-periphery {
+	display: none
+}
+
+
+.tab-close-button {
+	height: 15px !important;
+	width: 15px !important;
+	padding: 2px !important;
+}
+
+.tabbrowser-tab {
+	padding: 0 !important;
+}
+
+/* Active tab */
+.tab-background[selected="true"] {
+	background-color: #333 !important;
+	background-image: none !important;
+}
+
+
+/* Inactive tabs */
+.tab-background {
+	border-radius: var(--user-tab-rounding) var(--user-tab-rounding) 0px 0px !important;
+	margin-block: 0 0 !important;
+	border-right: 1px solid #222 !important;
+	padding-left: 0 !important;
+}
+
+/* Inactive tabs hover */
+.tabbrowser-tab:hover > .tab-stack > .tab-background {
+	background-color: #2d2d2d !important;
+}
+
+
+/*** Tighten up drop-down/context/popup menu spacing (8 Sep 2021) ***/
+
+menupopup:not(.in-menulist) > menuitem,
+menupopup:not(.in-menulist) > menu {
+	padding-block: 1px !important; /* reduce to 3px, 2px, 1px or 0px as needed */
+	min-height: unset !important; /* v92.0 - for padding below 4px */
+}
+:root {
+	--arrowpanel-menuitem-padding: 4px 8px !important;
+}
+
+/*** Remove from image context menu ***/
+#context-sendimage {
+	display: none !important;
+}
+
+/*
+ * Makes the bookmarks bar slide down on hover or when menubar is enabled.
+ * https://github.com/Timvde/UserChrome-Tweaks/blob/master/toolbars/sliding-bookmarks-bar.css
+ */
+
+/*############################################ Cute Fox Background on Errors ############################################ */
+/* Source: https://github.com/GranTurismo364/Firefox-Custom-Error-Screen */
+/* Not sure how to test this, so may not be working (7-13-23) */
+
 /* DNS Not Found */
 .dnsNotFound #errorPageContainer {
-	background-image: url("/home/steven/dotfiles/assets/fox.png") !important;
+	background-image: url("/home/steven/dotfiles/assets/fox-question.png") !important;
 	background-position: center !important;
 	background-size: auto 300px !important;
 	background-repeat: no-repeat !important;
-	font-family: "font" !important;
 }
-
-testinggggg
 
 /* Page Not Found */
 .connectionFailure #errorPageContainer {
-	background-image: url("/home/steven/dotfiles/assets/fox_question.png") !important;
+	background-image: url("/home/steven/dotfiles/assets/fox-question.png") !important;
 	background-position: center !important;
 	background-size: auto 300px !important;
 	background-repeat: no-repeat !important;
-	font-family: "font" !important;
 }
 
 /* Connection Timed Out */
 .netTimeout #errorPageContainer {
-	background-image: url("/home/steven/dotfiles/assets/fox_question.png") !important;
+	background-image: url("/home/steven/dotfiles/assets/fox-question.png") !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 	background-size: auto 300px !important;
-	font-family: "font" !important;
 }
 
 /* Restricted Address */
 .neterror #errorPageContainer {
-	background-image: url("/home/steven/dotfiles/assets/fox_question.png") !important;
+	background-image: url("/home/steven/dotfiles/assets/fox-question.png") !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 	background-size: auto 300px !important;
-	font-family: "font" !important;
 }
 
 /* HTTPS-Only Mode Alert*/
 html body main.container {
-	background-image: url("/home/steven/dotfiles/assets/fox_exclamation.png") !important;
+	background-image: url("/home/steven/dotfiles/assets/fox-exclamation.png") !important;
 	background-position: center !important;
 	background-repeat: no-repeat !important;
 	background-size: auto 425px !important;
-	font-family: "font" !important;
-}
-
-.title > h2 {
-	font-style: italic !important;
-}
-
-/* Buttons */
-button.try-again {
-	background-color: #040628 !important;
-	border-color: white !important;
-	border-width: 1px !important;
-	border-radius: 12px !important;
-	color: white !important;
-}
-
-/* Buttons for HTTPS-Only Mode Alert */
-#openInsecure {
-	border-radius: 12px !important;
-	border-color: #1c1b22 !important;
-	border-width: 2px !important;
-	background-color: #040628 !important;
-}
-#goBack {
-	border-radius: 12px !important;
-	background-color: transparent !important;
-	border-color: white !important;
-	border-width: 1px !important;
-	color: white !important;
-}
-
-#goBack:focus {
-	outline: none !important;
-}
-
-/* Titles */
-.title-text {
-	text-transform: uppercase !important;
 }
