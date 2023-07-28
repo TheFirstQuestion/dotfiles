@@ -12,12 +12,15 @@
 # $mod is windows key
 set $mod Mod4
 
+# more elegant way of doing proper exec (via https://www.reddit.com/r/i3wm/comments/k8m4k4/comment/gezekkf/)
+set $exec exec --no-startup-id
+
 # Font for window titles. Will also be used by the bar unless a different font is used in the bar {} block below.
 font pango:DejaVu Sans Mono 8
 
 # Start XDG autostart .desktop files using dex. See also
 # https://wiki.archlinux.org/index.php/XDG_Autostart
-exec --no-startup-id dex-autostart --autostart --environment i3
+$exec dex-autostart --autostart --environment i3
 
 # Default mode is stacking vertically
 # via https://unix.stackexchange.com/a/213524 
@@ -27,14 +30,6 @@ default_orientation vertical
 
 # Hide container borders adjacent to the screen edges
 hide_edge_borders both
-
-
-# Navigate to adjacent (active) workspaces
-bindsym $mod+Control+Right workspace next_on_output
-bindsym $mod+Control+Left workspace prev_on_output
-# Move container to adjacent workspaces
-bindsym $mod+Control+Shift+Right move container to workspace next
-bindsym $mod+Control+Shift+Left move container to workspace prev
 
 
 # reload the configuration file
@@ -49,16 +44,16 @@ bindsym XF86PowerOff exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the screen before suspend.
 # Dim the screen after 5 minutes of inactivity, lock the screen 1 minute later (doesn't actually work...)
-exec --no-startup-id xset 300 60
-# exec --no-startup-id xss-lock --notifier "/home/steven/.config/i3/dim-screen.sh" --transfer-sleep-lock -- i3lock --nofork -i "/home/steven/dotfiles/assets/arc_reactor.png"
+$exec xset 300 60
+# $exec xss-lock --notifier "/home/steven/.config/i3/dim-screen.sh" --transfer-sleep-lock -- i3lock --nofork -i "/home/steven/dotfiles/assets/arc_reactor.png"
 set $refresh_i3status killall -SIGUSR1 i3status
 
 # Set wallpaper on start and restarts
-exec_always --no-startup-id /home/steven/dotfiles/theme-files/fehbg
+exec_always --no-startup-id ~/dotfiles/theme-files/fehbg
 # Start autorandr to detect monitor setup
 exec_always --no-startup-id autorandr --change
 # Start polybar
-exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+exec_always --no-startup-id ~/dotfiles/polybar/launch.sh
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -103,14 +98,14 @@ bindsym $mod+e layout toggle split
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
 
-# change focus between tiling / floating windows
-#bindsym $mod+space focus mode_toggle
-
 # focus the parent container
 bindsym $mod+a focus parent
 
-# focus the child container
-#bindsym $mod+d focus child
+# Scratchpad
+# Make the currently focused window a scratchpad
+bindsym $mod+Shift+h move scratchpad
+# Bring back the first scratchpad window
+bindsym $mod+Ctrl+h scratchpad show floating toggle
 
 # Define names for default workspaces for which we configure key bindings later on.
 set $ws1 "1"
@@ -148,6 +143,24 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
+# Navigate to adjacent (active) workspaces
+bindsym $mod+Control+Right workspace next_on_output
+bindsym $mod+Control+Left workspace prev_on_output
+# Move container to adjacent workspaces
+bindsym $mod+Control+Shift+Right move container to workspace next
+bindsym $mod+Control+Shift+Left move container to workspace prev
+
+# open new workspace
+bindsym $mod+Control+Up $exec ~/dotfiles/assets/next_available_ws.sh
+# move container to new window
+bindsym $mod+Control+Shift+Up $exec ~/dotfiles/assets/next_available_ws.sh -m  
+
+
+# Caps Lock indicator (via https://www.reddit.com/r/i3wm/comments/k8m4k4/comment/gf2lppd/)
+mode "CAPS" {
+    bindsym Caps_Lock mode "default"
+}
+bindsym Caps_Lock mode "CAPS"
 
 
 
@@ -199,21 +212,21 @@ set $statussig SIGUSR1
 # Amount to increase/decrease volume (percentage)
 set $volumestep 5
 
-bindsym XF86AudioRaiseVolume exec --no-startup-id $volumepath/volume -n up $volumestep && $refresh_i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id $volumepath/volume -n down $volumestep && $refresh_i3status
-bindsym XF86AudioMute exec --no-startup-id $volumepath/volume -n mute && $refresh_i3status
+bindsym XF86AudioRaiseVolume $exec $volumepath/volume -n up $volumestep && $refresh_i3status
+bindsym XF86AudioLowerVolume $exec $volumepath/volume -n down $volumestep && $refresh_i3status
+bindsym XF86AudioMute $exec $volumepath/volume -n mute && $refresh_i3status
 
 
 ################## Brightness Controls
 # via https://cialu.net/brightness-control-not-work-i3wm/ 
 # and https://www.reddit.com/r/i3wm/comments/fltp82/nicer_brightness_control/
-bindsym XF86MonBrightnessUp exec --no-startup-id light -S "$(light -G | awk '{ print int(($1 + .72) * 1.4) }')" && notify-send "brightness up";
-bindsym XF86MonBrightnessDown exec --no-startup-id light -S "$(light -G | awk '{ print int($1 / 1.4) }')" && notify-send "brightness down";
+bindsym XF86MonBrightnessUp $exec light -S "$(light -G | awk '{ print int(($1 + .72) * 1.4) }')" && notify-send "brightness up";
+bindsym XF86MonBrightnessDown $exec light -S "$(light -G | awk '{ print int($1 / 1.4) }')" && notify-send "brightness down";
 
 
 # Start Dropbox daemon
 # via https://www.reddit.com/r/i3wm/comments/3p3y2p/dropbox_in_i3/
-exec --no-startup-id dbxcli
+$exec dbxcli
 
 
 # Screenshot keyboard shortcuts
@@ -228,17 +241,17 @@ bindsym --release Shift+Print exec scrot -s 'screenshot_%Y-%m-%d_%H-%M-%S.png' -
 
 # Start the battery notification script
 # https://github.com/archStant/i3wm-Battery-Notifications
-exec --no-startup-id i3-battery-notification
+$exec i3-battery-notification
 
 
 # xinput settings
 # Touchpad: tap to click
-exec --no-startup-id xinput set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 316 1
+$exec xinput set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 316 1
 
 # Enable custom keyboard shortcuts
-exec --no-startup-id xbindkeys -p
+$exec xbindkeys -p
 # Turn on numlock
-exec --no-startup-id numlockx on
+$exec numlockx on
 
 
 ############################# Rules for specific applications ##########################
