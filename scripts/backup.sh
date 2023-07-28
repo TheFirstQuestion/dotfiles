@@ -50,8 +50,7 @@ if [ ! -d "$HOME/Archive" ]; then
 fi
 
 # Create the timestamped directory
-timestamp=$(date +"%Y-%m-%d_%P%-I-%M")
-thisBackupLogDir="$HOME/Archive/.backups/${timestamp}"
+thisBackupLogDir="$HOME/Archive/.backups/$(timestamp)"
 mkdir -p "$thisBackupLogDir"
 
 # Redirect output to both terminal and file

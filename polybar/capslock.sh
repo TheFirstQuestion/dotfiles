@@ -11,7 +11,7 @@ get_capslock_status() {
 # Function to check the status of the Num Lock key
 get_numlock_status() {
   num_status=$(xset q | grep "Num Lock:" | awk '{print $8}')
-  if [ "$num_status" = "on" ]; then
+  if [ "$num_status" = "off" ]; then
     echo -n "No Num! "
   fi
 }

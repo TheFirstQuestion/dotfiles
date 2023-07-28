@@ -5,6 +5,9 @@
 ####################################################################
 
 
+########################### VS Code ###########################
+*.code-workspace
+
 
 ########################### Node ###########################
 # Optional npm cache directory
@@ -113,6 +116,7 @@ google-services.json
 ########################## macOS ##########################
 # General
 .DS_Store
+__MACOSX/
 .AppleDouble
 .LSOverride
 # Thumbnails

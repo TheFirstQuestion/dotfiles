@@ -72,7 +72,6 @@ bindsym $mod+KP_Enter exec i3-sensible-terminal
 bindsym $mod+Shift+q kill
 
 # A more modern dmenu replacement is rofi:
-bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 bindsym $mod+space exec "rofi -modi drun,run -show drun"
 
 # change focus
@@ -176,9 +175,9 @@ bindsym $mod+r mode "resize"
 
 
 # class                 border  bground text    indicator child_border
-client.focused          #000011 #888888 #000000 #000011   #000011
-client.focused_inactive #8C8C8C #666666 #FFFFFF #4C4C4C   #8C8C8C
-client.unfocused        #4C4C4C #222222 #888888 #292D2E   #222222
+client.focused          #000000 #888888 #000000 #000011   #000000
+client.focused_inactive #000000 #666666 #000000 #4C4C4C   #000000
+client.unfocused        #000000 #444444 #888888 #292D2E   #222222
 client.urgent           #EC69A0 #ffaaaa #FFFFFF #DB3279   #DB3279
 client.placeholder      #000000 #333333 #FFFFFF #000000   #0C0C0C
 
@@ -247,5 +246,5 @@ exec --no-startup-id numlockx on
 for_window [class="zoom"] floating enable
 
 # Terminal split
-bindsym Control+D [class="Terminator"] split h; exec i3-sensible-terminal
-bindsym Control+Shift+D [class="Terminator"] split v; exec i3-sensible-terminal
+bindsym --release Control+D [class="Terminator"] split h; exec terminator --working-directory $(xdotool getwindowfocus getwindowname | sed 's/[^:]*://')
+bindsym --release Control+Shift+D [class="Terminator"] split v; exec terminator --working-directory $(xdotool getwindowfocus getwindowname | sed 's/[^:]*://')
