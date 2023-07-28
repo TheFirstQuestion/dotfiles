@@ -67,7 +67,7 @@ bindsym $mod+KP_Enter exec terminator
 bindsym $mod+Shift+q kill
 
 # A more modern dmenu replacement is rofi:
-bindsym $mod+space exec "rofi -modi drun,run -show drun"
+bindsym $mod+space exec "rofi -modi drun,calc -show drun"
 
 # change focus
 bindsym $mod+Left focus left

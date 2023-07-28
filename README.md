@@ -107,6 +107,7 @@ I have specific settings and tweaks for my tools that I like. They also (maybe) 
 
 - [autorandr](https://github.com/phillipberndt/autorandr/) automatically selects a display configuration based on connected devices
 - [tzupdate](https://github.com/cdown/tzupdate) is a fully automated utility to set the system time using geolocation
+- [rofi-calc](https://github.com/svenstaro/rofi-calc) does live calculations in rofi
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
