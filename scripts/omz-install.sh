@@ -57,4 +57,24 @@ if [[ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/autoupdate ]]; then
     echo "Installed plugin autoupdate."
 fi
 
+if [[ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-safe-rm ]]; then
+    git clone https://github.com/mattmc3/zsh-safe-rm.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-safe-rm
+    echo "Installed safe-rm."
+fi
+
+if [[ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-better-npm-completion ]]; then
+    git clone https://github.com/lukechilds/zsh-better-npm-completion.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-better-npm-completion
+    echo "Installed better-npm-completion."
+fi
+
+if [[ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/conda-zsh-completion ]]; then
+    git clone https://github.com/esc/conda-zsh-completion.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/conda-zsh-completion
+    echo "Installed conda-zsh-completion."
+fi
+
+if [[ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-extract ]]; then
+    git clone https://github.com/le0me55i/zsh-extract.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-extract
+    echo "Installed zsh-extract."
+fi
+
 echo "Your terminal is ready to go!"

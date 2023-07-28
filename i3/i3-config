@@ -64,9 +64,9 @@ exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec terminator
 # KP_Enter is the numpad enter
-bindsym $mod+KP_Enter exec i3-sensible-terminal
+bindsym $mod+KP_Enter exec terminator
 
 # kill focused window
 bindsym $mod+Shift+q kill

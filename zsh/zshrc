@@ -85,10 +85,18 @@ plugins=(
     git-auto-status
     z
     autoupdate
+    npm
+    sudo
+    zsh-safe-rm
+    zsh-better-npm-completion
+    conda-zsh-completion
+    extract
 )
 source $ZSH/plugins/auto-ls-zsh/auto-ls.zsh
 
 source $ZSH/oh-my-zsh.sh
+
+autoload -U compinit && compinit
 
 # User configuration
 export MANPATH="/usr/local/man:$MANPATH"
