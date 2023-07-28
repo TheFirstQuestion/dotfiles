@@ -50,6 +50,9 @@
     # i3
     ~/.config/i3/config:
       path: i3/i3-config
+    # xbindkeys (custom keyboard shortcuts)
+    ~/.xbindkeysrc:
+      path: i3/xbindkeys
 
     # Polybar
     ~/.config/polybar/config.ini:

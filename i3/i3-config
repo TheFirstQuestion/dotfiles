@@ -57,12 +57,16 @@ set $refresh_i3status killall -SIGUSR1 i3status
 exec_always --no-startup-id /home/steven/dotfiles/theme-files/fehbg
 # Start autorandr to detect monitor setup
 exec_always --no-startup-id autorandr --change
+# Start polybar
+exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
+# KP_Enter is the numpad enter
+bindsym $mod+KP_Enter exec i3-sensible-terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -181,8 +185,7 @@ client.placeholder      #000000 #333333 #FFFFFF #000000   #0C0C0C
 client.background       #FFFFFF
 
 
-# Start polybar
-exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+
 
 ################## Volume control (via i3-volume)
 
@@ -232,6 +235,12 @@ exec --no-startup-id i3-battery-notification
 # xinput settings
 # Touchpad: tap to click
 exec --no-startup-id xinput set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 316 1
+
+# Enable custom keyboard shortcuts
+exec --no-startup-id xbindkeys -p
+# Turn on numlock
+exec --no-startup-id numlockx on
+
 
 ############################# Rules for specific applications ##########################
 # Zoom
