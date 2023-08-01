@@ -16,7 +16,6 @@
     },
     "python.defaultInterpreterPath": "~/miniconda3/bin/python",
     "window.zoomLevel": 0.6,
-    "explorer.compactFolders": false,
     "explorer.decorations.badges": false,
     "breadcrumbs.enabled": false,
     "json.format.keepLines": true,
@@ -113,7 +112,6 @@
         "reportMissingModuleSource": "none"
     },
     "workbench.editor.restoreViewState": false,
-    "window.restoreFullscreen": true,
     "window.restoreWindows": "none",
     "explorer.confirmDragAndDrop": false,
     "extensions.ignoreRecommendations": true,
@@ -136,5 +134,20 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "window.menuBarVisibility": "toggle",
-    "explorer.confirmDelete": false
+    "explorer.confirmDelete": false,
+    "git.alwaysShowStagedChangesResourceGroup": true,
+    "git.enableStatusBarSync": false,
+    "git.openRepositoryInParentFolders": "always",
+    "explorer.autoReveal": "focusNoScroll",
+    "explorer.compactFolders": false,
+    "terminal.explorerKind": "external",
+    "cSpell.autoFormatConfigFile": true,
+    "cSpell.noConfigSearch": true,
+    "search.smartCase": true,
+    "scm.inputFontSize": 15,
+    "terminal.external.linuxExec": "Terminator",
+    "window.newWindowDimensions": "maximized",
+    "window.customMenuBarAltFocus": false,
+    "window.commandCenter": true,
+    "workbench.settings.openDefaultSettings": true,
 }
