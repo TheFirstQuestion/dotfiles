@@ -2,7 +2,6 @@
     link:
       create: true
       relink: true
-      force: true
 
 - clean: ["~"]
 
@@ -30,16 +29,13 @@
     ~/.atom/snippets.cson:
       path: atom/snippets.cson
 
-    # VS Code (Mac)
-    # ~/Library/Application Support/Code/User/settings.json:
-    #   path: vscode/settings.json
-    # ~/Library/Application Support/Code/User/snippets/global.code-snippets:
-    #   path: vscode/global.code-snippets
-    # ~/Library/Application Support/Code/User/snippets/python.json:
-    #   path: vscode/python.json
-    # ~/Library/Application Support/Code/User/snippets/shellscript.json:
-    #   path: vscode/shellscript.json
-    #
+    # VSCode
+    ~/.config/VSCodium/User/snippets:
+      path: vscode/snippets
+    ~/.config/VSCodium/User/settings.json:
+      path: vscode/settings.json
+    ~/.config/VSCodium/User/keybindings.json:
+      path: vscode/keybindings.json
 
     # Prettier
     ~/.prettierrc.js:
@@ -56,7 +52,6 @@
     # xbindkeys (custom keyboard shortcuts)
     ~/.xbindkeysrc:
       path: i3/xbindkeys
-    
 
     # Polybar
     ~/.config/polybar/config.ini:

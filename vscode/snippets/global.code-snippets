@@ -1,0 +1,10 @@
+{
+  "Long Comment Line": {
+    "prefix": [ "long_comment_line" ],
+    "body": [ "$BLOCK_COMMENT_START ########################### $1 ########################## $BLOCK_COMMENT_END", "" ],
+  },
+  "Config Box": {
+    "prefix": [ "config_box_constants" ],
+    "body": [ "$BLOCK_COMMENT_START ########################### Config ########################## $BLOCK_COMMENT_END", "$1", "$BLOCK_COMMENT_START ############################################################# $BLOCK_COMMENT_END", "" ],
+  },
+}

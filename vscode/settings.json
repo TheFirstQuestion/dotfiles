@@ -3,18 +3,18 @@
     "workbench.startupEditor": "welcomePageInEmptyWorkbench",
     "files.autoSave": "afterDelay",
     "editor.fontSize": 18,
-    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrap": "on",
     "editor.formatOnSave": true,
     "terminal.external.osxExec": "iTerm2.app",
-    "editor.fontFamily": "MesloLGF NF, Menlo, Monaco, 'Courier New', monospace",
+    "editor.fontFamily": "FontAwesome, MesloLGF NF, Menlo, Monaco, 'Courier New', monospace",
     "terminal.integrated.fontSize": 16,
     "update.showReleaseNotes": false,
-    "workbench.colorTheme": "An Old Hope",
+    "workbench.colorTheme": "Blackboard Pro",
     "files.exclude": {
         "**.pdf": true,
         "**/.ipynb_checkpoints": true
     },
-    "python.defaultInterpreterPath": "/Users/smac/opt/miniconda3/bin/python",
+    "python.defaultInterpreterPath": "~/miniconda3/bin/python",
     "window.zoomLevel": 0.6,
     "explorer.compactFolders": false,
     "explorer.decorations.badges": false,
@@ -134,5 +134,7 @@
     },
     "[scss]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }
+    },
+    "window.menuBarVisibility": "toggle",
+    "explorer.confirmDelete": false
 }

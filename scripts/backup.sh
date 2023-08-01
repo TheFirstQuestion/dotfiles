@@ -109,15 +109,6 @@ echo
 # diveIntoDir "$HOME/Archive"
 rsync -vhmPCa --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" $HOME/Archive/* "$DESTINATION"
 
-# Print out size information
-echo
-echo
-echo "Storage:"
-echo
-df -H "$HOME/Archive/" "$DESTINATION"
-echo
-du -hsc $HOME/Archive/* | sort -hr | head -n 10
-
 echo
 echo
 
@@ -126,6 +117,9 @@ echo 'Backing up package lists...'
 # Packages installed via dnf
 dnf history userinstalled >"${thisBackupLogDir}/package_list.txt"
 echo 'Backed up dnf packages!'
+
+# Packages installed via pip
+pip freeze >"${thisBackupLogDir}/pip_packages.txt"
 
 ################################################ Conda environments and packages
 source ~/miniconda3/etc/profile.d/conda.sh
@@ -151,6 +145,18 @@ done
 echo 'Backed up conda envs!'
 
 echo 'Done backing up package lists!'
+
+echo
+echo
+
+# Print out size information
+echo
+echo
+echo "Storage:"
+echo
+df -H "$HOME/Archive/" "$DESTINATION"
+echo
+du -hsc $HOME/Archive/* | sort -hr | head -n 10
 
 notify 'Backup completed!'
 # TODO: send log files to Keybase

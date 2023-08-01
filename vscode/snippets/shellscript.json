@@ -1,0 +1,8 @@
+{
+  // via http://redsymbol.net/articles/unofficial-bash-strict-mode/
+  "Strict Mode": {
+    "prefix": [ "bash" ],
+    "body": [ "#!/bin/bash", "set -euo pipefail", "IFS=$'\\\\n\\\\t'", "", "" ],
+    "description": "Bash 'strict mode'"
+  }
+}

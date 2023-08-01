@@ -159,6 +159,7 @@ bindsym $mod+Control+Shift+Up $exec ~/dotfiles/assets/next_available_ws.sh -m
 # Caps Lock indicator (via https://www.reddit.com/r/i3wm/comments/k8m4k4/comment/gf2lppd/)
 mode "CAPS" {
     bindsym Caps_Lock mode "default"
+    bindsym Escape mode "default"
 }
 bindsym Caps_Lock mode "CAPS"
 

@@ -1,0 +1,38 @@
+{
+	"Function-Style React Component": {
+		"prefix": "component",
+		"body": [
+			"import React from \"react\";",
+			"",
+			"export default function ${1:ComponentName}({${2:props}}) {",
+			"\t$0",
+			"",
+			"\treturn <div className='$1'>$1</div>",
+			"}",
+		],
+		"description": "Create a function-style React component",
+		"scope": "javascript, javascriptreact",
+		"isFileTemplate": true
+	},
+
+	"useState Hook": {
+		"prefix": "useState",
+		// transformations work when used outside of the placeholder, but not directly within it
+		"body": [
+			"const [${1:varName}, set${1/(.*)/${1:/capitalize}/}] = useState(${2:initialValue});"
+		],
+		"description": "useState hook with set function",
+		"scope": "javascript, javascriptreact"
+	},
+
+	"useEffect Hook": {
+		"prefix": "useEffect",
+		"body": [
+			"useEffect(() => {",
+			"\t${0:/* Do stuff */}",
+			"}, [${1:dependencies}]);"
+		],
+		"description": "useEffect hook with dependency array",
+		"scope": "javascript, javascriptreact"
+	}
+}
