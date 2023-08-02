@@ -1,5 +1,11 @@
 source $SOURCE_ALL_FUNCTIONS
 
+# Color codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
 diveIntoDir() {
     # Identify git repo
     if [[ $(git -C "$1" status 2>/dev/null) ]]; then
@@ -45,7 +51,7 @@ processFiles() {
 
 # Confirm that Archive exists and is a valid directory
 if [ ! -d "$HOME/Archive" ]; then
-    echo 'error: ~/Archive not found'
+    echo -e "${RED}error: ~/Archive not found${NC}"
     exit 1
 fi
 
@@ -92,12 +98,12 @@ fi
 
 # Confirm that DESTINATION exists and is valid
 if [ ! -d "$DESTINATION" ]; then
-    echo 'error: Destination not found'
+    echo -e "${RED}error: Destination not found${NC}"
     exit 1
 fi
 
 # Log that we are starting, because it may take a while
-echo "beginning backup to $DESTINATION"
+echo -e "${GREEN}beginning backup to $DESTINATION...${NC}"
 log "beginning backup to $DESTINATION"
 
 # Call init-archive script on Archive and Destination, to ensure we have the right directories
@@ -112,30 +118,25 @@ echo
 echo
 
 # Copy .config directory, in case I mess something up with my dotfiles
-echo 'Copying .config...'
 rsync -vhmPCa --exclude '*[Cc][Aa][Cc][Hh][Ee]*' --exclude="*google-chrome/*" --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" $HOME/.config/* "$thisBackupLogDir/dot_config"
-echo
+echo '✔ Copied .config!'
 # Copy ~/.local/share/applications, which holds .desktop files to integrate applications into rofi
-echo 'Copying .desktop files...'
 rsync -vhmPCa --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" $HOME/.local/share/applications/* "$thisBackupLogDir/local_share_applications"
-echo
+echo '✔ Copied .desktop files!'
 # Copy .zsh_history, in case I did some command that I don't remember
-echo 'Copying zsh history...'
 rsync -vhmPCa "$HOME/.zsh_history" "$thisBackupLogDir/zsh_history"
-echo 'Done!'
+echo '✔ Copied zsh history!'
 
 echo
 echo
 
 # Back up the list of packages installed
-echo 'Backing up package lists...'
+echo -e "${GREEN}Backing up package lists...${NC}"
 # Packages installed via dnf
-dnf history userinstalled >"${thisBackupLogDir}/dnf_package_list.txt"
-echo 'Backed up dnf packages!'
+dnf history userinstalled >"${thisBackupLogDir}/dnf_package_list.txt" && echo '✔ Backed up dnf packages!'
 
 # Packages installed via pip
-pip freeze >"${thisBackupLogDir}/pip_packages.txt"
-echo 'Backed up pip packages!'
+pip freeze >"${thisBackupLogDir}/pip_packages.txt" && echo '✔ Backed up pip packages!'
 
 ################################################ Conda environments and packages
 source ~/miniconda3/etc/profile.d/conda.sh
@@ -154,19 +155,9 @@ for env in $envs; do
     # Export the environment specifications to a YAML file
     conda env export --name "$env_name" >"${thisBackupLogDir}/conda_environment_${env_name}.yml"
 done
-echo 'Backed up conda envs!'
+echo '✔ Backed up conda envs!'
 
-echo 'Done backing up package lists!'
-
-echo
-echo
-
-# Copy this backup folder
-echo 'Copying backup folder!'
-rsync -vhmPCa --exclude '*[Cc][Aa][Cc][Hh][Ee]*' --exclude="*google-chrome/*" --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" "$thisBackupLogDir" $DESTINATION/.backups/
-
-echo
-echo
+echo -e "${GREEN}Backed up package lists${NC}"
 
 # Print out size information
 echo
@@ -177,7 +168,20 @@ df -H "$HOME/Archive/" "$DESTINATION"
 echo
 du -hsc $HOME/Archive/* | sort -hr | head -n 10
 
+echo
+echo
+
+# Copy this backup folder
+echo -e "${GREEN}Copying backup folder...${NC}"
+rsync -vhmPCa --exclude '*[Cc][Aa][Cc][Hh][Ee]*' --exclude="*google-chrome/*" --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" "$thisBackupLogDir" $DESTINATION/.backups/
+echo -e "${GREEN}Copied backup folder${NC}"
+echo
+echo
+
 notify 'Backup completed!'
+
+echo 'Backup completed!'
+echo "👉😎👉"
 # TODO: send log files to Keybase
 
 exit 0
