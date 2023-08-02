@@ -4,5 +4,10 @@
     "prefix": [ "bash" ],
     "body": [ "#!/bin/bash", "set -euo pipefail", "IFS=$'\\\\n\\\\t'", "", "" ],
     "description": "Bash 'strict mode'"
-  }
+  },
+  "Source Custom Functions": {
+    "prefix": [ "source" ],
+    "body": [ "source \\$SOURCE_ALL_FUNCTIONS", "", "$0" ],
+    "description": "Source all my custom functions so they are available in a script"
+  },
 }

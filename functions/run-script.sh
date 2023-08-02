@@ -1,5 +1,3 @@
-source $DOTFILE_DIR/functions/keybase-log.sh
-
 # TODO: on dotbot, make sure all scripts are executable
 
 # General function for running one of my scripts
@@ -7,6 +5,7 @@ source $DOTFILE_DIR/functions/keybase-log.sh
 run_script() {
   # pass along all the arguments except for $0 ("run-script") and $1 (name of the script)
   log "$1 script started..."
+  chmod +x "$DOTFILE_DIR/scripts/$1.sh"
   "$DOTFILE_DIR/scripts/$1.sh" "${@:2}" && log "$1 script finished successfully" || log "$1 script FAILED"
 }
 
@@ -29,5 +28,8 @@ _scripts_autocomplete() {
     COMPREPLY+=($(basename "${file}" .sh))
   done
 }
-# Call our custom function to tab-complete when typing run_script
-complete -F _scripts_autocomplete run_script
+
+# Call our custom function to tab-complete when typing run_script, only if the script is running in an interactive shell (not being sourced init-env-vars)
+if [[ -z "$SCRIPT_SOURCED" ]]; then
+  complete -F _scripts_autocomplete run_script
+fi

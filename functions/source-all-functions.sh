@@ -1,4 +1,3 @@
-# Add all functions to scope
 # (loop necessary bc source doesn't do wildcards)
 
 for thisFilePath in $DOTFILE_DIR/functions/*; do
