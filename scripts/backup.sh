@@ -106,8 +106,23 @@ run_script init-archive "$DESTINATION"
 echo
 
 # Start recursing
-# diveIntoDir "$HOME/Archive"
 rsync -vhmPCa --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" $HOME/Archive/* "$DESTINATION"
+
+echo
+echo
+
+# Copy .config directory, in case I mess something up with my dotfiles
+echo 'Copying .config...'
+rsync -vhmPCa --exclude '*[Cc][Aa][Cc][Hh][Ee]*' --exclude="*google-chrome/*" --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" $HOME/.config/* "$thisBackupLogDir/dot_config"
+echo
+# Copy ~/.local/share/applications, which holds .desktop files to integrate applications into rofi
+echo 'Copying .desktop files...'
+rsync -vhmPCa --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" $HOME/.local/share/applications/* "$thisBackupLogDir/local_share_applications"
+echo
+# Copy .zsh_history, in case I did some command that I don't remember
+echo 'Copying zsh history...'
+rsync -vhmPCa "$HOME/.zsh_history" "$thisBackupLogDir/zsh_history"
+echo 'Done!'
 
 echo
 echo
@@ -115,11 +130,12 @@ echo
 # Back up the list of packages installed
 echo 'Backing up package lists...'
 # Packages installed via dnf
-dnf history userinstalled >"${thisBackupLogDir}/package_list.txt"
+dnf history userinstalled >"${thisBackupLogDir}/dnf_package_list.txt"
 echo 'Backed up dnf packages!'
 
 # Packages installed via pip
 pip freeze >"${thisBackupLogDir}/pip_packages.txt"
+echo 'Backed up pip packages!'
 
 ################################################ Conda environments and packages
 source ~/miniconda3/etc/profile.d/conda.sh
@@ -133,18 +149,21 @@ envs+=" base"                      # Add base environment
 
 # Iterate through each environment
 for env in $envs; do
-    # Extract the environment name from the full path
     env_name=$(basename "$env")
-
-    # Activate the environment
     conda activate "$env_name"
-
     # Export the environment specifications to a YAML file
     conda env export --name "$env_name" >"${thisBackupLogDir}/conda_environment_${env_name}.yml"
 done
 echo 'Backed up conda envs!'
 
 echo 'Done backing up package lists!'
+
+echo
+echo
+
+# Copy this backup folder
+echo 'Copying backup folder!'
+rsync -vhmPCa --exclude '*[Cc][Aa][Cc][Hh][Ee]*' --exclude="*google-chrome/*" --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" "$thisBackupLogDir" $DESTINATION/.backups/
 
 echo
 echo

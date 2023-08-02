@@ -248,6 +248,8 @@ $exec i3-battery-notification
 # xinput settings
 # Touchpad: tap to click
 $exec xinput set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 316 1
+# Don't disable touchpad while typing (e.g. for Stardew Valley)
+# $exec xinput --set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 347 0
 
 # Enable custom keyboard shortcuts
 $exec xbindkeys
