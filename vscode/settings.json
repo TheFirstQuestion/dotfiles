@@ -33,7 +33,7 @@
     "workbench.editor.untitled.hint": "hidden",
     "workbench.editor.enablePreview": false,
     "[jsonc]": {
-        "editor.defaultFormatter": "vscode.json-language-features"
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "workbench.colorCustomizations": {
         "[An Old Hope]": {

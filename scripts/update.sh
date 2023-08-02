@@ -20,6 +20,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 
         echo 'Removing packages...'
         sudo dnf autoremove -y
+        sudo dnf clean packages -y
         echo 'Done!'
         echo ""
     elif [[ "$ID" == "linuxmint"* ]]; then
