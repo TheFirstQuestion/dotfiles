@@ -1,6 +1,6 @@
 # Horizontal scrolling with Shift+Scroll
 "xdotool click 6"
-   Shift + b:4
+   Shift + 4
 
 "xdotool click 7"
-   Shift + b:5
+   Shift + 5

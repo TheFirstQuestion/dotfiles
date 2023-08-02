@@ -150,4 +150,5 @@
     "window.customMenuBarAltFocus": false,
     "window.commandCenter": true,
     "workbench.settings.openDefaultSettings": true,
+    "workbench.tips.enabled": false,
 }

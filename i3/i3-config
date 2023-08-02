@@ -250,7 +250,7 @@ $exec i3-battery-notification
 $exec xinput set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 316 1
 
 # Enable custom keyboard shortcuts
-$exec xbindkeys -p
+$exec xbindkeys
 # Turn on numlock
 $exec numlockx on
 
