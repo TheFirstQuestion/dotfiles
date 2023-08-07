@@ -38,7 +38,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
-# Control power button (may not work)
+# Control power button
 bindsym XF86PowerOff exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 
@@ -48,12 +48,9 @@ $exec xset 300 60
 # $exec xss-lock --notifier "/home/steven/.config/i3/dim-screen.sh" --transfer-sleep-lock -- i3lock --nofork -i "/home/steven/dotfiles/assets/arc_reactor.png"
 set $refresh_i3status killall -SIGUSR1 i3status
 
-# Set wallpaper on start and restarts
-exec_always --no-startup-id ~/dotfiles/theme-files/fehbg
 # Start autorandr to detect monitor setup
 exec_always --no-startup-id autorandr --change
-# Start polybar
-exec_always --no-startup-id ~/dotfiles/polybar/launch.sh
+# autorandr will call feh (wallpaper) and launch polybar
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -240,16 +237,18 @@ bindsym --release Print exec scrot 'screenshot_%Y-%m-%d_%H-%M-%S.png' -e 'mkdir 
 bindsym --release Shift+Print exec scrot -s 'screenshot_%Y-%m-%d_%H-%M-%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`'
 
 # Copy datestamp to clipboard
-bindsym Control+Shift+D exec /home/steven/dotfiles/i3/datestamp.sh
+bindsym Control+Shift+D exec '/home/steven/dotfiles/i3/datestamp.sh'
 
 # Start the battery notification script
 # https://github.com/archStant/i3wm-Battery-Notifications
 $exec i3-battery-notification
 
+# Start ActivityWatch
+$exec "/home/steven/Archive/07 Application Files/ActivityWatch/activitywatch/aw-qt"
 
 # xinput settings
 # Touchpad: tap to click
-$exec xinput set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 316 1
+$exec xinput set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 339 1
 # Don't disable touchpad while typing (e.g. for Stardew Valley)
 # $exec xinput --set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 347 0
 
@@ -257,6 +256,7 @@ $exec xinput set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 316 1
 $exec xbindkeys
 # Turn on numlock
 $exec numlockx on
+
 
 
 ############################# Rules for specific applications ##########################

@@ -1,6 +1,15 @@
-# Horizontal scrolling with Shift+Scroll
-"xdotool click 6"
-   Shift + 4
+# The format of a command line is:
+# "command to start"
+#    associated key
 
-"xdotool click 7"
-   Shift + 5
+# Horizontal scrolling with Shift+Scroll Up
+# "xte 'mouseclick 6'"
+"xdotool key --delay 0 --clearmodifiers click 6"
+   Shift + b:4
+
+# Horizontal scrolling with Shift+Scroll Down
+# "xte 'mouseclick 7'"
+"xdotool key --delay 0 --clearmodifiers click 7"
+   Shift + b:5
+
+   
