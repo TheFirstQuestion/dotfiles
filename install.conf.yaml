@@ -36,6 +36,8 @@
       path: vscode/settings.json
     ~/.config/VSCodium/User/keybindings.json:
       path: vscode/keybindings.json
+    ~/.editorconfig:
+      path: vscode/editorconfig
 
     # Prettier
     ~/.prettierrc.js:

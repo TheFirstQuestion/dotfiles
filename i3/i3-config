@@ -56,9 +56,9 @@ exec_always --no-startup-id autorandr --change
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec terminator
+bindsym $mod+Return exec terminator --working-directory "$HOME/Archive"
 # KP_Enter is the numpad enter
-bindsym $mod+KP_Enter exec terminator
+bindsym $mod+KP_Enter exec terminator --working-directory "$HOME/Archive"
 
 # kill focused window
 bindsym $mod+Shift+q kill

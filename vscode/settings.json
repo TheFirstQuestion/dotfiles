@@ -21,8 +21,6 @@
 	"explorer.decorations.badges": false,
 	"breadcrumbs.enabled": false,
 	"json.format.keepLines": true,
-	"python.formatting.blackPath": "/Users/smac/opt/miniconda3/bin/black",
-	"python.formatting.provider": "black",
 	"editor.tabSize": 2,
 	"workbench.activityBar.visible": false,
 	"zenMode.hideLineNumbers": false,
@@ -145,5 +143,15 @@
 	"window.commandCenter": true,
 	"workbench.settings.openDefaultSettings": true,
 	"workbench.tips.enabled": false,
-	"cSpell.userWords": ["firestore", "uids", "GPT"]
+	"cSpell.userWords": ["firestore", "GPT", "Opferman", "uids"],
+	"[json]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[python]": {
+		"editor.defaultFormatter": "ms-python.python"
+	},
+	"notebook.formatOnCellExecution": true,
+	"eslint.format.enable": true,
+	"python.condaPath": "~/miniconda3/bin/conda",
+	"python.linting.banditEnabled": true
 }
