@@ -1,0 +1,736 @@
+#!/bin/bash
+#
+#  i3-brightness
+#  Brightness control and brightness notifications.
+
+#  Adapted from: https://github.com/hastinbe/i3-volume
+
+define_helpers() {
+  empty() {
+    [[ -z $1 ]]
+  }
+
+  not_empty() {
+    [[ -n $1 ]]
+  }
+
+  isset() {
+    [[ -v $1 ]]
+  }
+
+  command_exists() {
+    command -v "$1" >/dev/null 2>&1
+  }
+
+  error() {
+    echo "$COLOR_RED$*$COLOR_RESET"
+  }
+
+  has_color() {
+    (($(tput colors 2>/dev/null || echo 0) >= 8)) && [ -t 1 ]
+  }
+
+  # Converts milliseconds to seconds with rounding up
+  #
+  # Arguments:
+  #   milliseconds    (integer) An integer in milliseconds
+  ms_to_secs() {
+    echo $((($1 + (1000 - 1)) / 1000))
+  }
+
+  is_command_hookable() {
+    ! [[ ${POST_HOOK_EXEMPT_COMMANDS[*]} =~ $1 ]]
+  }
+
+  has_capability() {
+    [[ "${NOTIFY_CAPS[*]}" =~ $1 ]]
+  }
+
+  max() {
+    echo $(($1 > $2 ? $1 : $2))
+  }
+}
+
+define_notify() {
+  # Display a notification indicating current brightness.
+  notify_brightness() {
+    local -r vol=$(get_brightness)
+    local icon
+    local summary
+    local body
+
+    printf -v summary "Brightness %3s%%" "$vol"
+
+    # There doesn't seem to be a consistent icon name for different brightness levels, so it's always the same
+    icon="display-brightness-symbolic"
+
+    if $SHOW_VOLUME_PROGRESS; then
+      local -r progress=$(progress_bar "$vol")
+
+      if has_capability body && [[ $PROGRESS_PLACEMENT == body ]]; then
+        body="$progress"
+      else
+        summary="$summary $progress"
+      fi
+    fi
+
+    case "$NOTIFICATION_METHOD" in
+    xosd) notify_brightness_xosd "$vol" "$summary $body" ;;
+    herbe) notify_brightness_herbe "$summary $body" ;;
+    volnoti) notify_brightness_volnoti "$vol" ;;
+    kosd) notify_brightness_kosd "$vol" ;;
+    dunst) notify_brightness_libnotify "$vol" "$icon" "$summary" "$body" ;;
+    notify-osd) notify_brightness_libnotify "$vol" "$icon" "$summary" "$body" ;;
+    libnotify) notify_brightness_libnotify "$vol" "$icon" "$summary" "$body" ;;
+    haskell-notification-daemon) notify_brightness_libnotify "$vol" "$icon" "$summary" "$body" ;;
+    *) notify_brightness_libnotify "$vol" "$icon" "$summary" "$body" ;;
+    esac
+  }
+
+  list_notification_methods() {
+    awk -W posix 'match($0,/    notify_brightness_([[:alnum:]]+)/) {print substr($0, 19, RLENGTH-18)}' "${BASH_SOURCE[0]}" || exit "$EX_USAGE"
+    exit "$EX_OK"
+  }
+
+  show_volume_notification() {
+    $DISPLAY_NOTIFICATIONS || return
+
+    if empty "$NOTIFICATION_METHOD"; then
+      load_notify_server_info
+      NOTIFICATION_METHOD=$NOTIFY_SERVER
+    fi
+
+    notify_brightness
+  }
+
+  # Loads notification system information via DBus
+  load_notify_server_info() {
+    command_exists dbus-send || return
+    IFS=$'\t' read -r NOTIFY_SERVER _ _ _ < <(dbus-send --print-reply --dest=org.freedesktop.Notifications /org/freedesktop/Notifications org.freedesktop.Notifications.GetServerInformation | awk 'BEGIN { ORS="\t" }; match($0, /^   string ".*"/) {print substr($0, RSTART+11, RLENGTH-12)}')
+  }
+
+  # Load notification system capabilities via DBus
+  load_notify_server_caps() {
+    command_exists dbus-send || return
+    IFS= read -r -d '' -a NOTIFY_CAPS < <(dbus-send --print-reply=literal --dest="${DBUS_NAME}" "${DBUS_PATH}" "${DBUS_IFAC_FDN}.GetCapabilities" | awk 'RS="      " { if (NR > 2) print $1 }')
+  }
+
+  # Send notifcation for libnotify-compatible notification daemons.
+  #
+  # Arguments:
+  #   Volume      (integer) An integer indicating the volume.
+  #   Icon        (string) Icon to display.
+  #   Summary     (string) Notification summary.
+  #   Body        (string) Notification body. (optional)
+  notify_brightness_libnotify() {
+    local -r vol=$1
+    local -r icon=$2
+    local -r summary=$3
+    local -r body=${*:4}
+    local -a args=(
+      -t "$EXPIRES"
+    )
+    local -a hints=(
+      # Replaces previous notification in some notification servers
+      string:synchronous:volume
+      # Replaces previous notification in NotifyOSD
+      string:x-canonical-private-synchronous:volume
+    )
+
+    # If we're not drawing our own progress bar, allow the notification daemon to draw its own (if supported)
+    if ! $SHOW_VOLUME_PROGRESS; then
+      hints+=(int:value:"$vol")
+    fi
+
+    ((${#NOTIFY_CAPS[@]} < 1)) && load_notify_server_caps
+
+    if has_capability icon-static || has_capability icon-multi; then
+      # haskell-notification-daemon (aka deadd-notification-center) does not support -i|--icon
+      args+=(-i "$icon")
+    fi
+
+    # dunst doesn't announce icon-(static|multi) server capabilities, but supports image-path hint
+    hints+=(string:image-path:"$icon")
+
+    if $PLAY_SOUND && has_capability sound; then
+      hints+=(string:sound-name:audio-volume-change)
+    fi
+
+    if ! isset NO_NOTIFY_COLOR && [[ $NOTIFICATION_METHOD == "dunst" ]]; then
+      if is_muted; then
+        hints+=(string:fgcolor:"$COLOR_MUTED")
+      else
+        hints+=(string:fgcolor:"$(volume_color "$vol")")
+      fi
+    fi
+
+    if $USE_DUNSTIFY; then
+      args+=(-r 1000)
+
+      # Transient notifications will bypass the idle_threshold setting.
+      # Should be boolean, but Notify-OSD doesn't support boolean yet. Dunst checks
+      # for int and bool with transient so lets play nice with both servers.
+      hints+=(int:transient:1)
+
+      read -ra hints <<<"${hints[@]/#/-h }"
+      "${DUNSTIFY_PATH:+${DUNSTIFY_PATH%/}/}dunstify" "${hints[@]}" "${args[@]}" "$summary" "$body"
+    elif isset USE_NOTIFY_SEND_PY; then
+      # Replaces previous notification, but leaves itself running in the bg to work
+      args+=(--replaces-process volume)
+
+      # By-pass the server's persistence capability, if it should exist
+      hints+=(boolean:transient:true)
+
+      "${NOTIFY_SEND_PATH:+${NOTIFY_SEND_PATH%/}/}notify-send.py" --hint "${hints[@]}" "${args[@]}" "$summary" "$body" &
+    else
+      read -ra hints <<<"${hints[@]/#/-h }"
+      "${NOTIFY_SEND_PATH:+${NOTIFY_SEND_PATH%/}/}notify-send" "${hints[@]}" "${args[@]}" "$summary" "$body"
+    fi
+  }
+
+  # Send notification to XOSD.
+  #
+  # Arguments:
+  #   Volume      (integer) An integer indicating the volume.
+  #   Text        (string) Notification text.
+  notify_brightness_xosd() {
+    local -r vol=$1
+    local -r text=${*:2}
+    local -r delay=$(ms_to_secs "$EXPIRES")
+    local percentage
+
+    if is_muted; then
+      color=$COLOR_MUTED
+      percentage=0
+    else
+      color=$(volume_color "$vol")
+      percentage=$vol
+    fi
+
+    "${XOSD_PATH:+${XOSD_PATH%/}/}osd_cat" --align center -b percentage -P "$percentage" -d "$delay" -p top -A center -c "$color" -T "$text" -O 2 -u "$COLOR_XOSD_OUTLINE" &
+    disown
+  }
+
+  # Send notification to herbe.
+  #
+  # Arguments:
+  #   Text    (string) Notification text.
+  #
+  # Note: a patch with a notify-send script for herbe, not in the current version at this
+  #       time but would make this irrelevant. See https://github.com/dudik/herbe/pull/10
+  notify_brightness_herbe() {
+    local -r text=$*
+
+    # Dismiss existing/pending notifications to prevent queuing
+    pkill -SIGUSR1 herbe
+
+    "${HERBE_PATH:+${HERBE_PATH%/}/}herbe" "$text" &
+    disown
+  }
+
+  # Send notification to volnoti.
+  #
+  # Arguments:
+  #   Volume      (integer) An integer indicating the volume.
+  notify_brightness_volnoti() {
+    local -r vol=$1
+
+    if is_muted; then
+      "${VOLNOTI_PATH:+${VOLNOTI_PATH%/}/}volnoti-show" -m "$vol"
+    else
+      "${VOLNOTI_PATH:+${VOLNOTI_PATH%/}/}volnoti-show" "$vol"
+    fi
+  }
+
+  # Send notification to KOSD.
+  #
+  # Arguments:
+  #   Volume      (integer) An integer indicating the volume.
+  notify_brightness_kosd() {
+    local -r vol=$1
+
+    if is_muted; then
+      qdbus org.kde.kded /modules/kosd showVolume "$vol" 1
+    else
+      qdbus org.kde.kded /modules/kosd showVolume "$vol" 0
+    fi
+  }
+}
+
+define_output_formats() {
+  # Outputs the current volume in the default format.
+  output_volume_default() {
+    echo "$(get_brightness)%"
+  }
+
+  # Outputs the current volume using a custom format string.
+  #
+  # Format options:
+  #   %v = volume percentage or "MUTE" when muted
+  #   %s = sink name (PulseAudio only)
+  #   %c = card (alsamixer only)
+  #   %m = mixer (alsamixer only)
+  #   %p = volume progress bar
+  #   %i = volume icon
+  output_volume_custom() {
+    local -r format=$*
+    local -r vol=$(get_brightness)
+
+    string=${format//\%v/$vol%}
+
+    string=${string//\%s/$SINK}
+    string=${string//\%c/$CARD}
+    string=${string//\%m/$MIXER}
+    string=${string//\%p/$(progress_bar "$vol")}
+    string=${string//\%i/$(get_brightness_emoji "$vol")}
+
+    echo -ne "$string"
+  }
+
+  # Outputs the current volume for i3blocks.
+  output_volume_i3blocks() {
+    local short_text
+    local full_text
+
+    if is_muted; then
+      short_text="<span color=\"$COLOR_MUTED\">MUTE</span>\n"
+      full_text="<span color=\"$COLOR_MUTED\">MUTE</span>\n"
+    else
+      local -r vol=$(get_brightness)
+      local -r color=$(volume_color "$vol")
+
+      short_text="<span color=\"$color\">${vol}%</span>\n"
+      full_text="<span color=\"$color\">${vol}%</span>\n"
+
+      if isset MAX_VOLUME && ((vol > MAX_VOLUME)); then
+        EXITCODE=$EX_URGENT
+      fi
+    fi
+
+    echo -ne "$full_text$short_text"
+  }
+
+  # Outputs the current volume for xob.
+  output_volume_xob() {
+    local -ir vol=$(get_brightness)
+
+    if is_muted; then
+      echo "${vol}!"
+    else
+      echo "$vol"
+    fi
+  }
+}
+
+define_commands() {
+  # The brightness is controlled logarithmically
+  # via https://cialu.net/brightness-control-not-work-i3wm/
+  # and https://www.reddit.com/r/i3wm/comments/fltp82/nicer_brightness_control/
+
+  # Increase brightness relative to current brightness.
+  increase_brightness() {
+    light -S "$(light -G | awk '{ print int(($1 + .72) * 1.4) }')"
+  }
+
+  # Decrease brightness relative to current brightness.
+  decrease_brightness() {
+    light -S "$(light -G | awk '{ print int($1 / 1.4) }')"
+  }
+
+  # Outputs the current volume.
+  #
+  # Arguments
+  #   Output method   (string) Method to use to output volume.
+  output_volume() {
+    local -r for=${1:?$(error 'Output method is required')}
+
+    case "$for" in
+    i3blocks) output_volume_i3blocks ;;
+    xob) output_volume_xob ;;
+    default) output_volume_default ;;
+    *) output_volume_custom "$*" ;;
+    esac
+  }
+
+  list_output_formats() {
+    awk -W posix 'match($0,/    output_volume_([[:alnum:]]+)/) {print substr($0, 19, RLENGTH-18)}' "${BASH_SOURCE[0]}" || exit "$EX_USAGE"
+    exit "$EX_OK"
+  }
+
+  usage() {
+    cat <<-EOF 1>&2
+${COLOR_YELLOW}Usage:${COLOR_RESET} $0 [<options>] <command> [<args>]
+Control volume and related notifications.
+
+${COLOR_YELLOW}Commands:${COLOR_RESET}
+  ${COLOR_GREEN}up <value>${COLOR_RESET}                  increase volume
+  ${COLOR_GREEN}down <value>${COLOR_RESET}                decrease volume
+  ${COLOR_GREEN}set <value>${COLOR_RESET}                 set volume
+  ${COLOR_GREEN}mute${COLOR_RESET}                        toggle mute
+  ${COLOR_GREEN}listen${COLOR_RESET}                      listen for changes to a PulseAudio sink
+  ${COLOR_GREEN}output <format>${COLOR_RESET}             output volume in a supported format
+                              custom format substitutions:
+                                  %v = volume
+                                  %s = sink name (PulseAudio only)
+                                  %c = card (alsamixer only)
+                                  %m = mixer (alsamixer only)
+                                  %p = volume progress bar
+                                  %i = volume icon/emoji
+
+                                  examples:
+                                      "Volume is %v" = Volume is 50%
+                                      "%i %v %p \n"  = 奔 50% ██████████
+  ${COLOR_GREEN}outputs${COLOR_RESET}                     show available output formats
+  ${COLOR_GREEN}notifications${COLOR_RESET}               show available notification methods
+  ${COLOR_GREEN}help${COLOR_RESET}                        display help
+
+${COLOR_YELLOW}Options:${COLOR_RESET}
+  ${COLOR_GREEN}-a${COLOR_RESET}                          use amixer
+  ${COLOR_GREEN}-n${COLOR_RESET}                          enable notifications
+  ${COLOR_GREEN}-C${COLOR_RESET}                          use libcanberra for playing event sounds
+  ${COLOR_GREEN}-P${COLOR_RESET}                          play sound for volume changes
+  ${COLOR_GREEN}-j <muted,high,low,medium>${COLOR_RESET}  specify custom volume emojis as a comma separated list
+  ${COLOR_GREEN}-t <process_name>${COLOR_RESET}           process name of status bar (${COLOR_MAGENTA}requires -u${COLOR_RESET})
+  ${COLOR_GREEN}-u <signal>${COLOR_RESET}                 signal to update status bar (${COLOR_MAGENTA}requires -t${COLOR_RESET})
+  ${COLOR_GREEN}-x <value>${COLOR_RESET}                  maximum volume
+  ${COLOR_GREEN}-X <value>${COLOR_RESET}                  maximum amplification; if supported (${COLOR_MAGENTA}default: 2${COLOR_RESET})
+  ${COLOR_GREEN}-h${COLOR_RESET}                          display help
+
+${COLOR_YELLOW}amixer Options:${COLOR_RESET}
+  ${COLOR_GREEN}-c <card>${COLOR_RESET}                   card number to control
+  ${COLOR_GREEN}-m <mixer>${COLOR_RESET}                  set mixer (${COLOR_MAGENTA}default: Master${COLOR_RESET})
+
+${COLOR_YELLOW}PulseAudio Options:${COLOR_RESET}
+  ${COLOR_GREEN}-s <sink>${COLOR_RESET}                   symbolic name of sink
+
+${COLOR_YELLOW}Notification Options:${COLOR_RESET}
+  ${COLOR_GREEN}-N <method>${COLOR_RESET}                 notification method (${COLOR_MAGENTA}default: libnotify${COLOR_RESET})
+  ${COLOR_GREEN}-p${COLOR_RESET}                          enable progress bar
+  ${COLOR_GREEN}-L <placement>${COLOR_RESET}              progress bar placement (${COLOR_MAGENTA}default: summary${COLOR_RESET}; ${COLOR_MAGENTA}requires -p${COLOR_RESET})
+                              placements:
+                                  body
+                                  summary
+  ${COLOR_GREEN}-e <expires>${COLOR_RESET}                expiration time of notifications in ms
+  ${COLOR_GREEN}-l${COLOR_RESET}                          use fullcolor instead of symbolic icons
+  ${COLOR_GREEN}-S <suffix>${COLOR_RESET}                 append suffix to symbolic icon names
+  ${COLOR_GREEN}-y${COLOR_RESET}                          use dunstify (${COLOR_MAGENTA}default: notify-send${COLOR_RESET})
+
+${COLOR_YELLOW}Environment Variables:${COLOR_RESET}
+  ${COLOR_CYAN}XOSD_PATH${COLOR_RESET}                   path to osd_cat
+  ${COLOR_CYAN}HERBE_PATH${COLOR_RESET}                  path to herbe
+  ${COLOR_CYAN}VOLNOTI_PATH${COLOR_RESET}                path to volnoti-show
+  ${COLOR_CYAN}DUNSTIFY_PATH${COLOR_RESET}               path to dunstify
+  ${COLOR_CYAN}CANBERRA_PATH${COLOR_RESET}               path to canberra-gtk-play
+  ${COLOR_CYAN}NOTIFY_SEND_PATH${COLOR_RESET}            path to notify-send or notify-send.py
+  ${COLOR_CYAN}USE_NOTIFY_SEND_PY${COLOR_RESET}          flag to use notify-send.py instead of notify-send
+  ${COLOR_CYAN}NO_NOTIFY_COLOR${COLOR_RESET}             flag to disable colors in notifications
+EOF
+    exit "$EX_USAGE"
+  }
+}
+
+# Get the brightness as a percentage.
+get_brightness() {
+  light -G | awk '{print int($1 + 0.5)}'
+}
+
+$()
+# Updates the status line.
+#
+# Arguments:
+#   signal  (string) The signal used to update the status line.
+#   proc    (string) The name of the status line process.
+update_statusline() {
+  local -r signal=${1:?$(error 'Signal is required')}
+  local -r proc=${2:?$(error 'Process name is required')}
+
+  pkill "-$signal" "$proc"
+}
+
+# Generates a progress bar for the provided value.
+#
+# Arguments:
+#   Percentage      (integer) Percentage of progress.
+#   Maximum         (integer) Maximum percentage. (default: 100)
+#   Divisor         (integer) For calculating the ratio of blocks to progress (default: 5)
+#
+# Returns:
+#   The progress bar.
+progress_bar() {
+  local -r percent=${1:?$(error 'Percentage is required')}
+  local -r max_percent=${2:-100}
+  local -r divisor=${3:-5}
+  local -r progress=$(((percent > max_percent ? max_percent : percent) / divisor))
+
+  printf -v bar "%*s" $progress ""
+  echo "${bar// /█}"
+}
+
+apply_symbolic_icon_suffix() {
+  for i in "${!ICONS_SYMBOLIC[@]}"; do
+    ICONS_SYMBOLIC[$i]="${ICONS_SYMBOLIC[$i]}${SYMBOLIC_ICON_SUFFIX}"
+  done
+}
+
+# Get color for the given volume
+#
+# Arguments:
+#   $1 - The volume
+volume_color() {
+  local -ir vol=${1:?$(error 'A volume is required')}
+
+  if $USE_AMIXER; then
+    amixer_volume_color "$vol"
+  else
+    pa_volume_color "$vol"
+  fi
+}
+
+# Updates the status bars
+#
+# Returns
+#   0 when no problem occurred
+#   1 when one $of signal or $statusline are set but not both
+update_statusbar() {
+  if not_empty "$SIGNAL"; then
+    if empty "$STATUSLINE"; then
+      return 1
+    fi
+    update_statusline "$SIGNAL" "$STATUSLINE"
+  else
+    if not_empty "$STATUSLINE"; then
+      return 1
+    fi
+  fi
+
+  return 0
+}
+
+setup_color() {
+  if has_color; then
+    COLOR_RESET=$'\033[0m'
+    COLOR_RED=$'\033[0;31m'
+    COLOR_GREEN=$'\033[0;32m'
+    COLOR_YELLOW=$'\033[0;33m'
+    COLOR_MAGENTA=$'\033[0;35m'
+    COLOR_CYAN=$'\033[0;36m'
+  fi
+}
+
+# Rearrange all options to place flags first
+# Author: greycat
+# URL: https://mywiki.wooledge.org/ComplexOptionParsing
+arrange_opts() {
+  local flags args optstr=$1
+  shift
+
+  while (($#)); do
+    case $1 in
+    --)
+      args+=("$@")
+      break
+      ;;
+    -*)
+      flags+=("$1")
+      if [[ $optstr == *"${1: -1}:"* ]]; then
+        flags+=("$2")
+        shift
+      fi
+      ;;
+    *)
+      args+=("$1")
+      ;;
+    esac
+    shift
+  done
+  OPTARR=("${flags[@]}" "${args[@]}")
+}
+
+parse_opts() {
+  local optstring=:ac:Ce:hj:lL:m:nN:pPs:S:t:u:x:X:y
+
+  arrange_opts "$optstring" "$@"
+  set -- "${OPTARR[@]}"
+
+  OPTIND=1
+
+  while getopts "$optstring" opt; do
+    case "$opt" in
+    a) USE_AMIXER=true ;;
+    c) CARD=$OPTARG ;;
+    C) USE_CANBERRA=true ;;
+    e) EXPIRES=$OPTARG ;;
+    j) IFS=, read -ra ICONS_EMOJI <<<"$OPTARG" ;;
+    l) USE_FULLCOLOR_ICONS=true ;;
+    L) PROGRESS_PLACEMENT=$OPTARG ;;
+    m) MIXER=${OPTARG@Q} ;;
+    n) DISPLAY_NOTIFICATIONS=true ;;
+    N) NOTIFICATION_METHOD=$OPTARG ;;
+    p) SHOW_VOLUME_PROGRESS=true ;;
+    P) PLAY_SOUND=true ;;
+    s) SINK=$OPTARG ;;
+    S) SYMBOLIC_ICON_SUFFIX=$OPTARG ;;
+    t) STATUSLINE=$OPTARG ;;
+    u) SIGNAL=$OPTARG ;;
+    x) MAX_VOLUME=$OPTARG ;;
+    X) MAX_AMPLIFICATION=$OPTARG ;;
+    y) USE_DUNSTIFY=true ;;
+    h | *) usage ;;
+    esac
+  done
+
+  read -ra CMDARGS <<<"${OPTARR[@]:$((OPTIND - 1))}"
+}
+
+exec_command() {
+  IFS=' ' read -ra ARGS <<<"$1"
+  set -- "${ARGS[@]}"
+
+  COMMAND=${1:?$(error 'A command is required')}
+  shift
+
+  case "$COMMAND" in
+  up | raise | increase)
+    increase_brightness "$MAX_VOLUME"
+    ;;
+  down | lower | decrease)
+    decrease_brightness
+    ;;
+  set)
+    case "$#" in 1) ;; *) usage ;; esac
+    case "$1" in
+    +*) increase_brightness "${1:1}" "$MAX_VOLUME" ;;
+    -*) decrease_brightness "${1:1}" ;;
+    *) set_volume "$1" "$MAX_VOLUME" ;;
+    esac
+    ;;
+  mute)
+    toggle_mute
+    ;;
+  listen)
+    listen "$*"
+    ;;
+  output)
+    case "$#" in 0) usage ;; esac
+    output_volume "$*"
+    exit "${EXITCODE:-$EX_OK}"
+    ;;
+  outputs)
+    list_output_formats
+    ;;
+  notifications)
+    list_notification_methods
+    ;;
+  *)
+    usage
+    ;;
+  esac
+}
+
+post_command_hook() {
+  if is_command_hookable "$COMMAND"; then
+    show_volume_notification
+    update_statusbar || usage
+  fi
+}
+
+main() {
+  # Getopt parsing variables
+  declare OPTIND
+  declare -a OPTARR CMDARGS
+
+  ###########################################################
+  # Non-command line option variables
+  ###########################################################
+
+  # Commands which will not use post_command_hook(), usually because
+  # they handle notifications and/or statusbar updates manually
+  declare -a POST_HOOK_EXEMPT_COMMANDS=(
+    listen
+  )
+
+  # Exit codes
+  declare -ir \
+    EX_OK=0 \
+    EX_URGENT=33 \
+    EX_USAGE=64
+
+  # Main program exit code
+  declare -i EXITCODE=$EX_OK
+
+  # DBUS constants
+  declare -r \
+    DBUS_NAME=org.freedesktop.Notifications \
+    DBUS_PATH=/org/freedesktop/Notifications \
+    DBUS_IFAC_FDN=org.freedesktop.Notifications
+
+  # Notification server information
+  declare \
+    NOTIFY_SERVER
+  # NOTIFY_VENDOR \
+  # NOTIFY_VERSION \
+  # NOTIFY_SPEC_VERSION
+
+  # Notification capabilities
+  declare -a NOTIFY_CAPS=()
+
+  # Output volume colors
+  declare -r \
+    COLOR_MUTED=${COLOR_MUTED:-#FFFF00} \
+    COLOR_MUTED_TO_BASE=${COLOR_MUTED_TO_BASE:-#00FF00} \
+    COLOR_BASE_TO_NORM=${COLOR_BASE_TO_NORM:-#FFFF00} \
+    COLOR_NORM_TO_MAX=${COLOR_NORM_TO_MAX:-#FF0000} \
+    COLOR_OTHER=${COLOR_OTHER:-#FFFFFF} \
+    COLOR_XOSD_OUTLINE=${COLOR_XOSD_OUTLINE:-#222222}
+
+  declare \
+    COLOR_RESET \
+    COLOR_RED \
+    COLOR_GREEN \
+    COLOR_YELLOW \
+    COLOR_MAGENTA \
+    COLOR_CYAN
+
+  ###########################################################
+  # Command line option variables
+  ###########################################################
+  declare -l NOTIFICATION_METHOD
+
+  declare \
+    COMMAND \
+    DISPLAY_NOTIFICATIONS=false \
+    SHOW_VOLUME_PROGRESS=false \
+    USE_AMIXER=false \
+    USE_DUNSTIFY=false \
+    USE_FULLCOLOR_ICONS=false \
+    CARD \
+    MIXER=Master \
+    PROGRESS_PLACEMENT=summary \
+    SIGNAL \
+    SINK \
+    STATUSLINE \
+    SYMBOLIC_ICON_SUFFIX \
+    NOTIFICATION_METHOD \
+    PLAY_SOUND=false \
+    USE_CANBERRA=false
+
+  declare -i \
+    EXPIRES=400 \
+    MAX_VOLUME \
+    MAX_AMPLIFICATION=2
+
+  define_helpers
+  define_notify
+  define_output_formats
+  define_commands
+
+  setup_color
+
+  parse_opts "$@"
+
+  exec_command "${CMDARGS[*]}" && post_command_hook
+
+  exit ${EXITCODE:-$EX_OK}
+}
+
+main "$@"

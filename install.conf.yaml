@@ -54,6 +54,9 @@
     # xbindkeys (custom keyboard shortcuts)
     ~/.xbindkeysrc:
       path: i3/xbindkeys
+    # dunst (notifications)
+    ~/.config/dunst/dunstrc:
+      path: dunst/dunstrc
 
     # Polybar
     ~/.config/polybar/config.ini:

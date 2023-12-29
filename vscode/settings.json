@@ -1,6 +1,6 @@
 {
 	"telemetry.telemetryLevel": "off",
-	"workbench.startupEditor": "welcomePageInEmptyWorkbench",
+	"workbench.startupEditor": "none",
 	"files.autoSave": "afterDelay",
 	"editor.fontSize": 18,
 	"editor.wordWrap": "on",
@@ -11,10 +11,15 @@
 	"update.showReleaseNotes": false,
 	"workbench.colorTheme": "Blackboard Pro",
 	"files.exclude": {
+		"*.~lock.*": true,
+		"*.docx": true,
+		"*.pyc": true,
+		"*.xlsx": true,
 		"**.pdf": true,
+		"**/__pycache__": true,
 		"**/.ipynb_checkpoints": true,
 		"**/node_modules": true,
-		"package-lock.js": true
+		"package-lock.json": true
 	},
 	"python.defaultInterpreterPath": "~/miniconda3/bin/python",
 	"window.zoomLevel": 0.6,
@@ -143,15 +148,41 @@
 	"window.commandCenter": true,
 	"workbench.settings.openDefaultSettings": true,
 	"workbench.tips.enabled": false,
-	"cSpell.userWords": ["firestore", "GPT", "Opferman", "uids"],
+	"cSpell.userWords": [
+		"Convo",
+		"firestore",
+		"GPT",
+		"headshot",
+		"Headshots",
+		"Multinomial",
+		"Opferman",
+		"qualtrics",
+		"tqdm",
+		"uids",
+		"xkcd"
+	],
 	"[json]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"[python]": {
-		"editor.defaultFormatter": "ms-python.python"
+		"editor.defaultFormatter": "ms-python.python",
+		"editor.formatOnSave": false
 	},
 	"notebook.formatOnCellExecution": true,
 	"eslint.format.enable": true,
 	"python.condaPath": "~/miniconda3/bin/conda",
-	"python.linting.banditEnabled": true
+	"python.linting.banditEnabled": true,
+	"docsView.documentationView.updateMode": "sticky",
+	"workbench.editor.empty.hint": "hidden",
+	"github.copilot.enable": {
+		"*": true,
+		"plaintext": false,
+		"markdown": false,
+		"scminput": false
+	},
+	"workbench.welcomePage.extraAnnouncements": false,
+	"files.hotExit": "off",
+	"editor.formatOnPaste": true,
+	"rainbow_csv.rbql_with_headers_by_default": true,
+	"rainbow_csv.comment_prefix": "#"
 }

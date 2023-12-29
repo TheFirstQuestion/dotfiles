@@ -44,8 +44,8 @@ bindsym XF86PowerOff exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the screen before suspend.
 # Dim the screen after 5 minutes of inactivity, lock the screen 1 minute later (doesn't actually work...)
-$exec xset 300 60
-# $exec xss-lock --notifier "/home/steven/.config/i3/dim-screen.sh" --transfer-sleep-lock -- i3lock --nofork -i "/home/steven/dotfiles/assets/arc_reactor.png"
+# $exec xset 300 60
+$exec xss-lock --notifier "/home/steven/.config/i3/dim-screen.sh" --transfer-sleep-lock -- i3lock --nofork -i "/home/steven/dotfiles/assets/arc_reactor.png"
 set $refresh_i3status killall -SIGUSR1 i3status
 
 # Start autorandr to detect monitor setup
@@ -199,9 +199,6 @@ client.background       #FFFFFF
 
 ################## Volume control (via i3-volume)
 
-# Path to volume control, without trailing slash
-set $volumepath ~/i3-volume
-
 # Signal used to update the status line
 #   i3blocks uses SIGRTMIN+10 by default
 #   i3status uses SIGUSR1 by default
@@ -209,17 +206,17 @@ set $statussig SIGUSR1
 
 # Amount to increase/decrease volume (percentage)
 set $volumestep 5
+# TODO: make this logarithmic, too?
 
-bindsym XF86AudioRaiseVolume $exec $volumepath/volume -n up $volumestep && $refresh_i3status
-bindsym XF86AudioLowerVolume $exec $volumepath/volume -n down $volumestep && $refresh_i3status
-bindsym XF86AudioMute $exec $volumepath/volume -n mute && $refresh_i3status
+bindsym XF86AudioRaiseVolume $exec /home/steven/dotfiles/i3/i3-volume -n up $volumestep && $refresh_i3status
+bindsym XF86AudioLowerVolume $exec /home/steven/dotfiles/i3/i3-volume -n down $volumestep && $refresh_i3status
+bindsym XF86AudioMute $exec /home/steven/dotfiles/i3/i3-volume -n mute && $refresh_i3status
 
 
 ################## Brightness Controls
-# via https://cialu.net/brightness-control-not-work-i3wm/ 
-# and https://www.reddit.com/r/i3wm/comments/fltp82/nicer_brightness_control/
-bindsym XF86MonBrightnessUp $exec light -S "$(light -G | awk '{ print int(($1 + .72) * 1.4) }')" && notify-send "brightness up";
-bindsym XF86MonBrightnessDown $exec light -S "$(light -G | awk '{ print int($1 / 1.4) }')" && notify-send "brightness down";
+# Bind to custom i3-brightness script, which is based on i3-volume
+bindsym XF86MonBrightnessUp $exec /home/steven/dotfiles/i3/i3-brightness -n up
+bindsym XF86MonBrightnessDown $exec /home/steven/dotfiles/i3/i3-brightness -n down
 
 
 # Start Dropbox daemon
@@ -244,13 +241,13 @@ bindsym Control+Shift+D exec '/home/steven/dotfiles/i3/datestamp.sh'
 $exec i3-battery-notification
 
 # Start ActivityWatch
-$exec "/home/steven/Archive/07 Application Files/ActivityWatch/activitywatch/aw-qt"
+# $exec "/home/steven/Archive/07 Application Files/ActivityWatch/activitywatch/aw-qt"
 
 # xinput settings
 # Touchpad: tap to click
-$exec xinput set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 339 1
+$exec xinput set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 'libinput Tapping Enabled' 1
 # Don't disable touchpad while typing (e.g. for Stardew Valley)
-# $exec xinput --set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 347 0
+# $exec xinput --set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 'libinput Disable While Typing Enabled' 0
 
 # Enable custom keyboard shortcuts
 $exec xbindkeys

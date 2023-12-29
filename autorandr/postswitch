@@ -1,7 +1,9 @@
 #!/bin/bash
 
+# TODO: ensure we haven't sent like, 100 notifications
+
 # Notify that we've changed display modes
-notify-send -i display "Display Profile Changed" "$AUTORANDR_CURRENT_PROFILE"
+notify-send --expire-time=1000 --icon video-display-symbolic "Display Profile Changed" "$AUTORANDR_CURRENT_PROFILE"
 
 # Update wallpapers
 sh /home/steven/dotfiles/theme-files/fehbg
