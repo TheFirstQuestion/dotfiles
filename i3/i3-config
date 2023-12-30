@@ -14,6 +14,7 @@ set $mod Mod4
 
 # more elegant way of doing proper exec (via https://www.reddit.com/r/i3wm/comments/k8m4k4/comment/gezekkf/)
 set $exec exec --no-startup-id
+set $refresh_i3status killall -SIGUSR1 i3status
 
 # Font for window titles. Will also be used by the bar unless a different font is used in the bar {} block below.
 font pango:DejaVu Sans Mono 8
@@ -31,7 +32,6 @@ default_orientation vertical
 # Hide container borders adjacent to the screen edges
 hide_edge_borders both
 
-
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 in place (preserves your layout/session, can be used to upgrade i3)
@@ -45,8 +45,8 @@ bindsym XF86PowerOff exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the screen before suspend.
 # Dim the screen after 5 minutes of inactivity, lock the screen 1 minute later (doesn't actually work...)
 # $exec xset 300 60
-$exec xss-lock --notifier "/home/steven/.config/i3/dim-screen.sh" --transfer-sleep-lock -- i3lock --nofork -i "/home/steven/dotfiles/assets/arc_reactor.png"
-set $refresh_i3status killall -SIGUSR1 i3status
+# $exec xss-lock --notifier "/home/steven/.config/i3/dim-screen.sh" --transfer-sleep-lock -- i3lock --nofork -i "/home/steven/dotfiles/assets/arc_reactor.png"
+exec_always xss-lock --transfer-sleep-lock -- i3lock --nofork -i "/home/steven/dotfiles/assets/arc_reactor_1920x1200.png"
 
 # Start autorandr to detect monitor setup
 exec_always --no-startup-id autorandr --change
@@ -241,7 +241,7 @@ bindsym Control+Shift+D exec '/home/steven/dotfiles/i3/datestamp.sh'
 $exec i3-battery-notification
 
 # Start ActivityWatch
-# $exec "/home/steven/Archive/07 Application Files/ActivityWatch/activitywatch/aw-qt"
+$exec "/home/steven/Archive/07 Application Files/ActivityWatch/activitywatch/aw-qt"
 
 # xinput settings
 # Touchpad: tap to click
@@ -257,6 +257,12 @@ $exec numlockx on
 
 
 ############################# Rules for specific applications ##########################
+# Pop up windows
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="task_dialog"] floating enable
+popup_during_fullscreen smart
+
+
 # Zoom
 for_window [class="zoom"] floating enable
 
