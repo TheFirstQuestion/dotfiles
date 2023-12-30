@@ -184,5 +184,8 @@
 	"files.hotExit": "off",
 	"editor.formatOnPaste": true,
 	"rainbow_csv.rbql_with_headers_by_default": true,
-	"rainbow_csv.comment_prefix": "#"
+	"rainbow_csv.comment_prefix": "#",
+	"files.associations": {
+		"dunstrc": "editorconfig"
+	}
 }

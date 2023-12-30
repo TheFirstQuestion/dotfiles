@@ -136,6 +136,8 @@ define_notify() {
       # Replaces previous notification in NotifyOSD
       string:x-canonical-private-synchronous:volume
     )
+    # Low urgency
+    args+=(-u low)
 
     # If we're not drawing our own progress bar, allow the notification daemon to draw its own (if supported)
     if ! $SHOW_VOLUME_PROGRESS; then
@@ -715,7 +717,7 @@ main() {
     USE_CANBERRA=false
 
   declare -i \
-    EXPIRES=400 \
+    EXPIRES=600 \
     MAX_VOLUME \
     MAX_AMPLIFICATION=2
 
