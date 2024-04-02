@@ -11,6 +11,7 @@
 	"update.showReleaseNotes": false,
 	"workbench.colorTheme": "Blackboard Pro",
 	"files.exclude": {
+		".vscode": true,
 		"*.~lock.*": true,
 		"*.docx": true,
 		"*.pyc": true,
@@ -27,7 +28,6 @@
 	"breadcrumbs.enabled": false,
 	"json.format.keepLines": true,
 	"editor.tabSize": 2,
-	"workbench.activityBar.visible": false,
 	"zenMode.hideLineNumbers": false,
 	"search.showLineNumbers": true,
 	"jupyter.askForKernelRestart": false,
@@ -35,7 +35,6 @@
 	"notebook.cellToolbarVisibility": "hover",
 	"notebook.output.textLineLimit": 100,
 	"editor.renderWhitespace": "none",
-	"workbench.editor.untitled.hint": "hidden",
 	"workbench.editor.enablePreview": false,
 	"[jsonc]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -152,11 +151,18 @@
 		"Convo",
 		"firestore",
 		"GPT",
+		"gpteach",
 		"headshot",
 		"Headshots",
+		"Lowkey",
 		"Multinomial",
+		"OPENAI",
 		"Opferman",
+		"predeploy",
 		"qualtrics",
+		"signup",
+		"tastebud",
+		"Toastify",
 		"tqdm",
 		"uids",
 		"xkcd"
@@ -166,12 +172,11 @@
 	},
 	"[python]": {
 		"editor.defaultFormatter": "ms-python.python",
-		"editor.formatOnSave": false
+		"editor.formatOnSave": true
 	},
 	"notebook.formatOnCellExecution": true,
 	"eslint.format.enable": true,
 	"python.condaPath": "~/miniconda3/bin/conda",
-	"python.linting.banditEnabled": true,
 	"docsView.documentationView.updateMode": "sticky",
 	"workbench.editor.empty.hint": "hidden",
 	"github.copilot.enable": {
@@ -187,5 +192,8 @@
 	"rainbow_csv.comment_prefix": "#",
 	"files.associations": {
 		"dunstrc": "editorconfig"
-	}
+	},
+	"python.createEnvironment.contentButton": "hide",
+	"workbench.activityBar.location": "hidden",
+	"javascript.updateImportsOnFileMove.enabled": "always"
 }
