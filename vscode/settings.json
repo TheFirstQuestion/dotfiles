@@ -22,7 +22,7 @@
 		"**/node_modules": true,
 		"package-lock.json": true
 	},
-	"python.defaultInterpreterPath": "~/miniconda3/bin/python",
+	"python.defaultInterpreterPath": "/home/steven/miniconda3/envs/Winston/bin/python",
 	"window.zoomLevel": 0.6,
 	"explorer.decorations.badges": false,
 	"breadcrumbs.enabled": false,
