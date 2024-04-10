@@ -83,7 +83,7 @@ plugins=(
     zsh-syntax-highlighting
     git-auto-status
     z
-    autoupdate
+    # autoupdate
     npm
     sudo
     zsh-safe-rm
