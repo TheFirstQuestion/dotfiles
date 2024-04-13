@@ -71,7 +71,6 @@
     # Autorandr
     ~/.config/autorandr:
       path: autorandr
-      create: true
 
     # Templates
     ~/Templates/README.md:
@@ -84,6 +83,10 @@
     # Firefox
     ~/.mozilla/firefox/0uo64nlk.default-release/chrome/userChrome.css:
       path: firefox/userChrome.css
+
+    # Nemo
+    ~/.local/share/nemo:
+      path: nemo
 
 - shell:
     - command: git submodule update --init --recursive

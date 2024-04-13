@@ -1,0 +1,20 @@
+[Nemo Action]
+
+Name=Datestamp
+Comment=Prepend the datestamp to the filename
+
+# What type of selection this action can act on: [s]ingle, [m]ultiple, any, notnone, none (background click)
+Selection=any
+
+# What extensions to display on - this is an array, end with a semicolon
+Extensions=any;
+
+# Quote type to use (if any) - enclose paths/urls with quotes.
+# I'm not sure why single quotes are necessary over double?
+Quote=single
+
+
+# What to run. 
+# Enclose in < > to run an executable that resides in the actions folder.
+# First argument is current working directory, second is list of selected files.
+Exec=<datestamp_all_files.sh %P %F>
