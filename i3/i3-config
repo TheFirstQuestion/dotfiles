@@ -9,9 +9,11 @@
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
+
 # $mod is windows key
 set $mod Mod4
 
+# Note: 'exec' commands will not run when restarting i3, but 'exec_always' will
 # more elegant way of doing proper exec (via https://www.reddit.com/r/i3wm/comments/k8m4k4/comment/gezekkf/)
 set $exec exec --no-startup-id
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -40,13 +42,14 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 # Control power button
 bindsym XF86PowerOff exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
-
+# Shortcut to lock and suspend, as if closing lid
+bindsym $mod+Shift+l exec i3lock -i "/home/steven/dotfiles/assets/arc_reactor_1920x1200.png" && systemctl suspend
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the screen before suspend.
-# Dim the screen after 5 minutes of inactivity, lock the screen 1 minute later (doesn't actually work...)
-# $exec xset 300 60
-# $exec xss-lock --notifier "/home/steven/.config/i3/dim-screen.sh" --transfer-sleep-lock -- i3lock --nofork -i "/home/steven/dotfiles/assets/arc_reactor.png"
-exec_always xss-lock --transfer-sleep-lock -- i3lock --nofork -i "/home/steven/dotfiles/assets/arc_reactor_1920x1200.png"
+# exec_always xss-lock --transfer-sleep-lock -- i3lock --nofork -i "/home/steven/dotfiles/assets/arc_reactor_1920x1200.png"
+# Dim the screen after three minutes of inactivity, lock the screen two minutes later using i3lock (via `man xss-lock`)
+exec_always xset 180 120
+exec_always xss-lock -n dim-screen.sh -- i3lock --nofork -i "/home/steven/dotfiles/assets/arc_reactor_1920x1200.png"
 
 # Start autorandr to detect monitor setup
 exec_always --no-startup-id autorandr --change
@@ -159,8 +162,6 @@ mode "CAPS" {
     bindsym Escape mode "default"
 }
 bindsym Caps_Lock mode "CAPS"
-
-
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
