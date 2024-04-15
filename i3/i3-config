@@ -248,6 +248,8 @@ $exec "/home/steven/Archive/07 Application Files/ActivityWatch/activitywatch/aw-
 $exec xinput set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 'libinput Tapping Enabled' 1
 # Don't disable touchpad while typing (e.g. for Stardew Valley)
 # $exec xinput --set-prop 'VEN_06CB:00 06CB:CE8C Touchpad' 'libinput Disable While Typing Enabled' 0
+# Increase scroll distance
+$exec xinput set-prop 'pointer:Logitech G305' 'libinput Scrolling Pixel Distance' 50
 
 # Enable custom keyboard shortcuts
 $exec xbindkeys
