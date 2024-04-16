@@ -6,7 +6,7 @@
 	"editor.wordWrap": "on",
 	"editor.formatOnSave": true,
 	"terminal.external.osxExec": "iTerm2.app",
-	"editor.fontFamily": "FontAwesome, MesloLGF NF, Menlo, Monaco, 'Courier New', monospace",
+	"editor.fontFamily": "FontAwesome, 'MesloLGS NF', Menlo, Monaco, 'Courier New', monospace",
 	"terminal.integrated.fontSize": 16,
 	"update.showReleaseNotes": false,
 	"workbench.colorTheme": "Blackboard Pro",

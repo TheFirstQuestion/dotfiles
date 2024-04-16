@@ -4,7 +4,6 @@ output eDP-1
 crtc 0
 mode 1920x1200
 pos 3520x0
-primary
 rate 60.00
 x-prop-broadcast_rgb Automatic
 x-prop-colorspace Default
@@ -13,6 +12,7 @@ x-prop-non_desktop 0
 x-prop-scaling_mode Full aspect
 output HDMI-1
 crtc 1
+primary
 mode 1920x1080
 pos 1600x0
 rate 100.00
