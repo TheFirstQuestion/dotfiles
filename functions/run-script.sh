@@ -30,6 +30,8 @@ _scripts_autocomplete() {
 }
 
 # Call our custom function to tab-complete when typing run_script, only if the script is running in an interactive shell (not being sourced init-env-vars)
-if [[ -z "$SCRIPT_SOURCED" ]]; then
-  complete -F _scripts_autocomplete run_script
-fi
+# Doesn't work as of 4-26-24
+# if [[ -z "$SCRIPT_SOURCED" ]]; then
+
+#   complete -F _scripts_autocomplete run_script
+# fi

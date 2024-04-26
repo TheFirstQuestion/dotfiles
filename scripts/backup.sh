@@ -80,7 +80,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
   isCharging=$(system_profiler SPPowerDataType | grep -A3 -B7 'Condition' | grep "Charging" | awk '{print $2}')
   if [ $isCharging != "Yes" ]; then
     echo 'error: computer is not currently charging'
-    exit 1
+    exit 2
   fi
   for i in /Volumes/Drive*; do
     if [ -d "$i" ]; then
@@ -93,7 +93,7 @@ fi
 # Confirm that DESTINATION exists and is valid
 if [ ! -d "$DESTINATION" ]; then
   echo -e "${RED}error: Destination not found${NC}"
-  exit 1
+  exit 3
 fi
 
 # Log that we are starting, because it may take a while
