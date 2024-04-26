@@ -49,13 +49,6 @@ if [ ! -d "$HOME/Archive" ]; then
   exit 1
 fi
 
-# Create the timestamped directory
-thisBackupLogDir="$HOME/Archive/.backups/$(timestamp)"
-mkdir -p "$thisBackupLogDir"
-
-# Redirect output to both terminal and file
-exec > >(tee "${thisBackupLogDir}/00_script_output.txt") 2>&1
-
 # Check that (a) a drive is connected and (b) the computer is charging
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   # Mint
@@ -95,6 +88,17 @@ if [ ! -d "$DESTINATION" ]; then
   echo -e "${RED}error: Destination not found${NC}"
   exit 3
 fi
+
+# Note that we never check how much time has passed since the last backup
+# Automated backups (via cron) are handled in `cron/automated_backup.sh`
+
+# Once we've reached this point, the backup is going to happen, so start logging
+# Create the timestamped directory
+thisBackupLogDir="$HOME/Archive/.backups/$(timestamp)"
+mkdir -p "$thisBackupLogDir"
+
+# Redirect output to both terminal and file
+exec > >(tee "${thisBackupLogDir}/00_script_output.txt") 2>&1
 
 # Log that we are starting, because it may take a while
 echo -e "${GREEN}beginning backup to $DESTINATION...${NC}"
