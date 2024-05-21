@@ -22,7 +22,7 @@
 		"**/node_modules": true,
 		"package-lock.json": true
 	},
-	"python.defaultInterpreterPath": "/home/steven/miniconda3/envs/Winston/bin/python",
+	"python.defaultInterpreterPath": "/home/steven/miniconda3/envs/base/bin/python",
 	"window.zoomLevel": 0.6,
 	"explorer.decorations.badges": false,
 	"breadcrumbs.enabled": false,
@@ -148,14 +148,21 @@
 	"workbench.settings.openDefaultSettings": true,
 	"workbench.tips.enabled": false,
 	"cSpell.userWords": [
+		"axios",
+		"Blockquotes",
 		"Convo",
+		"downvote",
 		"firestore",
 		"GPT",
 		"gpteach",
 		"headshot",
 		"Headshots",
+		"hupper",
+		"iframes",
+		"Improv",
 		"Lowkey",
 		"Multinomial",
+		"Musescore",
 		"OPENAI",
 		"Opferman",
 		"predeploy",
@@ -166,13 +173,14 @@
 		"Toastify",
 		"tqdm",
 		"uids",
+		"upvote",
 		"xkcd"
 	],
 	"[json]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"[python]": {
-		"editor.defaultFormatter": "ms-python.python",
+		"editor.defaultFormatter": "charliermarsh.ruff",
 		"editor.formatOnSave": true
 	},
 	"notebook.formatOnCellExecution": true,
@@ -196,5 +204,16 @@
 	},
 	"python.createEnvironment.contentButton": "hide",
 	"workbench.activityBar.location": "hidden",
-	"javascript.updateImportsOnFileMove.enabled": "always"
+	"javascript.updateImportsOnFileMove.enabled": "always",
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"python.terminal.activateEnvInCurrentTerminal": true,
+	"pylint.lintOnChange": true,
+	"python.linting.pylintEnabled": false,
+	"python.linting.enabled": true,
+	"[ignore]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
+	},
+	"[shellscript]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
+	}
 }

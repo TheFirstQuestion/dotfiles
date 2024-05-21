@@ -16,7 +16,7 @@ time_part="${latest_folder_name:11:16}"
 # Convert time part to 24-hour format
 hour="${time_part:1:2}"
 minute="${time_part:4:6}"
-if [ "${time_part:0:1}" = "p" ]; then
+if [ "${time_part:0:1}" = "p" ] && [ hour != "12" ]; then
   ((hour += 12))
 fi
 time_24h="${hour}:${minute}"
