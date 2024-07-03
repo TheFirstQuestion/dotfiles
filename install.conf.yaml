@@ -88,6 +88,15 @@
     ~/.local/share/nemo:
       path: nemo
 
+    # Musescore
+    # Separate each directory so can use for different versions
+    ~/Archive/07 Application Files/MuseScore4/Plugins:
+      path: musescore/plugins
+    ~/Archive/07 Application Files/MuseScore4/Styles:
+      path: musescore/styles
+    ~/Archive/07 Application Files/MuseScore4/Templates:
+      path: musescore/templates
+
 - shell:
     - command: git submodule update --init --recursive
       description: Installing submodules...
