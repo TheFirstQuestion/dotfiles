@@ -1,0 +1,28 @@
+output DP-1
+off
+output DP-2
+off
+output eDP-1
+crtc 0
+mode 1920x1200
+pos 0x0
+primary
+rate 60.00
+x-prop-broadcast_rgb Automatic
+x-prop-colorspace Default
+x-prop-max_bpc 12
+x-prop-non_desktop 0
+x-prop-scaling_mode Full aspect
+output HDMI-1
+crtc 1
+filter bilinear
+mode 1024x768
+pos 1920x0
+rate 75.03
+transform 1.500000,0.000000,0.000000,0.000000,1.500000,0.000000,0.000000,0.000000,1.000000
+x-prop-aspect_ratio Automatic
+x-prop-audio auto
+x-prop-broadcast_rgb Automatic
+x-prop-colorspace Default
+x-prop-max_bpc 12
+x-prop-non_desktop 0

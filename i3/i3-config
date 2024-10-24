@@ -268,7 +268,12 @@ popup_during_fullscreen smart
 
 # Zoom
 for_window [class="zoom"] floating enable
+for_window [class="Zoom"] floating enable
+
+# Terminal always splits horizontally
+for_window [class="Terminator"] split h
 
 # Terminal split
-bindsym --release Control+D [class="Terminator"] split h; exec terminator --working-directory $(xdotool getwindowfocus getwindowname | sed 's/[^:]*://')
-bindsym --release Control+Shift+D [class="Terminator"] split v; exec terminator --working-directory $(xdotool getwindowfocus getwindowname | sed 's/[^:]*://')
+# bindsym --release Control+D [class="Terminator"] exec terminator --working-directory $(xdotool getwindowfocus getwindowname | sed 's/[^:]*://');
+
+# bindsym --release Control+Shift+D [class="Terminator"] exec terminator --working-directory $(xdotool getwindowfocus getwindowname | sed 's/[^:]*://')

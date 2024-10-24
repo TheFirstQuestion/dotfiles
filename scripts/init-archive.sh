@@ -5,8 +5,8 @@ IFS=$'\n\t'
 # Confirm that the path was passed and is a valid directory
 rootOfArchive=${1:-}
 if [ ! -d "$rootOfArchive" ]; then
-    echo "usage: init-archive.sh /root/of/archive"
-    exit 1
+  echo "usage: init-archive.sh /root/of/archive"
+  exit 1
 fi
 
 cd "$rootOfArchive"
@@ -47,6 +47,7 @@ mkdir -p '06 Backups/Sessions'
 
 mkdir -p '07 Application Files/AppImages'
 mkdir -p '07 Application Files/Calibre Library'
+mkdir -p '07 Application Files/MuseScore4'
 mkdir -p '07 Application Files/Zotero'
 
 mkdir -p '99 Trash'

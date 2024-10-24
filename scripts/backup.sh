@@ -180,6 +180,6 @@ notify 'Backup completed!'
 
 echo 'Backup completed!'
 echo "👉😎👉"
-# TODO: send log files to Keybase
+# TODO: send log files to Keybase/Discord
 
 exit 0

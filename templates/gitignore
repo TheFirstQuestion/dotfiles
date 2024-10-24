@@ -27,6 +27,16 @@ node_modules/
 compiled/
 # Expo (React Native)
 .expo/
+dist/
+web-build/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
 
 
 ############################## Create React App #############################
