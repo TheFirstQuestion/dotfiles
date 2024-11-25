@@ -40,7 +40,7 @@ source ${ZDOTDIR:-~}/.zplugins/zsh-safe-rm/zsh-safe-rm.plugin.zsh
 
 This plugin should work with most Zsh plugin managers, assuming they support git submodules. See the documentation for your
 preferred plugin manager for installation instructions. Or, if you don't already have one or yours doesn't support submodules,
-have a look at [antidote](https://getantidote.github.io).
+have a look at [antidote](https://antidote.sh).
 
 ```zsh
 antidote install mattmc3/zsh-safe-rm
