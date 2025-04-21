@@ -9,7 +9,7 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # This file inits all my environment variables and sources all my custom functions
-source /home/steven/dotfiles/scripts/init-env-vars.sh
+source $HOME/dotfiles/scripts/init-env-vars.sh
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -86,12 +86,12 @@ plugins=(
     # autoupdate
     npm
     sudo
-    zsh-safe-rm
+    # zsh-safe-rm
     zsh-better-npm-completion
     conda-zsh-completion
     extract
 )
-source /home/steven/dotfiles/zsh/auto-ls.zsh
+source $HOME/dotfiles/zsh/auto-ls.zsh
 
 source $ZSH/oh-my-zsh.sh
 

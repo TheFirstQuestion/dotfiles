@@ -37,7 +37,7 @@ if [[ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ]]
     echo "Installed ZSH autosuggestions."
 fi
 
-if [[ ! -d $ZSH_CUSTOM/plugins/zsh-syntax-highlighting ]]; then
+if [[ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting ]]; then
     git clone -q https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
     echo "Installed ZSH syntax highlighting."
 fi
