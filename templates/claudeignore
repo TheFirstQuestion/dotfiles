@@ -1,0 +1,124 @@
+# Steven G. Opferman | steven.g.opferman@gmail.com
+# My personal template for .claudeignore files
+# Claude Code will skip these files when reading the codebase.
+# Delete irrelevant entries as appropriate.
+# Uses the same syntax as .gitignore.
+####################################################################
+
+
+########################### Credentials & Secrets ###########################
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+token.json
+credentials.json
+*secret*
+*secrets*
+service-account*.json
+
+
+########################### Dependencies ###########################
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pip/
+.npm/
+
+
+########################### Build Artifacts ###########################
+dist/
+build/
+out/
+compiled/
+coverage/
+web-build/
+*.min.js
+*.min.css
+*.map
+*.class
+*.o
+*.apk
+
+
+########################### Generated / Large Data Files ###########################
+*.lock
+package-lock.json
+yarn.lock
+*.log
+*.csv
+*.parquet
+*.sqlite
+*.db
+.eslintcache
+
+
+########################### Framework-specific ###########################
+# Expo (React Native)
+.expo/
+# Android
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+google-services.json
+# SASS
+.sass-cache/
+# Create React App
+.pnp
+.pnp.js
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+
+########################### Notebooks ###########################
+# Uncomment to exclude notebooks entirely:
+# *.ipynb
+.ipynb_checkpoints/
+profile_default/
+ipython_config.py
+
+
+########################### Media & Binaries ###########################
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.pdf
+*.zip
+*.tar.gz
+*.rar
+*.jar
+*.war
+*.ear
+*.mp3
+*.mp4
+*.mov
+*.wav
+*.jks
+*.p8
+*.mobileprovision
+
+
+########################### macOS ###########################
+.DS_Store
+__MACOSX/
+.AppleDouble
+._*
+.Spotlight-V100
+.Trashes
+
+
+########################### Linux ###########################
+*~
+.fuse_hidden*
+.Trash-*
+.nfs*

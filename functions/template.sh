@@ -8,5 +8,7 @@ template() {
     mv README README.md
   elif [ $1 = "env" ]; then
     mv env .env.local
+  elif [ $1 = "zshrc.local" ]; then
+    mv zshrc.local ~/.zshrc.local
   fi
 }

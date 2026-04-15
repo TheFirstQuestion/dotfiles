@@ -21,14 +21,6 @@
       path: ssh/config
     ~/.condarc: conda/condarc
 
-    # Atom
-    ~/.atom/config.cson:
-      path: atom/config.cson
-    ~/.atom/styles.less:
-      path: atom/styles.less
-    ~/.atom/snippets.cson:
-      path: atom/snippets.cson
-
     # VSCode
     # Linux
     ~/.config/VSCodium/User/snippets:
@@ -88,6 +80,12 @@
     ~/Templates/.env.local:
       path: templates/env
 
+    # Claude Code
+    ~/.claude/settings.json:
+      path: claude/settings.json
+    ~/.claude/CLAUDE.md:
+      path: claude/CLAUDE.md
+
     # Firefox
     ~/.mozilla/firefox/0uo64nlk.default-release/chrome/userChrome.css:
       path: firefox/userChrome.css
@@ -116,9 +114,6 @@
       description: Ensuring Oh-My-Zsh exists...
       quiet: true
 
-    - command: functions/keybase-log.sh 'dotbotted successfully!'
-      description: Logging to Keybase...
-      quiet: true
 # TODO: run archive-init script
 # TODO: install fonts for terminal
 # TODO: ensure mode set correctly for executables

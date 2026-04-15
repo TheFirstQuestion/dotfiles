@@ -1,0 +1,8 @@
+# Machine-specific environment variables — NOT tracked in git.
+# Source this from ~/.zshrc with: [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# Claude Code / AWS Bedrock
+export AWS_PROFILE=""
+export AWS_REGION=""
+export CLAUDE_CODE_USE_BEDROCK="1"
+export ANTHROPIC_MODEL=""
