@@ -287,7 +287,7 @@
 	"chat.viewSessions.orientation": "stacked",
 	"claudeCode.preferredLocation": "panel",
 	"claudeCode.disableLoginPrompt": true,
-"claudeCode.enableNewConversationShortcut": true,
+	"claudeCode.enableNewConversationShortcut": true,
 	"chat.mcp.gallery.enabled": true,
 	"diffEditor.renderSideBySide": false,
 }

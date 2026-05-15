@@ -1,7 +1,65 @@
 {
+  "env": {
+    "CLAUDE_CODE_USE_BEDROCK": "1",
+    "AWS_REGION": "us-east-2"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(ls *)",
+      "Bash(ls)",
+      "Bash(gh pr *)",
+      "Bash(gh issue *)",
+      "Bash(gh repo *)",
+      "Bash(gh run *)"
+    ],
+    "deny": [],
+    "ask": [
+      "Bash(git push*)",
+      "Bash(git commit*)",
+      "Bash(gh pr comment*)",
+      "Bash(gh issue comment*)",
+      "Bash(gh api*comment*)"
+    ]
+  },
+  "model": "sonnet",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /Users/steven/dotfiles/assets/ding.wav",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /Users/steven/dotfiles/assets/ding.wav",
+            "async": true
+          }
+        ]
+      }
+    ]
+  },
   "statusLine": {
     "type": "command",
     "command": "npx -y ccstatusline@latest",
     "padding": 0
+  },
+  "enabledPlugins": {
+    "learning-opportunities@learning-opportunities": true
+  },
+  "extraKnownMarketplaces": {
+    "learning-opportunities": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/DrCatHicks/learning-opportunities.git"
+      }
+    }
   }
 }

@@ -85,6 +85,8 @@
       path: claude/settings.json
     ~/.claude/CLAUDE.md:
       path: claude/CLAUDE.md
+    ~/.claude/skills:
+      path: claude/skills
 
     # Firefox
     ~/.mozilla/firefox/0uo64nlk.default-release/chrome/userChrome.css:
