@@ -80,7 +80,7 @@ If the description is accurate and complete, the Changelog will be empty (but th
 <how to verify this change>
 
 ## Changelog
-<entries from Step 4, or "No changes to description.">
+<entries from Step 3, or "No changes to description.">
 ```
 
 **Rules for every description:**
