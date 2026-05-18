@@ -27,6 +27,12 @@ if [[ -z "$repo" ]]; then
   repo=$(gh repo view --json nameWithOwner -q '.nameWithOwner')
 fi
 
+# ---------- validate number is numeric ----------
+if ! [[ "$number" =~ ^[0-9]+$ ]]; then
+  echo '{"error":"Invalid PR number: '"$number"'"}' >&2
+  exit 1
+fi
+
 repo_slug="${repo//\//-}"
 diff_path="/tmp/pr-data-${repo_slug}-${number}.diff"
 
@@ -50,6 +56,16 @@ gh pr diff "$number" -R "$repo" > "$diff_path" &
 pid_diff=$!
 
 wait "$pid_pr" "$pid_list" "$pid_diff"
+
+# ---------- validate fetch results ----------
+if ! jq empty "$tmp_pr" 2>/dev/null; then
+  echo '{"error":"Failed to fetch PR data. Check that the PR number and repo are correct."}' >&2
+  exit 1
+fi
+if ! jq empty "$tmp_list" 2>/dev/null; then
+  echo '{"error":"Failed to fetch open PR list."}' >&2
+  exit 1
+fi
 
 # ---------- template detection ----------
 template_content="null"
