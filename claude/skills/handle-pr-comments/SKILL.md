@@ -121,10 +121,20 @@ Draft a short, professional reply:
 - Briefly describe what was changed, or explain why no change was needed (1–2 sentences)
 - End with exactly: `Written with Claude Code`
 
-Ask: **"Does this reply look right? (yes / edit)"**
+Use the `AskUserQuestion` tool to present the reply for approval:
 
-- If **edit**: ask what to change, revise, and ask again.
-- If **yes**: record the reply (comment ID, reply type, body) in the pending replies list. Update the progress file. Do **not** post yet.
+```
+Question: "Does this reply look right?"
+Options:
+  - "Approve" → record and move to next comment
+  - "Edit" → ask what to change, revise the reply, then re-present with AskUserQuestion
+```
+
+Loop on "Edit" until the user selects "Approve". Once approved:
+- Record the reply (comment ID, reply type, body) in the pending replies list
+- Update the progress file
+- Do **not** post yet
+- Immediately move to the next comment — do NOT ask permission to continue
 
 ### 2e — Next comment
 
