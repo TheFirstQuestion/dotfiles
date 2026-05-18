@@ -55,17 +55,10 @@ pid_list=$!
 gh pr diff "$number" -R "$repo" > "$diff_path" &
 pid_diff=$!
 
-wait "$pid_pr" "$pid_list" "$pid_diff"
-
 # ---------- validate fetch results ----------
-if ! jq empty "$tmp_pr" 2>/dev/null; then
-  echo '{"error":"Failed to fetch PR data. Check that the PR number and repo are correct."}' >&2
-  exit 1
-fi
-if ! jq empty "$tmp_list" 2>/dev/null; then
-  echo '{"error":"Failed to fetch open PR list."}' >&2
-  exit 1
-fi
+wait "$pid_pr"   || { echo '{"error":"Failed to fetch PR data. Check that the PR number and repo are correct."}' >&2; exit 1; }
+wait "$pid_list" || { echo '{"error":"Failed to fetch open PR list."}' >&2; exit 1; }
+wait "$pid_diff" || { echo '{"error":"Failed to fetch PR diff."}' >&2; exit 1; }
 
 # ---------- template detection ----------
 template_content="null"
