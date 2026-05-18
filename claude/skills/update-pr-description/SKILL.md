@@ -8,48 +8,26 @@ argument-hint: [pr-url-or-number]
 
 Produce an accurate, well-structured PR description that reflects the actual implementation, references all relevant context (tickets, stacked PRs), and records any meaningful changes from the original description in a Changelog section.
 
-## Step 0 — Identify the PR
+## Step 0 — Fetch all PR data
 
-If an argument was provided (URL or number), use that PR. Otherwise detect the current branch's PR:
+Run the `pr-data` script (lives alongside this skill at `~/.claude/skills/update-pr-description/pr-data.sh`) to fetch all data in a single call:
+
 ```
-gh pr view --json number,url,title,body,headRefName,baseRefName 2>/dev/null
-```
-
-If no PR is found, ask the user for a PR number or URL and stop.
-
-## Step 1 — Gather all context
-
-Run these in parallel:
-
-**PR data:**
-```
-gh pr view <number> --json number,url,title,body,headRefName,baseRefName,commits
-gh pr diff <number>
+~/.claude/skills/update-pr-description/pr-data.sh [<PR-number-or-URL>]
 ```
 
-**Stacked / dependent PRs** — search for other open PRs in the same repo that reference this PR's branch or number, or that this PR's branch was based on:
-```
-gh pr list --json number,url,title,headRefName,baseRefName,body --state open
-```
-A PR is "stacked" if:
-- Its `baseRefName` matches this PR's `headRefName` (this PR is a parent)
-- Its `headRefName` matches this PR's `baseRefName` (this PR is a child)
-- Its body or title mentions this PR's number or branch name
+If an argument was provided (URL or number), pass it through. Otherwise run with no argument — the script will auto-detect the current branch's PR.
 
-**PR template** — check for a template in the repo:
-```
-ls .github/PULL_REQUEST_TEMPLATE* 2>/dev/null
-ls .github/pull_request_template* 2>/dev/null
-ls docs/pull_request_template* 2>/dev/null
-```
-If a template exists, read it. If multiple exist, pick the most generic one (or ask the user).
+If the script exits with a non-zero status or its output contains `{"error":...}`, report the error to the user and stop.
 
-**Commit messages:**
-```
-gh pr view <number> --json commits -q '.commits[].messageHeadline'
-```
+The script outputs a JSON object with these keys:
+- `pr` — PR metadata: `number`, `url`, `title`, `body`, `headRefName`, `baseRefName`, `author`
+- `commits` — flat array of commit message headlines
+- `template` — PR template contents as a string, or `null` if none found
+- `stacked_prs` — array of related open PRs, each with `number`, `url`, `title`, `headRefName`, `baseRefName`, and `relationship` (`"parent"`, `"child"`, or `"mentioned"`)
+- `diff_path` — path to a temp file containing the full PR diff; read this file in Step 2
 
-## Step 2 — Extract ticket IDs
+## Step 1 — Extract ticket IDs
 
 Run:
 ```bash
@@ -58,7 +36,7 @@ Run:
 
 Use the JSON array output directly. Each element has `id` and `url`. If the array is empty, the Tickets section of the description gets "None".
 
-## Step 3 — Analyze the diff
+## Step 2 — Analyze the diff
 
 Read the diff carefully. Produce a factual summary of what the PR actually does:
 - What changed (files, modules, patterns)
@@ -67,9 +45,9 @@ Read the diff carefully. Produce a factual summary of what the PR actually does:
 
 This is the ground truth the description must reflect.
 
-## Step 4 — Detect description drift
+## Step 3 — Detect description drift
 
-Compare the existing PR body against your diff analysis from Step 3. Identify any statements in the existing description that are:
+Compare the existing PR body against your diff analysis from Step 2. Identify any statements in the existing description that are:
 - **Inaccurate** — describes something differently from how it was actually implemented
 - **Stale** — references an approach that was changed mid-PR
 - **Missing** — significant implementation details present in the diff but absent from the description
@@ -77,9 +55,9 @@ Compare the existing PR body against your diff analysis from Step 3. Identify an
 Collect each drift item as a Changelog entry in the form:
 > `Originally described X; implementation uses Y instead.`
 
-If the description is accurate and complete, the Changelog will be empty (but the section still appears — see Step 5).
+If the description is accurate and complete, the Changelog will be empty (but the section still appears — see Step 4).
 
-## Step 5 — Write the new description
+## Step 4 — Write the new description
 
 **If a PR template exists:** fill it in exactly, preserving all section headings. Do not add or remove sections.
 
@@ -106,13 +84,13 @@ If the description is accurate and complete, the Changelog will be empty (but th
 ```
 
 **Rules for every description:**
-- Every ticket ID found in Step 2 must appear, linked if a URL is known
+- Every ticket ID found in Step 1 must appear, linked if a URL is known
 - Every stacked/dependent PR must be listed with its number, title, and URL
 - The Changelog section must always be present — append new entries, never remove old ones
 - Do not describe things the diff doesn't show — accuracy over completeness
 - Write in present tense ("adds", "validates", "returns"), not past tense
 
-## Step 6 — Present and confirm
+## Step 5 — Present and confirm
 
 Show the user the proposed new description as a markdown preview. Show a diff of what changed vs. the current description if the existing body is non-trivial.
 
@@ -122,7 +100,7 @@ Ask: **"Does this look right? (yes / edit / cancel)"**
 - If **cancel**: stop without posting.
 - If **yes**: proceed.
 
-## Step 7 — Update the PR
+## Step 6 — Update the PR
 
 ```
 gh pr edit <number> --body "<new description>"
