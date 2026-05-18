@@ -1,6 +1,6 @@
 ---
 name: pre-commit
-description: Pre-commit checklist — discovers and runs repo-specific hooks/lint/format/tests, runs relevant review skills, checks conventions, and verifies the working tree is clean before committing.
+description: Use before committing to verify the working tree is ready — formatting, lint, tests, and conventions all pass.
 ---
 
 <HARD-GATE>

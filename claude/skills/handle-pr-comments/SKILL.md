@@ -1,6 +1,6 @@
 ---
 name: handle-pr-comments
-description: Work through PR review comments one at a time — fetch, plan, implement, and draft a reply for each comment with user approval at each step.
+description: Use when addressing review comments on a pull request.
 argument-hint: [pr-url-or-number]
 ---
 
@@ -139,15 +139,15 @@ Re-run `~/.claude/skills/handle-pr-comments/pr-comments.sh <number>`. Compare th
 ### 3b — Check CI and merge conflicts
 
 Use the fresh script output from 3a:
-- Check `ci` for any entries where `conclusion` is not `"SUCCESS"` and report them.
+- Check `ci` (GitHub Actions check runs) for any entries where `status` is `"in_progress"` or `"queued"` (still running) or `conclusion` is not `"success"` and not `null` (failed). Report each by `name`, `conclusion`, and `html_url`. Ignore entries where `conclusion` is `null` and `status` is `"completed"` — those are skipped/neutral runs.
 - Check `merge.mergeable` and `merge.mergeStateStatus` and report any conflicts.
 - If either CI is failing or merge conflicts exist, ask: **"CI is failing / there are merge conflicts — fix these before committing? (yes / proceed anyway)"**
   - If **yes**: stop here and let the user resolve the issues before proceeding.
   - If **proceed anyway**: continue.
 
-### 3c — Lint and test
+### 3c — Pre-commit
 
-Run the project's linter and test suite (use commands from `CLAUDE.md` / `.claude/rules` if found in Step 0c, otherwise infer from `package.json` or project structure). If either fails, fix the failures before proceeding. Do not commit broken code.
+Invoke the `pre-commit` skill. It will run format, lint, typecheck, tests, review, and simplify — and write the gate hash after staging. Do not proceed to commit until it completes successfully.
 
 ### 3d — Summary and pending replies
 
@@ -190,7 +190,15 @@ gh api repos/{owner}/{repo}/issues/<number>/comments \
   -f body="<reply text>"
 ```
 
-### 3g — Clean up progress file
+### 3g — Update PR description
+
+After replies are posted, offer to update the PR description to reflect any implementation changes made during this session:
+
+> "Want to update the PR description to reflect the changes just made? (yes / no)"
+
+If **yes**: invoke the `update-pr-description` skill for this PR number. It will handle template matching, ticket linking, stacked PR detection, and appending a Changelog entry for any description drift.
+
+### 3h — Clean up progress file
 
 Once all replies are posted successfully, delete the progress file:
 
