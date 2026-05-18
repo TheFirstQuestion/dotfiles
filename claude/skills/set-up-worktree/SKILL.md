@@ -106,3 +106,8 @@ Print a summary:
 
 Finish with:
 > "Worktree ready at `<path>`. To remove it later: `git worktree remove <path>`"
+
+## Common Mistakes
+
+- Creating a worktree for a branch already checked out somewhere — fails or creates duplicate state
+- Forgetting to run install steps after setup — worktree not immediately runnable

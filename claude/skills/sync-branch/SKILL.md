@@ -105,3 +105,9 @@ Confirm:
 - If a stash was created in Step 1, remind the user: `git stash pop` to restore their changes
 
 Report a brief summary: how many commits synced, any conflicts resolved (automatic vs. manual), and whether a push is needed (`git push` or `git push --force-with-lease` for rebase).
+
+## Common Mistakes
+
+- Forgetting to pop the stash after sync — local changes left stranded
+- Force-pushing a shared branch after rebase — rewrites history others depend on
+- Proceeding past unresolved conflicts — broken state committed to branch

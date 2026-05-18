@@ -141,3 +141,9 @@ Confirm the update succeeded by re-fetching:
 ```
 gh pr view <number> --json body -q '.body' | head -5
 ```
+
+## Common Mistakes
+
+- Editing before reading the full diff — description will miss or misrepresent changes
+- Removing existing Changelog entries — history is lost; always append, never delete
+- Inventing details not present in the diff — accuracy over completeness

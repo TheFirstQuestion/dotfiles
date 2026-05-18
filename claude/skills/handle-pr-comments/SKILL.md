@@ -205,3 +205,20 @@ Once all replies are posted successfully, delete the progress file:
 ```
 rm /tmp/pr-comments-<repo-slug>-<pr-number>.json
 ```
+
+## Common Mistakes
+
+| Mistake | What goes wrong | Fix |
+|---|---|---|
+| Posting replies before push succeeds | Replies reference changes not on the remote yet | Always commit and push before posting |
+| Making unrequested changes alongside a fix | Scope creep; reviewers didn't ask for it | Change only what the comment requests |
+| Treating outdated comments as current | Code may have already moved on | Check `outdated` flag; assess current state before acting |
+| Skipping Step 3c (pre-commit) before committing | Lint/format violations end up in the PR | Always run pre-commit before commit |
+| Using `git add .` to stage changes | Picks up unrelated modified files | Use `git add -u` or stage by file |
+
+## Red Flags
+
+- "I'll reply now and push after"
+- "While I'm in this file I'll also fix…"
+- "The comment is outdated so I'll just skip it"
+- "I'll skip pre-commit, it's just comment fixes"

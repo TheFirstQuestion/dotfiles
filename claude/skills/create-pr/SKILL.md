@@ -112,3 +112,10 @@ gh pr create \
 ```
 
 Capture the PR number and URL from the output and report them.
+
+## Common Mistakes
+
+- Running on `main` or `master` — PRs must come from feature branches
+- Having uncommitted changes — commit or stash first
+- A PR already exists for this branch — run `update-pr-description` instead
+- Wrong base branch chosen — verify before creating, can't easily change after

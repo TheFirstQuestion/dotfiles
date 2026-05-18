@@ -153,3 +153,22 @@ The hash must be written AFTER staging, since untracked files affect it.
 **Mark the Step 5 task `completed`.**
 
 Report a brief summary: files changed, commands run and their results, any issues fixed. End with **"Ready to commit."** — or list what still needs attention.
+
+## Common Mistakes
+
+| Mistake | What goes wrong | Fix |
+|---|---|---|
+| Writing gate hash before all tasks are `completed` | Bypasses the entire checklist | Complete all tasks first — HARD-GATE is not optional |
+| Running `gate.sh write` manually without the skill | Gate satisfied with no checks run | Always run via `/pre-commit` skill |
+| Skipping Step 2 because "nothing to review" | Convention violations slip through | Run review/simplify regardless |
+| Staging with `git add .` instead of `git add -u` | Accidentally includes untracked secrets or build artifacts | Always use `git add -u`; stage new files individually |
+| Not re-running lint after auto-format | Format may introduce lint violations | Re-run lint if any files were auto-formatted |
+| Completing Steps 0–4 but forgetting to run Step 5 | Gate hash never written; `git commit` blocked | Step 5 is mandatory — the skill isn't done until the gate is written |
+
+## Red Flags
+
+- "I already know it's clean"
+- "I'll skip review this time, it's a trivial change"
+- "The tests don't apply to this file"
+- "I'll just write the gate manually"
+- "All steps are done" (but Step 5 hasn't run yet)
