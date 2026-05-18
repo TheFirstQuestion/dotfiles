@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>extract-tickets Script Design</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 860px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #1a1a1a; }
+    h1 { border-bottom: 2px solid #e0e0e0; padding-bottom: 0.4rem; }
+    h2 { margin-top: 2rem; color: #2c2c2c; }
+    h3 { color: #444; }
+    pre { background: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 0.75rem 1rem; overflow-x: auto; font-size: 0.9em; }
+    code { background: #f0f0f0; padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.9em; }
+    pre code { background: none; padding: 0; font-size: inherit; }
+    ul { padding-left: 1.4rem; }
+    ol { padding-left: 1.4rem; }
+    .meta { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+    .section { border-left: 3px solid #0070f3; padding-left: 1rem; margin: 1.5rem 0; background: #f8fbff; padding-top: 0.1rem; padding-bottom: 0.1rem; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th { background: #f4f4f4; text-align: left; padding: 0.5rem 0.75rem; border: 1px solid #ccc; }
+    td { padding: 0.5rem 0.75rem; border: 1px solid #ddd; vertical-align: top; }
+  </style>
+</head>
+<body>
+
+<h1>extract-tickets Script Design</h1>
+<div class="meta">
+  <strong>Date:</strong> 2026-05-18 &nbsp;|&nbsp;
+  <strong>Status:</strong> Approved
+</div>
+
+<h2>Problem</h2>
+<p><code>update-pr-description</code> Step 2 requires Claude to scan branch name, PR title, PR body, and commit messages for ticket ID patterns, uppercase prefixes, deduplicate, and construct Monday.com URLs — all in its head, every run. This is deterministic text processing that should be a script.</p>
+
+<h2>Solution</h2>
+<p>A bash script <code>extract-tickets.sh</code> that takes a PR number or URL, fetches all relevant text from <code>gh</code>, extracts ticket IDs, and returns structured JSON.</p>
+
+<h2>Interface</h2>
+<pre><code>~/.claude/skills/update-pr-description/extract-tickets.sh [&lt;pr-number-or-url&gt;]</code></pre>
+<ul>
+  <li>Argument optional — auto-detects current branch's PR if omitted (same pattern as <code>pr-comments.sh</code>)</li>
+  <li>On success: JSON array on stdout</li>
+  <li>On error: <code>{"error": "..."}</code> on stderr, exit non-zero</li>
+</ul>
+
+<h2>Output</h2>
+<pre><code>[
+  {"id": "MOB-123", "url": "https://dimerhealth-cast.monday.com/item/MOB-123"},
+  {"id": "ENG-456", "url": "https://dimerhealth-cast.monday.com/item/ENG-456"}
+]</code></pre>
+<p>Returns <code>[]</code> when no tickets are found.</p>
+
+<h2>Extraction Logic</h2>
+
+<h3>Sources</h3>
+<p>All four sources are concatenated into one text blob before extraction:</p>
+<ol>
+  <li>Branch name (<code>headRefName</code>)</li>
+  <li>PR title</li>
+  <li>PR body</li>
+  <li>All commit message headlines</li>
+</ol>
+
+<h3>Pattern</h3>
+<p><code>[A-Za-z]+-[0-9]+</code> — matched via <code>grep -oE</code></p>
+
+<h3>Post-processing</h3>
+<ul>
+  <li>Uppercase the alphabetic prefix (e.g. <code>mob-123</code> → <code>MOB-123</code>)</li>
+  <li>Deduplicate</li>
+  <li>Sort</li>
+</ul>
+
+<h3>URL template</h3>
+<pre><code>https://dimerhealth-cast.monday.com/item/&lt;ID&gt;</code></pre>
+
+<h2>Skill Integration</h2>
+<div class="section">
+  <p><strong>File:</strong> <code>update-pr-description/SKILL.md</code> — Step 2 only</p>
+  <p>Replace the current manual scan instructions with:</p>
+  <blockquote>
+    Run <code>~/.claude/skills/update-pr-description/extract-tickets.sh [&lt;number&gt;]</code> and use the JSON array output directly. If the array is empty, the Tickets section gets "None".
+  </blockquote>
+  <p>No other steps change.</p>
+</div>
+
+<h2>Files Changed</h2>
+<table>
+  <thead>
+    <tr><th>Action</th><th>File</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Create</td><td><code>claude/skills/update-pr-description/extract-tickets.sh</code></td></tr>
+    <tr><td>Modify</td><td><code>claude/skills/update-pr-description/SKILL.md</code> (Step 2 only)</td></tr>
+  </tbody>
+</table>
+
+</body>
+</html>
