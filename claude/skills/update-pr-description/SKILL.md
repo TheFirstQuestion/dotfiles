@@ -51,21 +51,12 @@ gh pr view <number> --json commits -q '.commits[].messageHeadline'
 
 ## Step 2 — Extract ticket IDs
 
-Scan all of the following for ticket ID patterns (`MOB-123`, `ENG-456`, `PROJ-789`, etc.):
-- Branch name
-- PR title
-- Existing PR body
-- Commit messages
-
-For each unique ticket ID found, construct the URL as:
+Run:
+```bash
+~/.claude/skills/update-pr-description/extract-tickets.sh [<number-or-url>]
 ```
-https://dimerhealth-cast.monday.com/item/<ticket-id>
-```
-Example: `MOB-230` → `[MOB-230](https://dimerhealth-cast.monday.com/item/MOB-230)`
 
-If the existing PR body already contains a different link for that ticket ID, prefer the existing URL (it may be a direct board item ID rather than the slug).
-
-List all ticket IDs and their links — these must appear in the description.
+Use the JSON array output directly. Each element has `id` and `url`. If the array is empty, the Tickets section of the description gets "None".
 
 ## Step 3 — Analyze the diff
 
