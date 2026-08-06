@@ -9,6 +9,11 @@
 token.json
 credentials.json
 *secret*.json
+.env
+
+
+########################### Claude Code ###########################
+.claude/settings.local.json
 
 
 ########################### VS Code ###########################

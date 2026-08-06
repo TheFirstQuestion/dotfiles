@@ -9,33 +9,35 @@
 }
 
 /* Remove space between pinned and unpinned tabs */
-#tabbrowser-tabs[haspinnedtabs]:not([positionpinnedtabs]) > #tabbrowser-arrowscrollbox > .tabbrowser-tab[first-visible-unpinned-tab] {
-  margin-inline-start: 0 !important;;
+#tabbrowser-tabs[haspinnedtabs]:not([positionpinnedtabs])
+	> #tabbrowser-arrowscrollbox
+	> .tabbrowser-tab[first-visible-unpinned-tab] {
+	margin-inline-start: 0 !important;
 }
 
 .browser-toolbar {
 	background-color: #111 !important;
+	color: #aaaaaa !important;
 }
 
-
-#nav-bar-customization-target > :is(toolbarbutton, toolbaritem):first-child, #nav-bar-customization-target > :is(toolbarbutton, toolbaritem):last-child {
+#nav-bar-customization-target > :is(toolbarbutton, toolbaritem):first-child,
+#nav-bar-customization-target > :is(toolbarbutton, toolbaritem):last-child {
 	padding-inline-start: 0 !important;
 }
 
 #tracking-protection-icon-container {
-	display: none
+	display: none;
 }
 
 #TabsToolbar {
-  --toolbarbutton-inner-padding: 0 !important;;
+	--toolbarbutton-inner-padding: 0 !important;
 }
 
 #tabbrowser-arrowscrollbox-periphery {
-	display: none
+	display: none;
 }
 
-
-.tab-close-button {
+image.tab-close-button {
 	height: 15px !important;
 	width: 15px !important;
 	padding: 2px !important;
@@ -45,34 +47,39 @@
 	padding: 0 !important;
 }
 
-/* Active tab */
-.tab-background[selected="true"] {
-	background-color: #333 !important;
-	background-image: none !important;
-}
-
-
 /* Inactive tabs */
 .tab-background {
 	border-radius: var(--user-tab-rounding) var(--user-tab-rounding) 0px 0px !important;
 	margin-block: 0 0 !important;
+	background-image: none !important;
 	border-right: 1px solid #222 !important;
 	padding-left: 0 !important;
 }
+.tabbrowser-tab > .tab-stack > .tab-content {
+	color: #aaaaaa !important;
+}
 
-/* Inactive tabs hover */
+/* Tabs hover */
 .tabbrowser-tab:hover > .tab-stack > .tab-background {
 	background-color: #2d2d2d !important;
 }
 
+/* Active tab */
+.tabbrowser-tab[selected="true"] .tab-stack > .tab-background {
+	background-color: #222 !important;
+	background-image: none !important;
+}
+.tabbrowser-tab[selected="true"] > .tab-stack > .tab-content {
+	color: white !important;
+}
 
 /*** Tighten up drop-down/context/popup menu spacing (8 Sep 2021) ***/
-
 menupopup:not(.in-menulist) > menuitem,
 menupopup:not(.in-menulist) > menu {
-	padding-block: 1px !important; /* reduce to 3px, 2px, 1px or 0px as needed */
+	padding-block: 1px !important;
 	min-height: unset !important; /* v92.0 - for padding below 4px */
 }
+
 :root {
 	--arrowpanel-menuitem-padding: 4px 8px !important;
 }
@@ -81,11 +88,6 @@ menupopup:not(.in-menulist) > menu {
 #context-sendimage {
 	display: none !important;
 }
-
-/*
- * Makes the bookmarks bar slide down on hover or when menubar is enabled.
- * https://github.com/Timvde/UserChrome-Tweaks/blob/master/toolbars/sliding-bookmarks-bar.css
- */
 
 /*############################################ Cute Fox Background on Errors ############################################ */
 /* Source: https://github.com/GranTurismo364/Firefox-Custom-Error-Screen */

@@ -39,6 +39,14 @@
     ~/.editorconfig:
       path: vscode/editorconfig
 
+    # Cursor
+    ~/.config/Cursor/User/snippets:
+      path: vscode/snippets
+    ~/.config/Cursor/User/settings.json:
+      path: vscode/settings.json
+    ~/.config/Cursor/User/keybindings.json:
+      path: vscode/keybindings.json
+
     # Prettier
     ~/.prettierrc.js:
       path: prettier/prettierrc.js
@@ -81,7 +89,7 @@
       path: templates/env
 
     # Firefox
-    ~/.mozilla/firefox/0uo64nlk.default-release/chrome/userChrome.css:
+    ~/.mozilla/firefox/q5l6pgfi.default-release-1/chrome/userChrome.css:
       path: firefox/userChrome.css
 
     # Nemo
