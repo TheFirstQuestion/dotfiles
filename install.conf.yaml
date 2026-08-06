@@ -80,6 +80,10 @@
     ~/Templates/.env.local:
       path: templates/env
 
+    # ccstatusline
+    ~/.config/ccstatusline/settings.json:
+      path: claude/ccstatusline/settings.json
+
     # Claude Code
     ~/.claude/settings.json:
       path: claude/settings.json
@@ -87,6 +91,10 @@
       path: claude/CLAUDE.md
     ~/.claude/skills:
       path: claude/skills
+    ~/.claude/hooks:
+      path: claude/hooks
+    ~/.claude/scripts:
+      path: claude/scripts
 
     # Firefox
     ~/.mozilla/firefox/0uo64nlk.default-release/chrome/userChrome.css:

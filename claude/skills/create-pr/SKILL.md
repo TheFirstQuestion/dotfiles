@@ -24,7 +24,12 @@ git rev-parse --abbrev-ref HEAD
 **Merge conflict check** — after the base branch is known (default branch from Step 1), check whether the branch merges cleanly:
 ```
 git fetch origin
-git merge-tree $(git merge-base HEAD origin/<base>) HEAD origin/<base>
+git log HEAD..origin/<base> --oneline
+git diff --name-only HEAD...origin/<base>
+```
+If `git log` shows commits the current branch doesn't have, attempt a dry-run merge check:
+```
+git merge --no-commit --no-ff origin/<base> 2>&1; git merge --abort 2>/dev/null || true
 ```
 If conflicts are detected, stop and tell the user to resolve them first (suggest running `/sync-branch`).
 
@@ -84,34 +89,44 @@ Default to the repo's default branch. Override if:
 - The argument contains "into `<branch>`" or "against `<branch>`"  
 - The current branch was created from a non-default branch (check `git merge-base` against candidates)
 
-Show the chosen base: **"Base branch: `<base>` — correct? (yes / change)"**
+Use the chosen base directly — do not ask for confirmation. The `gh pr create` permission prompt is the gate.
 
-## Step 4 — Write the description
+## Step 4 — Create the PR as a draft
 
-Invoke the `update-pr-description` skill now, before creating the PR.
-
-Pass it the diff, commits, branch name, title, base branch, and any PR template found in Step 1 — everything it needs to produce a complete description without a PR number yet.
-
-`update-pr-description` will:
-- Fill in the PR template (or construct a default structure)
-- Link all ticket IDs found in branch name, title, and commits
-- Detect and link stacked PRs
-- Confirm with you before proceeding
-
-Wait for the user to approve the description before continuing.
-
-## Step 5 — Create the PR
-
-Create the PR with the approved description:
+Create the PR as a draft with a placeholder body so it isn't reviewable while the description is being written:
 
 ```
 gh pr create \
   --title "<title>" \
   --base "<base>" \
-  --body "<approved description>"
+  --draft \
+  --body "Description coming shortly."
 ```
 
-Capture the PR number and URL from the output and report them.
+Capture the PR number and URL from the output.
+
+## Step 5 — Write the description
+
+Invoke the `update-pr-description` skill, passing it the PR number from Step 4.
+
+`update-pr-description` will:
+- Read the actual diff and commits
+- Fill in the PR template (or construct a default structure)
+- Link all ticket IDs found in branch name, title, and commits
+- Detect and link stacked PRs
+- Confirm with you before posting
+
+Once confirmed, it will update the PR body via `gh pr edit`.
+
+## Step 6 — Promote to ready
+
+After the description is posted, mark the PR ready for review:
+
+```
+gh pr ready <number>
+```
+
+Report the PR URL to the user when done.
 
 ## Common Mistakes
 

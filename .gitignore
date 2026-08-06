@@ -6,6 +6,11 @@
 
 *.code-workspace
 
+**/.claude/settings.local.json
+claude/skills/quiz-me/quiz-learnings.md
+claude/skills/after-pr-questions/boss-patterns.md
+docs/*
+temp/*
 
 ########################### Node ###########################
 # Optional npm cache directory
@@ -132,3 +137,6 @@ google-services.json
 Network Trash Folder
 Temporary Items
 .apdisk
+
+
+

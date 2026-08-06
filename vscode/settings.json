@@ -199,6 +199,8 @@
 		"tqdm",
 		"uids",
 		"upvote",
+		"worktree",
+		"worktrees",
 		"xkcd",
 	],
 	"[json]": {
@@ -290,4 +292,15 @@
 	"claudeCode.enableNewConversationShortcut": true,
 	"chat.mcp.gallery.enabled": true,
 	"diffEditor.renderSideBySide": false,
+	"cSpell.enabledNotifications": {
+		"Lines too Long": false,
+		"Average Word Length too Long": false,
+		"Maximum Word Length Exceeded": false,
+	},
+	"scm.repositories.selectionMode": "single",
+	"python.analysis.typeCheckingMode": "standard",
+	"diffEditor.ignoreTrimWhitespace": true,
+	"csv.maxFileSizeMB": 0,
+	"security.promptForLocalFileProtocolHandling": false,
+	"window.openFoldersInNewWindow": "on",
 }

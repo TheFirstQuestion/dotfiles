@@ -3,13 +3,13 @@
 # Usage: extract-tickets.sh [PR-number-or-URL]
 #
 # Output: JSON array of {id, url} objects, e.g.:
-#   [{"id":"MOB-123","url":"https://dimerhealth-cast.monday.com/item/MOB-123"}]
+#   [{"id":"MOBI-123","url":"https://dimer-health.atlassian.net/browse/MOBI-123"}]
 # Returns [] if no tickets found.
 # On error: prints {"error":"..."} to stderr and exits non-zero.
 
 set -euo pipefail
 
-MONDAY_BASE="https://dimerhealth-cast.monday.com/item"
+JIRA_BASE="https://dimer-health.atlassian.net/browse"
 
 # ---------- resolve PR number and repo ----------
 repo=""
@@ -52,5 +52,5 @@ if [[ -z "$tickets" ]]; then
 fi
 
 echo "$tickets" | jq -R -s \
-  --arg base "$MONDAY_BASE" \
+  --arg base "$JIRA_BASE" \
   'split("\n") | map(select(length > 0)) | map({id: ., url: ($base + "/" + .)})'

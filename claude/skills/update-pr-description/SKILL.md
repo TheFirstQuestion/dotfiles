@@ -90,17 +90,9 @@ If the description is accurate and complete, the Changelog will be empty (but th
 - Do not describe things the diff doesn't show — accuracy over completeness
 - Write in present tense ("adds", "validates", "returns"), not past tense
 
-## Step 5 — Present and confirm
+## Step 5 — Update the PR
 
-Show the user the proposed new description as a markdown preview. Show a diff of what changed vs. the current description if the existing body is non-trivial.
-
-Ask: **"Does this look right? (yes / edit / cancel)"**
-
-- If **edit**: ask what to change, revise, and ask again.
-- If **cancel**: stop without posting.
-- If **yes**: proceed.
-
-## Step 6 — Update the PR
+**Do not ask for confirmation — run immediately.** The `gh pr edit` permission prompt is the gate.
 
 ```
 gh pr edit <number> --body "<new description>"
