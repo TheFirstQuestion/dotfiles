@@ -21,15 +21,8 @@
       path: ssh/config
     ~/.condarc: conda/condarc
 
-    # Atom
-    ~/.atom/config.cson:
-      path: atom/config.cson
-    ~/.atom/styles.less:
-      path: atom/styles.less
-    ~/.atom/snippets.cson:
-      path: atom/snippets.cson
-
     # VSCode
+    # Linux
     ~/.config/VSCodium/User/snippets:
       path: vscode/snippets
     ~/.config/VSCodium/User/settings.json:
@@ -45,6 +38,14 @@
     ~/.config/Cursor/User/settings.json:
       path: vscode/settings.json
     ~/.config/Cursor/User/keybindings.json:
+      path: vscode/keybindings.json
+
+    # Mac
+    ~/Library/Application Support/Code/User/settings.json:
+      path: vscode/settings.json
+    ~/Library/Application Support/Code/User/snippets:
+      path: vscode/snippets
+    ~/Library/Application Support/Code/User/keybindings.json:
       path: vscode/keybindings.json
 
     # Prettier
@@ -88,6 +89,22 @@
     ~/Templates/.env.local:
       path: templates/env
 
+    # ccstatusline
+    ~/.config/ccstatusline/settings.json:
+      path: claude/ccstatusline/settings.json
+
+    # Claude Code
+    ~/.claude/settings.json:
+      path: claude/settings.json
+    ~/.claude/CLAUDE.md:
+      path: claude/CLAUDE.md
+    ~/.claude/skills:
+      path: claude/skills
+    ~/.claude/hooks:
+      path: claude/hooks
+    ~/.claude/scripts:
+      path: claude/scripts
+
     # Firefox
     ~/.mozilla/firefox/q5l6pgfi.default-release-1/chrome/userChrome.css:
       path: firefox/userChrome.css
@@ -116,8 +133,6 @@
       description: Ensuring Oh-My-Zsh exists...
       quiet: true
 
-    - command: functions/keybase-log.sh 'dotbotted successfully!'
-      description: Logging to Keybase...
-      quiet: true
 # TODO: run archive-init script
+# TODO: install fonts for terminal
 # TODO: ensure mode set correctly for executables

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pr-data Script Design</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 860px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #1a1a1a; }
+    h1 { border-bottom: 2px solid #e0e0e0; padding-bottom: 0.4rem; }
+    h2 { margin-top: 2rem; color: #2c2c2c; }
+    h3 { color: #444; }
+    pre { background: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 0.75rem 1rem; overflow-x: auto; font-size: 0.9em; }
+    code { background: #f0f0f0; padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.9em; }
+    pre code { background: none; padding: 0; font-size: inherit; }
+    ul { padding-left: 1.4rem; }
+    ol { padding-left: 1.4rem; }
+    .meta { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+    .section { border-left: 3px solid #0070f3; padding-left: 1rem; margin: 1.5rem 0; background: #f8fbff; padding-top: 0.1rem; padding-bottom: 0.1rem; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th { background: #f4f4f4; text-align: left; padding: 0.5rem 0.75rem; border: 1px solid #ccc; }
+    td { padding: 0.5rem 0.75rem; border: 1px solid #ddd; vertical-align: top; }
+  </style>
+</head>
+<body>
+
+<h1>pr-data Script Design</h1>
+<div class="meta">
+  <strong>Date:</strong> 2026-05-18 &nbsp;|&nbsp;
+  <strong>Status:</strong> Approved
+</div>
+
+<h2>Problem</h2>
+<p><code>update-pr-description</code> Steps 1–2 require Claude to run 4+ separate <code>gh</code> commands, manually reason about stacked PR relationships, and locate the PR template — all re-derived on every run. This is deterministic data assembly that belongs in a script.</p>
+
+<h2>Solution</h2>
+<p>A bash script <code>pr-data.sh</code> that fetches all data needed by <code>update-pr-description</code> in one call: PR metadata, commits, resolved stacked PRs, PR template content, and the diff written to a temp file.</p>
+
+<h2>Interface</h2>
+<pre><code>~/.claude/skills/update-pr-description/pr-data.sh [&lt;pr-number-or-url&gt;]</code></pre>
+<ul>
+  <li>Argument optional — auto-detects current branch's PR if omitted (same pattern as <code>pr-comments.sh</code>)</li>
+  <li>On success: JSON object on stdout + diff written to temp file</li>
+  <li>On error: <code>{"error": "..."}</code> on stderr, exit non-zero</li>
+</ul>
+
+<h2>Output</h2>
+
+<h3>stdout — JSON object</h3>
+<pre><code>{
+  "pr": {
+    "number": 42,
+    "url": "https://github.com/owner/repo/pull/42",
+    "title": "Add rate limiting",
+    "body": "## Summary\n...",
+    "headRefName": "feat/rate-limiting",
+    "baseRefName": "main",
+    "author": "stevengopferman"
+  },
+  "commits": [
+    "Fix typo in auth",
+    "Add rate limiting middleware"
+  ],
+  "template": "## Summary\n\n## Ticket(s)\n\n## Testing\n",
+  "stacked_prs": [
+    {
+      "number": 41,
+      "url": "https://github.com/owner/repo/pull/41",
+      "title": "Add auth middleware",
+      "headRefName": "feat/auth",
+      "baseRefName": "main",
+      "relationship": "parent"
+    }
+  ],
+  "diff_path": "/tmp/pr-data-owner-repo-42.diff"
+}</code></pre>
+
+<ul>
+  <li><code>template</code> is the contents of the first PR template found, or <code>null</code> if none exists.</li>
+  <li><code>stacked_prs</code> is <code>[]</code> when no stacked PRs are found.</li>
+  <li><code>diff_path</code> is always present on success; the file always exists.</li>
+</ul>
+
+<h3>Diff temp file</h3>
+<p>Written to <code>/tmp/pr-data-&lt;repo-slug&gt;-&lt;number&gt;.diff</code> where repo slug is <code>owner/repo</code> with <code>/</code> replaced by <code>-</code> (e.g. <code>pr-data-Dimer-Health-dimer-cura-node-42.diff</code>).</p>
+
+<h2>Implementation Logic</h2>
+
+<h3>PR Resolution</h3>
+<p>Identical to <code>pr-comments.sh</code> and <code>extract-tickets.sh</code>: parse optional arg for number and repo slug, fall back to <code>gh pr view --json number</code> for auto-detect, then <code>gh repo view --json nameWithOwner</code> for repo.</p>
+
+<h3>Parallel Fetches</h3>
+<p>Three fetches run in parallel using <code>&amp;</code> + <code>wait</code>:</p>
+<ol>
+  <li><code>gh pr view &lt;number&gt; -R &lt;repo&gt; --json number,url,title,body,headRefName,baseRefName,author,commits</code> → PR metadata + commits</li>
+  <li><code>gh pr list -R &lt;repo&gt; --json number,url,title,headRefName,baseRefName,body --state open</code> → all open PRs for stacked detection</li>
+  <li><code>gh pr diff &lt;number&gt; -R &lt;repo&gt;</code> → written directly to the diff temp file</li>
+</ol>
+
+<h3>Template Detection</h3>
+<p>After fetches complete, check these paths in order — return the first match as a string, <code>null</code> if none found:</p>
+<ol>
+  <li><code>.github/PULL_REQUEST_TEMPLATE.md</code></li>
+  <li><code>.github/pull_request_template.md</code></li>
+  <li><code>docs/pull_request_template.md</code></li>
+</ol>
+
+<h3>Stacked PR Resolution</h3>
+<p>For each open PR (excluding this PR itself), check these conditions in priority order — assign the first matching relationship label:</p>
+<table>
+  <thead>
+    <tr><th>Condition</th><th>Relationship</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>other.baseRefName == this.headRefName</code></td><td><code>"child"</code></td></tr>
+    <tr><td><code>other.headRefName == this.baseRefName</code></td><td><code>"parent"</code></td></tr>
+    <tr><td><code>other.body</code> or <code>other.title</code> contains <code>#&lt;number&gt;</code> or this PR's branch name</td><td><code>"mentioned"</code></td></tr>
+  </tbody>
+</table>
+<p>A PR matching multiple conditions gets the first matching label only.</p>
+
+<h3>commits Field</h3>
+<p>Extracted as <code>[.commits[].messageHeadline]</code> — flat string array, same shape as used by <code>extract-tickets.sh</code>.</p>
+
+<h2>Skill Integration</h2>
+<div class="section">
+  <p><strong>File:</strong> <code>update-pr-description/SKILL.md</code> — Steps 0 and 1 only</p>
+  <p>Replace the current Step 0 (manual <code>gh pr view</code>) and Step 1 (four parallel fetches) with:</p>
+  <blockquote>
+    Run <code>~/.claude/skills/update-pr-description/pr-data.sh [&lt;number-or-url&gt;]</code>. Use the JSON output directly for all PR metadata, commits, template, and stacked PRs. Read the diff from <code>diff_path</code>.
+  </blockquote>
+  <p>Steps 2–7 are unchanged.</p>
+</div>
+
+<h2>Files Changed</h2>
+<table>
+  <thead>
+    <tr><th>Action</th><th>File</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Create</td><td><code>claude/skills/update-pr-description/pr-data.sh</code></td></tr>
+    <tr><td>Modify</td><td><code>claude/skills/update-pr-description/SKILL.md</code> (Steps 0 and 1 only)</td></tr>
+  </tbody>
+</table>
+
+</body>
+</html>

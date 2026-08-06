@@ -10,6 +10,7 @@ token.json
 credentials.json
 *secret*.json
 .env
+.zshrc.local
 
 
 ########################### Claude Code ###########################

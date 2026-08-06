@@ -146,7 +146,6 @@ These instructions will get you a copy of the project up and running.
 - [ ] different configurations for desktop vs. server
 - [ ] install all dependencies
   - [ ] Atom plugins
-  - [ ] Keybase
 - [ ] Better integration with Winston?
 
 <!--

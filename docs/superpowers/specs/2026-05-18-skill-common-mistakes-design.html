@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill Common Mistakes Design</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 860px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #1a1a1a; }
+    h1 { border-bottom: 2px solid #e0e0e0; padding-bottom: 0.4rem; }
+    h2 { margin-top: 2rem; color: #2c2c2c; }
+    h3 { color: #444; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th { background: #f4f4f4; text-align: left; padding: 0.5rem 0.75rem; border: 1px solid #ccc; }
+    td { padding: 0.5rem 0.75rem; border: 1px solid #ddd; vertical-align: top; }
+    tr:nth-child(even) td { background: #fafafa; }
+    code { background: #f0f0f0; padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.9em; }
+    ul { padding-left: 1.4rem; }
+    .meta { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+    .tier { border-left: 3px solid #0070f3; padding-left: 1rem; margin: 1rem 0; background: #f8fbff; }
+    .tier-brief { border-left-color: #888; background: #fafafa; }
+    .skill-name { font-weight: bold; font-family: monospace; font-size: 1rem; }
+  </style>
+</head>
+<body>
+
+<h1>Skill Common Mistakes Design</h1>
+<div class="meta">
+  <strong>Date:</strong> 2026-05-18 &nbsp;|&nbsp;
+  <strong>Status:</strong> Approved
+</div>
+
+<h2>Goal</h2>
+<p>Add Common Mistakes / Red Flags sections to all 6 custom skills, with depth proportional to the cost of mistakes.</p>
+
+<h2>Depth Tiers</h2>
+
+<div class="tier">
+  <h3>Deep — table + Red Flags list</h3>
+  <p>For skills where mistakes have irreversible or externally-visible consequences.</p>
+  <p><strong>Skills:</strong> <code>pre-commit</code>, <code>handle-pr-comments</code></p>
+  <p>Each gets:</p>
+  <ul>
+    <li>A <strong>Common Mistakes</strong> section with a 3-column table: <em>Mistake | What goes wrong | Fix</em></li>
+    <li>A <strong>Red Flags</strong> bullet list: quick self-check signals to stop immediately</li>
+  </ul>
+</div>
+
+<div class="tier tier-brief">
+  <h3>Brief — 3–4 bullet list</h3>
+  <p>For skills where failure modes surface immediately and are easily corrected.</p>
+  <p><strong>Skills:</strong> <code>create-pr</code>, <code>update-pr-description</code>, <code>sync-branch</code>, <code>set-up-worktree</code></p>
+  <p>Each gets a <strong>Common Mistakes</strong> section with 3–4 plain bullets.</p>
+</div>
+
+<h2>Content</h2>
+
+<h3><span class="skill-name">pre-commit</span></h3>
+
+<h4>Common Mistakes</h4>
+<table>
+  <thead>
+    <tr><th>Mistake</th><th>What goes wrong</th><th>Fix</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Writing gate hash before all tasks are <code>completed</code></td>
+      <td>Bypasses the entire checklist</td>
+      <td>Complete all tasks first — HARD-GATE is not optional</td>
+    </tr>
+    <tr>
+      <td>Running <code>gate.sh write</code> manually without the skill</td>
+      <td>Gate satisfied with no checks run</td>
+      <td>Always run via <code>/pre-commit</code> skill</td>
+    </tr>
+    <tr>
+      <td>Skipping Step 2 because "nothing to review"</td>
+      <td>Convention violations slip through</td>
+      <td>Run review/simplify regardless</td>
+    </tr>
+    <tr>
+      <td>Staging with <code>git add .</code> instead of <code>git add -u</code></td>
+      <td>Accidentally includes untracked secrets or build artifacts</td>
+      <td>Always use <code>git add -u</code>; stage new files individually</td>
+    </tr>
+    <tr>
+      <td>Not re-running lint after auto-format</td>
+      <td>Format may introduce lint violations</td>
+      <td>Re-run lint if any files were auto-formatted</td>
+    </tr>
+    <tr>
+      <td>Completing Steps 0–4 but forgetting to run Step 5</td>
+      <td>Gate hash never written; <code>git commit</code> blocked</td>
+      <td>Step 5 is mandatory — the skill isn't done until the gate is written</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Red Flags</h4>
+<ul>
+  <li>"I already know it's clean"</li>
+  <li>"I'll skip review this time, it's a trivial change"</li>
+  <li>"The tests don't apply to this file"</li>
+  <li>"I'll just write the gate manually"</li>
+  <li>"All steps are done" (but Step 5 hasn't run yet)</li>
+</ul>
+
+<h3><span class="skill-name">handle-pr-comments</span></h3>
+
+<h4>Common Mistakes</h4>
+<table>
+  <thead>
+    <tr><th>Mistake</th><th>What goes wrong</th><th>Fix</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Posting replies before push succeeds</td>
+      <td>Replies reference changes not on the remote yet</td>
+      <td>Always commit and push before posting</td>
+    </tr>
+    <tr>
+      <td>Making unrequested changes alongside a fix</td>
+      <td>Scope creep; reviewers didn't ask for it</td>
+      <td>Change only what the comment requests</td>
+    </tr>
+    <tr>
+      <td>Treating outdated comments as current</td>
+      <td>Code may have already moved on</td>
+      <td>Check <code>outdated</code> flag; assess current state before acting</td>
+    </tr>
+    <tr>
+      <td>Skipping Step 3c (pre-commit) before committing</td>
+      <td>Lint/format violations end up in the PR</td>
+      <td>Always run pre-commit before commit</td>
+    </tr>
+    <tr>
+      <td>Using <code>git add .</code> to stage changes</td>
+      <td>Picks up unrelated modified files</td>
+      <td>Use <code>git add -u</code> or stage by file</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Red Flags</h4>
+<ul>
+  <li>"I'll reply now and push after"</li>
+  <li>"While I'm in this file I'll also fix…"</li>
+  <li>"The comment is outdated so I'll just skip it"</li>
+  <li>"I'll skip pre-commit, it's just comment fixes"</li>
+</ul>
+
+<h3><span class="skill-name">create-pr</span> <small>(brief)</small></h3>
+<ul>
+  <li>Running on <code>main</code> or <code>master</code> — PRs must come from feature branches</li>
+  <li>Having uncommitted changes — commit or stash first</li>
+  <li>A PR already exists for this branch — run <code>update-pr-description</code> instead</li>
+  <li>Wrong base branch chosen — verify before creating, can't easily change after</li>
+</ul>
+
+<h3><span class="skill-name">update-pr-description</span> <small>(brief)</small></h3>
+<ul>
+  <li>Editing before reading the full diff — description will miss or misrepresent changes</li>
+  <li>Removing existing Changelog entries — history is lost; always append, never delete</li>
+  <li>Inventing details not present in the diff — accuracy over completeness</li>
+</ul>
+
+<h3><span class="skill-name">sync-branch</span> <small>(brief)</small></h3>
+<ul>
+  <li>Forgetting to pop the stash after sync — local changes left stranded</li>
+  <li>Force-pushing a shared branch after rebase — rewrites history others depend on</li>
+  <li>Proceeding past unresolved conflicts — broken state committed to branch</li>
+</ul>
+
+<h3><span class="skill-name">set-up-worktree</span> <small>(brief)</small></h3>
+<ul>
+  <li>Creating a worktree for a branch already checked out somewhere — fails or creates duplicate state</li>
+  <li>Forgetting to run install steps after setup — worktree not immediately runnable</li>
+</ul>
+
+<h2>Placement</h2>
+<p>Append each section at the end of its skill file, after the last step. This keeps the step-by-step flow uninterrupted.</p>
+
+<h2>Files Changed</h2>
+<ul>
+  <li><code>claude/skills/pre-commit/SKILL.md</code></li>
+  <li><code>claude/skills/handle-pr-comments/SKILL.md</code></li>
+  <li><code>claude/skills/create-pr/SKILL.md</code></li>
+  <li><code>claude/skills/update-pr-description/SKILL.md</code></li>
+  <li><code>claude/skills/sync-branch/SKILL.md</code></li>
+  <li><code>claude/skills/set-up-worktree/SKILL.md</code></li>
+</ul>
+
+</body>
+</html>

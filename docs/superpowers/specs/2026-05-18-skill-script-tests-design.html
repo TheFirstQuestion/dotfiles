@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill Script Tests Design</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 860px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #1a1a1a; }
+    h1 { border-bottom: 2px solid #e0e0e0; padding-bottom: 0.4rem; }
+    h2 { margin-top: 2rem; color: #2c2c2c; }
+    h3 { color: #444; }
+    pre { background: #f4f4f4; border: 1px solid #ddd; border-radius: 4px; padding: 0.75rem 1rem; overflow-x: auto; font-size: 0.9em; }
+    code { background: #f0f0f0; padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.9em; }
+    pre code { background: none; padding: 0; font-size: inherit; }
+    ul { padding-left: 1.4rem; }
+    ol { padding-left: 1.4rem; }
+    .meta { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+    .section { border-left: 3px solid #0070f3; padding-left: 1rem; margin: 1.5rem 0; background: #f8fbff; padding-top: 0.1rem; padding-bottom: 0.1rem; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th { background: #f4f4f4; text-align: left; padding: 0.5rem 0.75rem; border: 1px solid #ccc; }
+    td { padding: 0.5rem 0.75rem; border: 1px solid #ddd; vertical-align: top; }
+  </style>
+</head>
+<body>
+
+<h1>Skill Script Tests Design</h1>
+<div class="meta">
+  <strong>Date:</strong> 2026-05-18 &nbsp;|&nbsp;
+  <strong>Status:</strong> Approved
+</div>
+
+<h2>Problem</h2>
+<p>The skill bash scripts (<code>extract-tickets.sh</code>, <code>pr-data.sh</code>, <code>pr-comments.sh</code>) contain deterministic logic (jq transforms, regex extraction, flag resolution) with no automated tests. Regressions are caught only when a skill misbehaves in production.</p>
+
+<h2>Solution</h2>
+<p>A lightweight offline test suite: each skill gets a <code>tests/test-skill.sh</code> that tests its pure logic using inline JSON fixtures, and a central <code>claude/run-tests.sh</code> discovers and runs all of them.</p>
+
+<h2>File Structure</h2>
+<pre><code>claude/
+  run-tests.sh                              ← discovers + runs all test-skill.sh files
+  skills/
+    update-pr-description/
+      tests/
+        test-skill.sh                       ← tests extract-tickets.sh and pr-data.sh logic
+    handle-pr-comments/
+      tests/
+        test-skill.sh                       ← tests pr-comments.sh logic</code></pre>
+
+<h2>Runner: <code>claude/run-tests.sh</code></h2>
+<p>Discovers every <code>skills/*/tests/test-skill.sh</code>, runs each, aggregates results, exits non-zero if any suite failed.</p>
+<pre><code>#!/usr/bin/env bash
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+total_pass=0; total_fail=0
+
+for test_file in "$SCRIPT_DIR"/skills/*/tests/test-skill.sh; do
+  skill=$(basename "$(dirname "$(dirname "$test_file")")")
+  echo "=== $skill ==="
+  output=$(bash "$test_file"); status=$?
+  echo "$output"
+  pass=$(echo "$output" | grep -oE '[0-9]+ passed' | grep -oE '[0-9]+' || echo 0)
+  fail=$(echo "$output" | grep -oE '[0-9]+ failed' | grep -oE '[0-9]+' || echo 0)
+  ((total_pass += pass)) || true
+  ((total_fail += fail)) || true
+done
+
+echo ""
+echo "=== Total: $total_pass passed, $total_fail failed ==="
+exit $total_fail</code></pre>
+
+<h2>Test Harness (inline in each test-skill.sh)</h2>
+<p>Each <code>test-skill.sh</code> includes this minimal harness at the top — no external dependencies:</p>
+<pre><code>PASS=0; FAIL=0
+
+assert_eq() {
+  local desc="$1" expected="$2" actual="$3"
+  if [[ "$actual" == "$expected" ]]; then
+    echo "  ✓ $desc"; ((PASS++))
+  else
+    echo "  ✗ $desc"
+    echo "    expected: $expected"
+    echo "    actual:   $actual"
+    ((FAIL++))
+  fi
+}
+
+assert_json_eq() {
+  local desc="$1" expected actual
+  expected=$(echo "$2" | jq -c .)
+  actual=$(echo "$3" | jq -c .)
+  assert_eq "$desc" "$expected" "$actual"
+}
+
+# run at end of file:
+# echo "$PASS passed, $FAIL failed"
+# exit $FAIL</code></pre>
+
+<h2>Test Coverage</h2>
+
+<h3>update-pr-description/tests/test-skill.sh</h3>
+<p>Tests <code>extract-tickets.sh</code> pipeline logic and <code>pr-data.sh</code> jq transform logic inline (no script invocation, no <code>gh</code>).</p>
+
+<table>
+  <thead><tr><th>Script</th><th>Test case</th></tr></thead>
+  <tbody>
+    <tr><td>extract-tickets.sh</td><td>Regex extracts <code>PREFIX-123</code> from a branch name</td></tr>
+    <tr><td>extract-tickets.sh</td><td>Prefix is uppercased (<code>mob-123</code> → <code>MOB-123</code>)</td></tr>
+    <tr><td>extract-tickets.sh</td><td>Duplicates deduplicated (<code>mob-123</code> twice → one result)</td></tr>
+    <tr><td>extract-tickets.sh</td><td>Multiple distinct tickets sorted and both returned</td></tr>
+    <tr><td>extract-tickets.sh</td><td>No matches returns empty string (maps to <code>[]</code> in script)</td></tr>
+    <tr><td>pr-data.sh</td><td>Stacked: <code>other.baseRefName == this.headRefName</code> → <code>"child"</code></td></tr>
+    <tr><td>pr-data.sh</td><td>Stacked: <code>other.headRefName == this.baseRefName</code> → <code>"parent"</code></td></tr>
+    <tr><td>pr-data.sh</td><td>Stacked: body mentions <code>#&lt;number&gt;</code> → <code>"mentioned"</code></td></tr>
+    <tr><td>pr-data.sh</td><td>Stacked: title mentions branch name → <code>"mentioned"</code></td></tr>
+    <tr><td>pr-data.sh</td><td>Stacked: child takes priority over mentioned when both match</td></tr>
+    <tr><td>pr-data.sh</td><td>This PR excluded from stacked results</td></tr>
+    <tr><td>pr-data.sh</td><td><code>commits</code> extracted as flat array of <code>messageHeadline</code> strings</td></tr>
+    <tr><td>pr-data.sh</td><td><code>author</code> is string login, not object</td></tr>
+  </tbody>
+</table>
+
+<h3>handle-pr-comments/tests/test-skill.sh</h3>
+<p>Tests <code>pr-comments.sh</code> jq transform logic inline.</p>
+
+<table>
+  <thead><tr><th>Script</th><th>Test case</th></tr></thead>
+  <tbody>
+    <tr><td>pr-comments.sh</td><td>Root comments (no <code>in_reply_to_id</code>) appear in <code>comment_queue</code></td></tr>
+    <tr><td>pr-comments.sh</td><td>Reply comments do not appear as roots in <code>comment_queue</code></td></tr>
+    <tr><td>pr-comments.sh</td><td><code>already_replied</code> is <code>true</code> when replies exist for a root</td></tr>
+    <tr><td>pr-comments.sh</td><td><code>already_replied</code> is <code>false</code> when no replies exist</td></tr>
+    <tr><td>pr-comments.sh</td><td><code>outdated</code> is <code>true</code> when <code>position == null</code></td></tr>
+    <tr><td>pr-comments.sh</td><td><code>outdated</code> is <code>false</code> when <code>position</code> is set</td></tr>
+    <tr><td>pr-comments.sh</td><td><code>actionable_reviews</code> includes <code>CHANGES_REQUESTED</code> with non-empty body</td></tr>
+    <tr><td>pr-comments.sh</td><td><code>actionable_reviews</code> excludes <code>APPROVED</code> state</td></tr>
+    <tr><td>pr-comments.sh</td><td><code>actionable_reviews</code> excludes body starting with "## Pull request overview"</td></tr>
+  </tbody>
+</table>
+
+<h2>Running Tests</h2>
+<pre><code># All skills
+~/.claude/run-tests.sh
+
+# Single skill
+bash ~/.claude/skills/update-pr-description/tests/test-skill.sh</code></pre>
+
+<p>Since <code>~/.claude/</code> is a symlink to <code>~/dotfiles/claude/</code>, the runner is also available as:</p>
+<pre><code>bash ~/dotfiles/claude/run-tests.sh</code></pre>
+
+<h2>Files Changed</h2>
+<table>
+  <thead><tr><th>Action</th><th>File</th></tr></thead>
+  <tbody>
+    <tr><td>Create</td><td><code>claude/run-tests.sh</code></td></tr>
+    <tr><td>Create</td><td><code>claude/skills/update-pr-description/tests/test-skill.sh</code></td></tr>
+    <tr><td>Create</td><td><code>claude/skills/handle-pr-comments/tests/test-skill.sh</code></td></tr>
+  </tbody>
+</table>
+
+</body>
+</html>
