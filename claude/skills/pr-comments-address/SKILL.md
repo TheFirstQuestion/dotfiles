@@ -26,14 +26,17 @@ Then stop. Do not proceed.
 The argument passed to this command is: `$ARGUMENTS`
 
 - If `$ARGUMENTS` is a file path (e.g. `./temp/pr-285-plan.md`), read that file.
-- If `$ARGUMENTS` is empty or not a valid path, output:
+- If `$ARGUMENTS` is empty or not a valid path, look for a plan file automatically:
+  - Find `<REPO_ROOT>` via `git rev-parse --show-toplevel`.
+  - Look in `<REPO_ROOT>/temp/` for files matching `pr-*-plan.md`.
+  - If exactly one match is found, use it.
+  - If multiple matches are found, list them and ask the developer which one to use, then stop until they answer.
+  - If no match is found, output:
 
-  > **Error:** No plan file specified. Run `/pr-comments-plan` first to generate a plan, then pass the path here:
-  > `/pr-comments-address <REPO_ROOT>/temp/pr-<number>-plan.md`
-  >
-  > where `<REPO_ROOT>` is the output of `git rev-parse --show-toplevel`.
+    > **Error:** No plan file specified and none found in `<REPO_ROOT>/temp/`. Run `/pr-comments-plan` first to generate a plan, then pass the path here:
+    > `/pr-comments-address <REPO_ROOT>/temp/pr-<number>-plan.md`
 
-  Then stop.
+    Then stop.
 
 Read the plan file and extract:
 
@@ -41,9 +44,9 @@ Read the plan file and extract:
 - The branch name from the `**Branch:**` line
 - Each `## Comment [N/total]` section with its comment ID, file path, location, proposed change bullets, and suggested reply draft
 
-### Step 3 — Confirm the plan
+### Step 3 — Show the plan summary
 
-Print a summary of what will be done:
+Print a summary of what will be done, then proceed immediately to Step 4 without waiting for confirmation:
 
 ```
 ## Execution Plan Summary
@@ -55,18 +58,6 @@ Comments to address: <N>
   [2] <path>  —  <location>
   ...
 ```
-
-Then ask:
-
-> **Ready to implement?** Reply `yes` to begin, or `no` to stop here.
-
-**Do not make any code changes until the developer replies `yes`.**
-
-If `no`, output:
-
-> Stopped. Re-run this command when ready.
-
-Then stop.
 
 ### Step 4 — Register TODO items
 
@@ -126,9 +117,16 @@ pnpm lint:fix
 
 If lint exits with errors, fix them before proceeding. Re-run until it passes cleanly.
 
-### Step 8 — Post reply drafts
+### Step 8 — Post reply drafts (bots only)
 
-For each implemented comment, post the **Suggested reply draft** from the plan. The correct endpoint depends on whether the comment is inline or issue-level.
+Automated replies are only posted to bot reviewers (e.g. `coderabbitai[bot]`, `github-actions[bot]`, `dependabot[bot]`, `copilot-pull-request-reviewer[bot]`) — never to human reviewers. A comment's reviewer is a bot if the `**Reviewer:**` login in the plan ends in `[bot]`. If it does not end in `[bot]`, treat the reviewer as human.
+
+For each implemented comment:
+
+- **Bot reviewer** — post the **Suggested reply draft** from the plan (steps below).
+- **Human reviewer** — do not post anything. The change was already implemented in Step 5; leave the thread for the developer to reply to directly. Record it as skipped when printing the Step 10 summary.
+
+The correct endpoint for a bot reply depends on whether the comment is inline or issue-level.
 
 Retrieve `{owner}/{repo}` from:
 
@@ -138,7 +136,9 @@ gh repo view --json nameWithOwner --jq .nameWithOwner
 
 Retrieve each `<comment-id>` from the plan's `**Comment ID:**` field in the corresponding comment section.
 
-**Inline review comments** (`**File:**` is a real path, not `(general)`):
+**Embedded-in-review comments** (`**Comment ID:**` includes `(embedded in review #...)`): these have no real comment thread to reply to — the ID is synthesized by `pr-comments-plan`, not a real GitHub comment, so posting to the inline replies endpoint will fail (404) even when `**File:**` looks like a real path. Only bot-authored embedded findings reach this branch at all — per the bot/human split above, a human-authored embedded finding is already skipped (recorded in the Step 10 summary, no reply posted). For a bot-authored one, **do not post it individually.** Instead, append `{file, line, title/location, reply text, source_review_id}` to a running `embeddedReplies` list and move on — they are all posted together as a single comment after the loop (see "Combined embedded-finding comment" below), rather than as separate issue comments.
+
+**Inline review comments** (`**File:**` is a real path, not `(general)`, and the comment is not embedded-in-review):
 
 ```bash
 gh api repos/{owner}/{repo}/pulls/{pr-number}/comments/<comment-id>/replies \
@@ -146,7 +146,7 @@ gh api repos/{owner}/{repo}/pulls/{pr-number}/comments/<comment-id>/replies \
   --field body="<reply text>"
 ```
 
-**Issue-level comments** (`**File:**` is `(general)`):
+**Issue-level comments** (`**File:**` is `(general)`, and the comment is not embedded-in-review):
 
 These are PR issue comments, not review thread comments — they cannot be replied to via the review replies endpoint. Post a new issue comment instead:
 
@@ -158,15 +158,34 @@ gh api repos/{owner}/{repo}/issues/<PR>/comments \
 
 If posting a reply fails, print a warning but do not abort — continue with remaining replies.
 
-### Step 9 — Update PR description
+**Combined embedded-finding comment:** after the loop, if `embeddedReplies` is non-empty, post exactly one issue comment covering all of them — never one issue comment per embedded finding. `embeddedReplies` only ever holds bot-authored findings (human-authored ones were already skipped above), so this combined comment is bot-replies-only by construction — never add a human-authored entry to it. Group entries by `source_review_id` and format each as a bullet with its file:line and reply text:
 
-Before pushing any code, update the PR description to reflect the changes made so that automated code reviewers have accurate context when they run. Invoke the `update-pr-description` skill now, before pushing.
+```markdown
+Addressed the following findings embedded in review bodies (no standalone comment thread existed for these):
 
-### Step 10 — Verify changes
+**Review #<source_review_id>:**
+- `<file>:<line>` — <location/title>: <reply text>
+- `<file>:<line>` — <location/title>: <reply text>
+
+**Review #<other_source_review_id>:**
+- `<file>:<line>` — <location/title>: <reply text>
+
+Written with Claude Code
+```
+
+Post it with:
+
+```bash
+gh api repos/{owner}/{repo}/issues/<PR>/comments \
+  --method POST \
+  --field body="<combined comment>"
+```
+
+### Step 9 — Verify changes
 
 After lint passes and reply drafts are posted, invoke the `superpowers:verification-before-completion` skill to confirm the changes actually work end-to-end before declaring done. When identifying what to verify, use `mcp__code-review-graph__get_impact_radius_tool` on the changed files to find affected callers and tests — run those specifically rather than the full suite.
 
-### Step 11 — Done
+### Step 10 — Done
 
 Output:
 
@@ -180,8 +199,10 @@ PR #<number>  Branch: <branch>
   ...
 
 pnpm lint:fix — passed
-Reply drafts posted to PR thread.
+Reply drafts posted to <N> bot thread(s) (<K> embedded finding(s) combined into 1 summary comment); <M> human thread(s) left for you to reply to directly.
 Verification complete.
 ```
+
+Omit the `(<K> embedded finding(s) ...)` parenthetical entirely when `embeddedReplies` was empty — don't print it as "(0 embedded...)".
 
 Then stop. Do not push or create commits unless the developer explicitly asks.

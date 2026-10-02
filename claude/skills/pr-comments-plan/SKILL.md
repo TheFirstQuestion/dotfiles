@@ -64,15 +64,20 @@ The script outputs a JSON array of root comments. Each object has this shape:
 {
   "id": 123,
   "author": "alice",
-  "path": "src/foo.ts", // "(general)" for issue-level comments
-  "line": 42, // null for issue-level comments
+  "author_type": "Human", // "Human", "Bot", or "Unknown" (deleted account)
+  "path": "src/foo.ts", // "(general)" for issue-level and review-level comments
+  "line": 42, // null for issue-level and most review-level comments
   "body": "...",
   "created_at": "2026-01-01T00:00:00Z",
   "replies": [
-    { "id": 456, "author": "bob", "body": "...", "created_at": "..." },
+    { "id": 456, "author": "bob", "author_type": "Human", "body": "...", "created_at": "..." },
   ],
+  "synthetic": false, // true for comments derived from a PR review body rather than a real GitHub comment thread
+  "source_review_id": 5383009117, // only present when synthetic — the review this was extracted from
 }
 ```
+
+Comments come from three sources: unresolved inline review threads, issue-level (general) PR comments, and PR **reviews** — the top-level comment a reviewer leaves when submitting a review (approve/comment/request changes). The third source also includes individual findings embedded only as prose inside a review body (e.g. a bot's "previously missed" item that was never posted as its own inline comment) — the script splits those out as separate `synthetic: true` entries so they don't get buried inside one giant blob. Treat `synthetic` comments the same as any other comment for selection and planning purposes, but see Step 5.5 for how to handle their **Comment ID** and reply draft, since they have no real reply endpoint of their own.
 
 Parse the JSON. If the array is empty, output:
 
@@ -83,6 +88,8 @@ Then stop.
 ### Step 4 — Prompt for comment selection
 
 Print a numbered list of all unresolved comments, up to 10 per page:
+
+Append `(bot)` after the author's handle when `author_type` is `"Bot"`; leave human authors unmarked. Append `(review)` after the author's handle when `synthetic` is `true` — these are review-level comments or findings embedded in a review body, not standalone inline/issue comments.
 
 ```
 Unresolved comments (page 1 of 2):
@@ -95,8 +102,14 @@ Unresolved comments (page 1 of 2):
 
   ...
 
+  [9]  @coderabbitai[bot] (bot)  src/modules/billing/billing.service.ts:88
+       Consider caching this lookup to avoid the repeated query.
+
   [10] @alice  src/modules/auth/auth.controller.ts:18
        This violates the logger-usage rule — remove the duplicate logger call.
+
+  [11] @copilot-pull-request-reviewer[bot] (bot) (review)  epics/MOBI-562-session-lifecycle/epic.md:16
+       Define polling latency and trigger overshoot bounds — embedded in review #5383009117, no corresponding inline comment exists.
 ```
 
 Then use `AskUserQuestion` to ask which to address:
@@ -130,9 +143,11 @@ After all pages are shown, if nothing was selected across all pages output:
 
 Then stop.
 
-### Step 5 — Enter planning mode and build the implementation plan
+### Step 5 — Build the implementation plan (no code changes)
 
-**Switch to planning mode now.** Do not make any code changes in this step — only analyze and plan.
+**Do not enter plan mode for this step.** Plan mode forces confirmation prompts on every MCP tool call (e.g. `code-review-graph`) even when already allow-listed, which adds unnecessary friction to what is a read-only analysis pass. Stay in the current permission mode instead.
+
+This step is still strictly read-only: use `Read`, `AskUserQuestion`, and the `code-review-graph` MCP tools freely, but do not use `Edit`, `Write`, `NotebookEdit`, or any `Bash` command that modifies a file or the repo state — with exactly one exception: the plan document itself, written via `Write` in Step 5.5. If you find yourself about to modify a source file, stop; implementation belongs in the `/pr-comments-address` session, not here.
 
 #### 5.1 — Gather structural context with the knowledge graph
 
@@ -156,6 +171,7 @@ For each comment, apply the `receiving-code-review` evaluation before writing th
 - Check whether the suggestion conflicts with the developer's prior architectural decisions
 - If the suggestion seems wrong or unclear, note it in **Convention notes** and flag it for the developer rather than planning a blind implementation
 - Push back is valid — if the reviewer is wrong, the plan should say so with technical reasoning
+- If `author_type` is `"Bot"` (e.g. CodeRabbit, a CI review bot), apply extra scrutiny before accepting the suggestion — automated reviewers produce more low-value nitpicks and outright-incorrect suggestions than human reviewers
 
 Also assess whether the review thread itself is a signal that an inline comment is warranted (per `comment-keeper` Rule 3). Flag it if:
 - The discussion explains a non-obvious WHY (a business rule, a constraint, a workaround) that isn't visible in the code
@@ -219,7 +235,7 @@ Each field must be separated by a blank line so markdown renders it as a block (
 
 **Comment ID:** <id>
 
-**Reviewer:** @<author>
+**Reviewer:** @<author> (<author_type>)
 
 **File:** [<path>](../<path>)
 
@@ -256,9 +272,11 @@ Each field must be separated by a blank line so markdown renders it as a block (
 Written with Claude Code
 ```
 
+- `**Reviewer:**` — `<author_type>` is `Human`, `Bot`, or `Unknown` (deleted account), taken verbatim from the comment JSON
 - `**Location:**` — use the function name, not just the line number, so it survives rebases
 - `**Inline comment to add:**` — draft only if the thread surfaced a non-obvious WHY (business rule, constraint, workaround) per `comment-keeper` Rule 3; otherwise write "none"
 - `**Suggested reply draft:**` — must end with a blank line then `Written with Claude Code` on its own line
+- If `synthetic` is `true`, append `(embedded in review #<source_review_id>, no standalone comment thread)` to the `**Comment ID:**` line. There is no reply endpoint for these — `pr-comments-address` posts the **Suggested reply draft** as a new general PR comment instead of an inline/issue reply; word the draft so it reads sensibly standing alone (it won't appear nested under the original review).
 
 **Closing sections:**
 
