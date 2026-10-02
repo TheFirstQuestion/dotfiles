@@ -1,0 +1,46 @@
+rules:
+  - id: three-param-limit-js
+    languages: [javascript, typescript]
+    severity: INFO
+    message: "Function has more than 3 parameters — consider grouping into an options object."
+    patterns:
+      - pattern-either:
+          - patterns:
+              - pattern: function $NAME($A, $B, $C, $D, ...) { ... }
+              - focus-metavariable: $NAME
+          - patterns:
+              - pattern-either:
+                  - pattern: const $NAME = ($A, $B, $C, $D, ...) => { ... }
+                  - pattern: const $NAME = ($A, $B, $C, $D, ...) => $EXPR
+                  - pattern: let $NAME = ($A, $B, $C, $D, ...) => { ... }
+                  - pattern: let $NAME = ($A, $B, $C, $D, ...) => $EXPR
+                  - pattern: var $NAME = ($A, $B, $C, $D, ...) => { ... }
+                  - pattern: var $NAME = ($A, $B, $C, $D, ...) => $EXPR
+              - focus-metavariable: $NAME
+          - patterns:
+              - pattern-either:
+                  - pattern: ($A, $B, $C, $D, ...) => { ... }
+                  - pattern: ($A, $B, $C, $D, ...) => $EXPR
+              - pattern-not-inside: const $ANYNAME = (...) => { ... }
+              - pattern-not-inside: const $ANYNAME = (...) => $ANYEXPR
+              - pattern-not-inside: let $ANYNAME = (...) => { ... }
+              - pattern-not-inside: let $ANYNAME = (...) => $ANYEXPR
+              - pattern-not-inside: var $ANYNAME = (...) => { ... }
+              - pattern-not-inside: var $ANYNAME = (...) => $ANYEXPR
+              - focus-metavariable: $A
+
+  - id: three-param-limit-py
+    languages: [python]
+    severity: INFO
+    message: "Function has more than 3 parameters — consider grouping into a single parameter object."
+    patterns:
+      - pattern: |
+          def $NAME($A, $B, $C, $D, ...):
+              ...
+      - pattern-not: |
+          def $NAME(self, $X, $Y, $Z):
+              ...
+      - pattern-not: |
+          def $NAME(cls, $X, $Y, $Z):
+              ...
+      - focus-metavariable: $NAME

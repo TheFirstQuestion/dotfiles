@@ -1,4 +1,7 @@
 {
+	"semgrep.scan.configuration": ["~/dotfiles/semgrep/rules"],
+	"semgrep.scan.onlyGitDirty": false,
+	"semgrep.useExperimentalLS": true,
 	"telemetry.telemetryLevel": "off",
 	"workbench.startupEditor": "none",
 	"files.autoSave": "afterDelay",
@@ -166,8 +169,11 @@
 	"cSpell.userWords": [
 		"autoresize",
 		"axios",
+		"backgrounded",
+		"backgrounding",
 		"Blockquotes",
 		"Convo",
+		"Dedup",
 		"dialpad",
 		"dont",
 		"dotenv",
@@ -185,6 +191,7 @@
 		"Improv",
 		"Lowkey",
 		"Medplum",
+		"MOBI",
 		"Multinomial",
 		"Musescore",
 		"Nums",
@@ -239,7 +246,6 @@
 		"*.env": "shellscript",
 	},
 	"python.createEnvironment.contentButton": "hide",
-	"workbench.activityBar.location": "top",
 	"javascript.updateImportsOnFileMove.enabled": "always",
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"python.terminal.activateEnvInCurrentTerminal": true,
@@ -255,7 +261,7 @@
 	"window.confirmSaveUntitledWorkspace": false,
 	"editor.stickyScroll.enabled": false,
 	"[dotenv]": {
-		"editor.defaultFormatter": "foxundermoon.shell-format"
+		"editor.defaultFormatter": "foxundermoon.shell-format",
 	},
 	"editor.minimap.renderCharacters": false,
 	"editor.inlineSuggest.suppressSuggestions": true,
@@ -307,7 +313,7 @@
 	"claudeCode.disableLoginPrompt": true,
 	"claudeCode.enableNewConversationShortcut": true,
 	"chat.mcp.gallery.enabled": true,
-	"diffEditor.renderSideBySide": false,
+	"diffEditor.renderSideBySide": true,
 	"cSpell.enabledNotifications": {
 		"Lines too Long": false,
 		"Average Word Length too Long": false,
@@ -319,4 +325,10 @@
 	"csv.maxFileSizeMB": 0,
 	"security.promptForLocalFileProtocolHandling": false,
 	"window.openFoldersInNewWindow": "on",
+	"semgrep.metrics": false,
+	"workbench.activityBar.location": "top",
+	"network.meteredConnection": "off",
+	"githubPullRequests.pullBranch": "never",
+	"claudeCode.archiveInactiveSessions": 2,
+	"claudeCode.respectGitIgnore": false,
 }

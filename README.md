@@ -79,6 +79,11 @@ I have specific settings and tweaks for my tools that I like. They also (maybe) 
 - `.gitignore` that works for lots of situations
   - `template gitignore`
 
+### Local Custom Linting
+
+- personal lint rules that show up as VSCode diagnostics in any repo,
+  without affecting coworkers — see [`semgrep/README.md`](semgrep/README.md)
+
 ### Scripts
 
 - update all of the everything

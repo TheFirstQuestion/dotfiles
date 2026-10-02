@@ -73,6 +73,7 @@ All custom shell functions live in `functions/`. Adding a new `.sh` file there m
 | `musescore/` | Plugins, styles, templates |
 | `archive/` | Configs for tools no longer in active use (e.g. `atom/`) |
 | `claude/` | Claude Code global config (`settings.json`, `CLAUDE.md`) |
+| `semgrep/` | Local-only custom lint rules for VSCode (via Semgrep extension) |
 | `templates/` | Starter files (`README`, `gitignore`, `env`) |
 | `functions/` | Custom zsh functions (auto-sourced at shell start) |
 | `scripts/` | Runnable scripts (invoked via `run_script`) |
