@@ -35,6 +35,16 @@ gh pr list --repo <owner/name> --state all --author "@me" --limit 100 --json num
 
 The gather script outputs sections delimited by `---WORKTREES---`, `---BRANCHES---`, `---DATES---`, `---HEAD---`, `---REMOTE---`.
 
+## Step 1a — Check temp folders (per repo and per worktree)
+
+For each repo path in `REPOS` **and** each worktree path listed in that repo's `---WORKTREES---` output, check for a `temp/` folder:
+
+```bash
+ls -A <path>/temp 2>/dev/null
+```
+
+Collect every location with non-empty output, along with its list of entries. Skip locations with no `temp/` folder or an empty one.
+
 ## Step 2 — Classify each local branch (per repo)
 
 For each local branch (excluding `main`, `master`, `develop`, and the current branch):
@@ -102,6 +112,10 @@ Show each group as a table:
 | Branch | Worktree | PR | Reason |
 |--------|----------|----|--------|
 
+**🗑️ Temp files found** (prompt per location, only shown if any location has files):
+| Location | Files |
+|----------|-------|
+
 If nothing needs action, say so and stop.
 
 ## Step 4 — Confirm and delete
@@ -116,6 +130,16 @@ Handle each group separately:
 **Stale:** Ask per item — **"Delete `<branch>` (stale, last active <date>)? (yes / no / skip all)"**
 
 **Old:** Ask per item — **"Delete `<branch>` (open PR #N, last active <date>)? (yes / no / skip all)"**
+
+**Temp files:** Ask per location — **"Delete N file(s) in `<path>/temp`? (yes / pick / no)"**
+- **yes** — delete every entry in that location's `temp/`
+- **pick** — list the filenames and ask yes/no per file
+- **no** — skip that location
+
+Delete confirmed temp entries with:
+```bash
+rm -rf <path>/temp/<entry>
+```
 
 For each item confirmed for deletion, remove in this order:
 1. Remove the worktree first (if one exists):
@@ -135,6 +159,7 @@ Report each deletion as it completes. If any step fails, report the error and co
 Report:
 - How many branches deleted
 - How many worktrees removed
+- How many temp files/folders deleted
 - How many kept and why
 - Any failures
 
@@ -147,3 +172,4 @@ Report:
 | Removing a worktree before the branch | Always remove worktree first, then branch |
 | Using `-D` without confirmation | Only use `-D` if the user explicitly confirmed for a branch `git branch -d` refuses |
 | Deleting `main`/`master`/`develop` | Excluded from classification — never offered for deletion |
+| Bulk-deleting temp/ without listing filenames | Always show the filenames first — a temp file may be an active plan, not stale scratch work |

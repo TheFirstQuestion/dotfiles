@@ -84,6 +84,7 @@ Rules that apply in all languages:
 - **Clarifying comments go above the line** they explain, not end-of-line
 - **Never end-of-line** for multi-word explanations — they wrap and become unreadable
 - Exception: very short labels (e.g. `// 50% staff benefit`) are acceptable end-of-line when aligning a column of similar lines
+- **One paragraph = one line, in any comment style.** This applies to doc blocks (`/** */`, docstrings) and to a run of consecutive inline `//`/`#` lines forming one explanation. Do not hard-wrap a paragraph at ~80 columns across multiple comment lines — write it as a single long line (or single `//` line) and let the editor soft-wrap it for display. A blank comment line (`*` or `//` with nothing after it) still separates distinct paragraphs.
 
 ```typescript
 // ✅ Above the line
@@ -92,6 +93,39 @@ await delay(Math.pow(2, attempt) * 100);
 
 // ❌ End-of-line for a real explanation
 await delay(Math.pow(2, attempt) * 100); // Exponential backoff: 100ms base, doubles each attempt
+```
+
+```typescript
+// ❌ Paragraph hard-wrapped across multiple lines
+/**
+ * Enqueues a snapshot creation job. Swallows failures — the queue
+ * deduplicates, so a lost enqueue just means the next stale/miss read tries
+ * again.
+ */
+
+// ✅ Each paragraph is a single line; editor soft-wraps it for display
+/**
+ * Enqueues a snapshot creation job. Swallows failures — the queue deduplicates, so a lost enqueue just means the next stale/miss read tries again.
+ */
+```
+
+```typescript
+// ❌ Same problem with a plain inline // comment, hard-wrapped across two lines
+try {
+  await job.remove();
+} catch (err) {
+  // ServerError self-logs, but a raw BullMQ/Redis failure would otherwise
+  // vanish silently.
+  logger.error(err);
+}
+
+// ✅ One line, editor soft-wraps it
+try {
+  await job.remove();
+} catch (err) {
+  // ServerError self-logs, but a raw BullMQ/Redis failure would otherwise vanish silently.
+  logger.error(err);
+}
 ```
 
 ### Rule 5: No TODOs or FIXMEs in committed code
@@ -186,6 +220,7 @@ For each symbol, run through every question. A "no" on any question is a finding
 | 6 | Are enum members individually documented if their meaning isn't obvious from the name? | Enums |
 | 7 | Are type/interface fields documented if non-obvious? | Types, interfaces |
 | 8 | Is the constant's value or allowed range explained? | Constants with magic values |
+| 8b | Is each paragraph written as a single unwrapped line (not hard-wrapped across multiple `*`/`//`/`#` lines)? | Multiline doc blocks and multi-line inline `//`/`#` comments |
 
 #### 2b — Inline comments in the body
 
@@ -263,6 +298,7 @@ List every finding by symbol, question number, and file:line. Fix all of them. D
 | Changed what a comment describes | Rewrite that comment |
 | Deleted a function or block | Delete its comments too |
 | Writing a new function | Add block doc above the function (language-appropriate format) |
+| Writing a multiline doc block | Write each paragraph as one unwrapped line; let the editor soft-wrap it |
 | Writing a new function, developer said no docs | Skip doc block; still add above-line inline comments if WHY is non-obvious |
 | Magic number in logic | Add above-line comment: what it represents |
 | Business rule in a conditional | Add above-line comment: why this rule exists |

@@ -118,13 +118,12 @@ Invoke the `update-pr-description` skill, passing it the PR number from Step 4.
 
 Once confirmed, it will update the PR body via `gh pr edit`.
 
-## Step 6 — Promote to ready
+## Step 6 — Ask about readiness
 
-After the description is posted, mark the PR ready for review:
+After the description is posted, ask: **"Mark this PR ready for review, or leave it as a draft?"**
 
-```
-gh pr ready <number>
-```
+- If **ready for review**: `gh pr ready <number>`
+- If **draft**: leave it as-is.
 
 Report the PR URL to the user when done.
 
