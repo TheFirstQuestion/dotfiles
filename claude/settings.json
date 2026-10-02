@@ -12,7 +12,10 @@
       "Read(/Users/steven/.claude/skills/after-pr-questions/boss-patterns.md)",
       "Read(/tmp/*)",
       "Edit(/tmp/*)",
-      "Bash(rm /tmp/*)",
+      "Write(/tmp/*)",
+      "Read(/private/tmp/*)",
+      "Edit(/private/tmp/*)",
+      "Write(/private/tmp/*)",
       "Bash(ls /tmp/*)",
       "Bash(ls *)",
       "Bash(ls ~/.claude/skills/)",
@@ -25,7 +28,6 @@
       "Bash(gh issue *)",
       "Bash(gh repo *)",
       "Bash(gh run *)",
-      "Bash(gh api repos/*)",
       "Bash(git rev-parse*)",
       "Bash(git -C * rev-parse*)",
       "Bash(git log*)",
@@ -139,7 +141,31 @@
       "mcp__figma__get_code_connect_suggestions",
       "mcp__figma__get_context_for_code_connect",
       "mcp__figma__list_file_components_for_code_connect",
-      "mcp__figma__download_assets"
+      "mcp__figma__download_assets",
+      "mcp__code-review-graph__build_or_update_graph_tool",
+      "mcp__code-review-graph__list_repos_tool",
+      "mcp__atlassian__atlassianUserInfo",
+      "mcp__atlassian__fetch",
+      "mcp__atlassian__getAccessibleAtlassianResources",
+      "mcp__atlassian__getConfluenceCommentChildren",
+      "mcp__atlassian__getConfluencePage",
+      "mcp__atlassian__getConfluencePageDescendants",
+      "mcp__atlassian__getConfluencePageFooterComments",
+      "mcp__atlassian__getConfluencePageInlineComments",
+      "mcp__atlassian__getConfluenceSpaces",
+      "mcp__atlassian__getContentFormatGuide",
+      "mcp__atlassian__getIssueLinkTypes",
+      "mcp__atlassian__getJiraIssue",
+      "mcp__atlassian__getJiraIssueRemoteIssueLinks",
+      "mcp__atlassian__getJiraIssueTypeMetaWithFields",
+      "mcp__atlassian__getJiraProjectIssueTypesMetadata",
+      "mcp__atlassian__getPagesInConfluenceSpace",
+      "mcp__atlassian__getTransitionsForJiraIssue",
+      "mcp__atlassian__getVisibleJiraProjects",
+      "mcp__atlassian__lookupJiraAccountId",
+      "mcp__atlassian__search",
+      "mcp__atlassian__searchConfluenceUsingCql",
+      "mcp__atlassian__searchJiraIssuesUsingJql"
     ],
     "deny": [
       "mcp__github__*",
@@ -160,7 +186,18 @@
       "Bash(rm -rf *)",
       "Bash(git add .)",
       "Bash(git add -A)",
-      "Bash(git add -A *)"
+      "Bash(git add -A *)",
+      "Bash(git -C * -c *)",
+      "Bash(git -C * --exec-path*)",
+      "Bash(git * --upload-pack*)",
+      "Bash(git * --receive-pack*)",
+      "Bash(git -C * --upload-pack*)",
+      "Bash(git -C * --receive-pack*)",
+      "Bash(bash -c *)",
+      "Bash(git add -f *)",
+      "Bash(git add --force *)",
+      "Bash(git -C * add -f *)",
+      "Bash(git -C * add --force *)"
     ],
     "ask": [
       "Bash(git push*)",
@@ -173,24 +210,41 @@
       "Bash(git -C * reset *)",
       "Bash(git worktree remove*)",
       "Bash(git -C * worktree remove*)",
+      "Bash(rm /tmp/*)",
       "Bash(gh pr create*)",
       "Bash(gh pr comment*)",
       "Bash(gh issue comment*)",
-      "Bash(gh api*comment*)",
       "Bash(gh pr edit*)",
+      "Bash(gh pr merge*)",
+      "Bash(gh pr review*)",
+      "Bash(gh repo delete*)",
+      "Bash(gh repo archive*)",
+      "Bash(gh repo edit*)",
+      "Bash(gh repo rename*)",
       "Bash(gh release *)",
       "Bash(python3 *simctl_delete.py*)",
       "Bash(python3 *simctl_erase.py*)",
       "Bash(python3 *simctl_shutdown.py*)",
       "Bash(python3 *simctl_create.py*)",
       "Bash(python3 *simctl_boot.py*)",
-      "Bash(python3 *build_and_test.py*)"
+      "Bash(python3 *build_and_test.py*)",
+      "mcp__atlassian__addCommentToJiraIssue",
+      "mcp__atlassian__addWorklogToJiraIssue",
+      "mcp__atlassian__createConfluenceFooterComment",
+      "mcp__atlassian__createConfluenceInlineComment",
+      "mcp__atlassian__createConfluencePage",
+      "mcp__atlassian__createIssueLink",
+      "mcp__atlassian__createJiraIssue",
+      "mcp__atlassian__editJiraIssue",
+      "mcp__atlassian__transitionJiraIssue",
+      "mcp__atlassian__updateConfluencePage"
     ]
   },
   "model": "sonnet",
   "hooks": {
     "SessionStart": [
       {
+        "matcher": "startup|resume|clear|compact|fork",
         "hooks": [
           {
             "type": "command",
@@ -320,5 +374,6 @@
       }
     }
   },
-  "effortLevel": "high"
+  "effortLevel": "high",
+  "tui": "fullscreen"
 }

@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "lines": [
     [
       {
@@ -7,8 +7,7 @@
         "type": "git-root-dir",
         "color": "brightGreen",
         "metadata": {
-          "linkToIDE": "vscode",
-          "hideNoGit": "false"
+          "linkToIDE": "vscode"
         }
       },
       {
@@ -35,6 +34,15 @@
         "id": "f31d024e-74f6-4b1f-a355-4155d9fb18f7",
         "type": "session-cost",
         "color": "magenta"
+      },
+      {
+        "id": "0cb39277-e38b-4fbd-b0d9-d3543e56aeb5",
+        "type": "separator"
+      },
+      {
+        "id": "c8aea14d-656c-4dd0-b0e5-1c317c4bc18c",
+        "type": "cache-timer",
+        "color": "magenta"
       }
     ],
     [
@@ -55,9 +63,7 @@
         "type": "git-review",
         "color": "brightYellow",
         "metadata": {
-          "hideStatus": "false",
-          "hideTitle": "false",
-          "hideNoGit": "true"
+          "hide": "no-git,no-data"
         }
       }
     ]
@@ -65,9 +71,12 @@
   "flexMode": "full-minus-40",
   "compactThreshold": 60,
   "colorLevel": 2,
+  "defaultPaddingSide": "both",
   "inheritSeparatorColors": false,
   "globalBold": false,
   "gitCacheTtlSeconds": 5,
+  "terminalWidthCacheTtlSeconds": 5,
+  "customCommandCacheTtlSeconds": 0,
   "minimalistMode": false,
   "powerline": {
     "enabled": false,

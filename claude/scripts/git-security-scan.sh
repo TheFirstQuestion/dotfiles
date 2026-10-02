@@ -49,7 +49,7 @@ while IFS= read -r line; do
   # 1. Keyword = value patterns
   if echo "$content" | grep -iqE "(password|secret|token|api_key|apikey|private_key|access_key|auth_key)[[:space:]]*[=:][[:space:]]*[\"']?[A-Za-z0-9+/._@!#\$%^&*-]{8,}"; then
     # Suppress known safe patterns
-    if ! echo "$content" | grep -iqE '(example|placeholder|your_|<[a-z]|>|xxx|redacted|process\.env\b|os\.environ\b|config\.|getenv\(|parseStringEnv\(|parseNumberEnv\(|headers\.authorization|secretsmanager|secretName|secretArn|secretRef|keyName|keyId|tokenName|\.env\b|:[[:space:]]*[A-Z][A-Za-z]|=[[:space:]]*[a-z][a-z0-9_]*\.)'; then
+    if ! echo "$content" | grep -iqE '(example|placeholder|your_|fake[-_]|<[a-z]|>|xxx|redacted|process\.env\b|os\.environ\b|config\.|getenv\(|parseStringEnv\(|parseNumberEnv\(|headers\.authorization|secretsmanager|secretName|secretArn|secretRef|keyName|keyId|tokenName|\.env\b|:[[:space:]]*[A-Z][A-Za-z]|=[[:space:]]*[a-z][a-z0-9_]*\.|\?\?[[:space:]]*[\"'"'"'][\"'"'"'])'; then
       matched="keyword-match"
     fi
   fi

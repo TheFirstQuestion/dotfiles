@@ -22,10 +22,17 @@ If CRG returns no results, only a handful of indexed files, or results that seem
 
 - Do not navigate the simulator by tapping through screens — it is slow and error-prone. Instead, ask the user which specific screen to land on and they will navigate there directly.
 
+## Manual testing and running services
+
+- Never start running services (dev servers, background processes, etc.) or perform manual testing via MCP tools (iOS Simulator, chrome-devtools, or similar) unless explicitly asked to. The human will almost always do manual testing themselves.
+
 ## Code editing rules
 
 - Never remove existing comments from code, even if they appear redundant or obvious.
 - Code must be clean (no errors, no lint warnings) before a task is considered done. Keep editing until `flutter analyze` (or the equivalent linter for the project) passes cleanly.
+- For multiline comments (docstrings, block comments), keep each paragraph on its own line and let the editor handle line wrapping. Do not hard-wrap paragraphs into short lines — a paragraph should be one long line in the source, not manually broken at ~80 columns.
+- Same rule for Markdown docs and similar prose files (README, plans, notes): write each paragraph as one long line and let the editor soft-wrap it. Do not insert manual line breaks to wrap paragraphs at ~80 columns.
+- Exception: git commit message bodies. Unlike comments and Markdown prose, hard-wrap commit message body lines at 80 characters, per Git convention.
 
 ## GitHub rules
 
@@ -47,7 +54,7 @@ These scripts are pre-allowed and should be used instead of inline shell equival
 | `pr-comments-add-reply.sh` | `~/.claude/scripts/pr-comments-add-reply.sh <progress-file> <comment-id> <reply-type> "<body>"` | Append a reply to the PR comments progress file |
 | `pr-comments-update-reply.sh` | `~/.claude/scripts/pr-comments-update-reply.sh <progress-file> <comment-id> "<new-body>"` | Update the body of an existing pending reply |
 | `post-pr-replies.sh` | `~/.claude/scripts/post-pr-replies.sh <progress-file>` | Post all pending replies from the progress file to GitHub in one call |
-| `list-skills.sh` | `~/.claude/scripts/list-skills.sh` | List available skills from user/project skills dirs and installed plugins — use this instead of the raw compound command to avoid permission prompts |
+| `list-skills.sh` | `~/.claude/scripts/list-skills.sh` | List available skills from user/project skills dirs and installed plugins — use this instead of the raw compound command to avoid permission prompts. Also tees full output to `${TMPDIR:-/tmp}/claude-skills-list.txt`; if terminal output is truncated, `Read` that file instead of re-running with a shell redirect |
 | `check-conflicts.sh` | `~/.claude/scripts/check-conflicts.sh [base-branch]` | Check for merge conflicts between HEAD and base branch (default: `origin/main`). Exits 0 if clean, 1 if conflicts found. Use instead of the inline `git merge-tree` command substitution. |
 | `find-symbol-refs.sh` | `~/.claude/skills/comment-keeper/find-symbol-refs.sh <symbol> [repo-root]` | Find all comment lines mentioning a symbol across the codebase. Use during comment-keeper audits to find stale cross-codebase references. |
 | `clean-up-discover-repos.sh` | `~/.claude/scripts/clean-up-discover-repos.sh [dir]` | Print each immediate subdirectory of DIR (default: cwd) that is a git repo. Use during the clean-up skill Step 0 when running from a parent folder. |

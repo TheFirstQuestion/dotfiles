@@ -6,7 +6,26 @@
       "WebFetch(domain:docs.anthropic.com)",
       "Bash(~/.claude/skills/handle-pr-comments/pr-comments.sh *)",
       "Skill(handle-pr-comments)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:docs.claude.com)",
+      "Read(//Users/steven/Archive/04_Projects/dimer-cura-node/**)",
+      "Read(//Users/steven/Archive/04_Projects/dimer-cura-node/.claude/**)",
+      "Bash(uvx code-review-graph *)",
+      "Read(//Users/steven/.cache/uv/**)",
+      "Bash(~/.claude/scripts/list-skills.sh)",
+      "Bash(echo \"exit: $?\")",
+      "Read(//private/tmp/**)",
+      "Bash(rm -f /tmp/claude-skills-list.txt)",
+      "Read(//tmp/**)",
+      "Bash(/opt/homebrew/bin/semgrep scan *)",
+      "Bash(semgrep --config /tmp/semgrep-verify/focus/rule2.yml /tmp/semgrep-verify/focus/target.js)"
     ]
+  },
+  "skillOverrides": {
+    "create-pr": "off",
+    "find": "off",
+    "investigate": "user-invocable-only",
+    "update-pr-description": "off"
   }
 }
