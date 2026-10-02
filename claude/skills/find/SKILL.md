@@ -80,14 +80,7 @@ Invoke **set-up-worktree** with the branch name as the argument. It will create 
 
 ## Step 5 — Report
 
-After setup completes, confirm:
-
-- Repo: `<repo-name>`
-- Branch: `<branch-name>`
-- Worktree path: `<path>`
-- Whether the worktree was pre-existing or freshly created
-
-Then say: **"Ready. What would you like to do?"**
+**set-up-worktree's Step 6 report is the report** — including its final bold-red `claude-at` line. Do not replace it with a separate summary; that has previously caused the `claude-at` line to be silently dropped. Let that report stand as the final message.
 
 ## Common Mistakes
 

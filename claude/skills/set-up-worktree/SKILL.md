@@ -47,6 +47,8 @@ Parse the output. Each line is `<check>:(ok|missing|na)[=<detail>]`. Collect ite
 
 Run all applicable steps in parallel where possible. The only hard ordering constraint: if `copy_files` is missing, run Step 5 first and then kick off Step 5e (`mcp_sync`) alongside any remaining parallel steps.
 
+Once all applicable steps finish, continue to **Step 6 — Report** and follow it exactly, including the final `claude-at` printf line — do not improvise a substitute summary.
+
 Otherwise: continue to Step 1 to create a new worktree.
 
 ## Step 1 — Parse the argument and identify the branch
@@ -297,6 +299,12 @@ Print a summary:
 - CRG status: "graph built ✓" / "⚠ code-review-graph not found in PATH" / "⚠ graph build failed — MCP graph tools unavailable"
 - iOS SPM status (if applicable): "SPM dependencies resolved ✓" / "⚠ SPM resolution failed — Xcode builds may fail"
 - Reminder to run any install steps if the project has them (e.g. `npm install`, `bundle install`) — check for `package.json`, `Gemfile`, `pyproject.toml`, or `go.mod` in the new worktree and mention the appropriate install command.
+
+Then print the `claude-at` command as its own line — bold bright orange, and as a bare command (no leading label, no trailing colon) so it can be copy-pasted and run as-is. Run this via the Bash tool so the escape codes actually render as color instead of printing as literal text:
+
+```bash
+printf '\033[1;38;5;208mclaude-at %s\033[0m\n' "<path>"
+```
 
 Finish with:
 > "Worktree ready at `<path>`. To remove it later: `git worktree remove <path>`"
