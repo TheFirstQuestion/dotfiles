@@ -1,0 +1,57 @@
+rules:
+  # Twenty-one statement metavariables ($S1..$S21) followed by $...REST means the body has MORE than 20 statements (see "Counting body length" in semgrep/README.md). There is no Dart variant here because Dart cannot bind a function body with `$...BODY` (see "Dart / Flutter" in semgrep/README.md).
+  - id: long-function-body-js
+    languages: [javascript, typescript]
+    severity: INFO
+    message: "Function body has more than 20 statements — consider splitting it up."
+    patterns:
+      - pattern-either:
+          - patterns:
+              - pattern: function $NAME(...) { $...BODY }
+              - focus-metavariable: $NAME
+          - patterns:
+              - pattern-either:
+                  - pattern: const $NAME = (...) => { $...BODY }
+                  - pattern: let $NAME = (...) => { $...BODY }
+                  - pattern: var $NAME = (...) => { $...BODY }
+              - focus-metavariable: $NAME
+      - metavariable-pattern:
+          metavariable: $...BODY
+          patterns:
+            - pattern: $S1; $S2; $S3; $S4; $S5; $S6; $S7; $S8; $S9; $S10; $S11; $S12; $S13; $S14; $S15; $S16; $S17; $S18; $S19; $S20; $S21; $...REST
+
+  - id: long-function-body-py
+    languages: [python]
+    severity: INFO
+    message: "Function body has more than 20 statements — consider splitting it up."
+    patterns:
+      - pattern: |
+          def $NAME(...):
+              $...BODY
+      - focus-metavariable: $NAME
+      - metavariable-pattern:
+          metavariable: $...BODY
+          patterns:
+            - pattern: |
+                $S1
+                $S2
+                $S3
+                $S4
+                $S5
+                $S6
+                $S7
+                $S8
+                $S9
+                $S10
+                $S11
+                $S12
+                $S13
+                $S14
+                $S15
+                $S16
+                $S17
+                $S18
+                $S19
+                $S20
+                $S21
+                $...REST

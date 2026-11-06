@@ -108,8 +108,20 @@ Confirm:
 
 Report a brief summary: how many commits brought in, any conflicts resolved (automatic vs. manual), and whether a push is needed (`git push` or `git push --force-with-lease` for rebase).
 
+## Step 5 — Gate or hand off to pre-commit
+
+Decide based on what actually happened in Step 3, not on how trivial the sync felt:
+
+- **Strict merge/rebase, no changes** — the sync applied cleanly with zero conflicts (a pure fast-forward, or every commit replayed/merged without needing a resolution). No decisions were made and no new code was written. It's okay to skip a full `/pre-commit` run — just write the gate hash directly so the commit-gate hook treats the tree as already reviewed:
+  ```bash
+  ~/.claude/skills/pre-commit/gate.sh write
+  ```
+- **Any decisions, any new code** — even a single conflict that needed automatic or manual resolution counts, because resolving it is a decision and the resolution is new code, regardless of how small. In this case do not write the gate hash yourself. Tell the user which files had conflicts and how they were resolved, then run the `/pre-commit` skill before the sync is considered ready to commit or push.
+
 ## Common Mistakes
 
 - Forgetting to pop the stash after sync — local changes left stranded
 - Force-pushing a shared branch after rebase — rewrites history others depend on
 - Proceeding past unresolved conflicts — broken state committed to branch
+- Writing the gate hash after any conflict was resolved — skips review of decisions/new code that conflict resolution introduced; only write it directly for a strict, conflict-free merge/rebase
+- Running the full `/pre-commit` skill for a trivial, conflict-free sync — unnecessary overhead when nothing new was decided or written; writing the gate hash directly is sufficient

@@ -1,0 +1,26 @@
+rules:
+  - id: law-of-demeter-js
+    languages: [javascript, typescript]
+    severity: INFO
+    message: "Chained method call reaches through the return value of another call — Law of Demeter violation. A function should only call methods on its own arguments, its own class's methods/instance variables, or objects it instantiates itself, not on an object returned by another call."
+    patterns:
+      - pattern: $X.$M1(...).$M2(...)
+      - focus-metavariable: $M2
+
+  - id: law-of-demeter-py
+    languages: [python]
+    severity: INFO
+    message: "Chained method call reaches through the return value of another call — Law of Demeter violation. A function should only call methods on its own arguments, its own class's methods/instance variables, or objects it instantiates itself, not on an object returned by another call."
+    patterns:
+      - pattern: $X.$M1(...).$M2(...)
+      - focus-metavariable: $M2
+
+  - id: law-of-demeter-dart
+    languages: [dart]
+    severity: INFO
+    message: "Chained method call reaches through the return value of another call — Law of Demeter violation. A function should only call methods on its own arguments, its own class's methods/instance variables, or objects it instantiates itself, not on an object returned by another call."
+    patterns:
+      - pattern-either:
+          - pattern: $X.$M1(...).$M2(...)
+          - pattern: $X.$M1(...)?.$M2(...)
+      - focus-metavariable: $M2

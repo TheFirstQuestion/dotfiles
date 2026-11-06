@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Cuts the manual work out of pre-commit Step 1a: given the session's live,
+# Cuts the manual work out of pre-commit Step 3a: given the session's live,
 # invokable skill-name listing (one name per line, exactly as printed in the
 # "available skills" system-reminder — e.g. `pre-commit`, `superpowers:brainstorming`),
 # this script drops every Never-ask skill (parsed straight out of this skill's own

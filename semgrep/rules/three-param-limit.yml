@@ -44,3 +44,21 @@ rules:
           def $NAME(cls, $X, $Y, $Z):
               ...
       - focus-metavariable: $NAME
+
+  # $A, $B, $C, $D followed by `...` matches a parameter list with at least 4 parameters, i.e. MORE than 3.
+  - id: three-param-limit-dart
+    languages: [dart]
+    severity: INFO
+    message: "Function has more than 3 parameters — consider grouping into a single parameter object."
+    patterns:
+      - pattern-either:
+          - patterns:
+              - pattern-either:
+                  - pattern: $NAME($A, $B, $C, $D, ...) { ... }
+                  - pattern: $NAME($A, $B, $C, $D, ...) => $EXPR;
+              - focus-metavariable: $NAME
+          - patterns:
+              - pattern-either:
+                  - pattern: ($A, $B, $C, $D, ...) { ... }
+                  - pattern: ($A, $B, $C, $D, ...) => $EXPR
+              - focus-metavariable: $A

@@ -1,0 +1,135 @@
+rules:
+  - id: impure-function-js
+    languages: [javascript, typescript]
+    severity: INFO
+    message: "Function has a side effect — a pure function should return a value derived only from its arguments, with no observable effect on anything outside it."
+    patterns:
+      - pattern-either:
+          - patterns:
+              - pattern: function $NAME(...) { $...BODY }
+              - focus-metavariable: $NAME
+          - patterns:
+              - pattern-either:
+                  - pattern: const $NAME = (...) => { $...BODY }
+                  - pattern: let $NAME = (...) => { $...BODY }
+                  - pattern: var $NAME = (...) => { $...BODY }
+              - focus-metavariable: $NAME
+      - metavariable-pattern:
+          metavariable: $...BODY
+          patterns:
+            - pattern-either:
+                - pattern: console.$METHOD(...)
+                - pattern: this.$PROP = $VAL
+                - pattern: this.$PROP += $VAL
+                - pattern: this.$PROP -= $VAL
+                - pattern: delete this.$PROP
+                - pattern: this.$ARR.push(...)
+                - pattern: this.$ARR.pop(...)
+                - pattern: this.$ARR.shift(...)
+                - pattern: this.$ARR.unshift(...)
+                - pattern: this.$ARR.splice(...)
+                - pattern: this.$ARR.sort(...)
+                - pattern: this.$ARR.reverse(...)
+                - pattern: fetch(...)
+                - pattern: new XMLHttpRequest(...)
+                - pattern: document.$M(...)
+                - pattern: document.$M = $VAL
+                - pattern: window.$M(...)
+                - pattern: window.$M = $VAL
+                - pattern: localStorage.$M(...)
+                - pattern: sessionStorage.$M(...)
+                - pattern: setTimeout(...)
+                - pattern: setInterval(...)
+                - pattern: Math.random(...)
+                - pattern: Date.now(...)
+                - pattern: new Date(...)
+
+  - id: impure-function-py
+    languages: [python]
+    severity: INFO
+    message: "Function has a side effect — a pure function should return a value derived only from its arguments, with no observable effect on anything outside it."
+    patterns:
+      - pattern: |
+          def $NAME(...):
+              $...BODY
+      - focus-metavariable: $NAME
+      - metavariable-pattern:
+          metavariable: $...BODY
+          patterns:
+            - pattern-either:
+                - pattern: print(...)
+                - pattern: self.$ATTR = $VAL
+                - pattern: self.$ATTR += $VAL
+                - pattern: self.$ATTR -= $VAL
+                - pattern: del self.$ATTR
+                - pattern: self.$LIST.append(...)
+                - pattern: self.$LIST.pop(...)
+                - pattern: self.$LIST.remove(...)
+                - pattern: self.$LIST.sort(...)
+                - pattern: self.$LIST.reverse(...)
+                - pattern: self.$LIST.extend(...)
+                - pattern: self.$LIST.clear(...)
+                - pattern: self.$LIST.update(...)
+                - pattern: global $X
+                - pattern: nonlocal $X
+                - pattern: open(...)
+                - pattern: random.$M(...)
+                - pattern: time.time(...)
+                - pattern: datetime.now(...)
+                - pattern: requests.$M(...)
+
+  # The body can't be bound in Dart, so the rule matches the side-effecting expression itself and uses pattern-inside to require an enclosing function; the squiggle therefore lands on the side effect, not the function name (see "impure-function-dart" in semgrep/README.md). Dart code usually mutates fields without `this.`, so bare private-field (`_name`) mutations are matched via metavariable-regex `^_`.
+  - id: impure-function-dart
+    languages: [dart]
+    severity: INFO
+    message: "Function has a side effect — a pure function should return a value derived only from its arguments, with no observable effect on anything outside it."
+    patterns:
+      - pattern-either:
+          - pattern: print(...)
+          - pattern: debugPrint(...)
+          - pattern: this.$PROP = $VAL
+          - pattern: this.$PROP += $VAL
+          - pattern: this.$PROP -= $VAL
+          - pattern: this.$LIST.add(...)
+          - pattern: this.$LIST.addAll(...)
+          - pattern: this.$LIST.insert(...)
+          - pattern: this.$LIST.remove(...)
+          - pattern: this.$LIST.removeAt(...)
+          - pattern: this.$LIST.removeWhere(...)
+          - pattern: this.$LIST.clear(...)
+          - pattern: this.$LIST.sort(...)
+          - patterns:
+              - pattern-either:
+                  - pattern: $FIELD = $VAL
+                  - pattern: $FIELD += $VAL
+                  - pattern: $FIELD -= $VAL
+                  - pattern: $FIELD++
+                  - pattern: $FIELD--
+                  - pattern: $FIELD.add(...)
+                  - pattern: $FIELD.addAll(...)
+                  - pattern: $FIELD.insert(...)
+                  - pattern: $FIELD.remove(...)
+                  - pattern: $FIELD.removeAt(...)
+                  - pattern: $FIELD.removeWhere(...)
+                  - pattern: $FIELD.clear(...)
+                  - pattern: $FIELD.sort(...)
+              - metavariable-regex:
+                  metavariable: $FIELD
+                  regex: ^_
+          - pattern: setState(...)
+          - pattern: notifyListeners(...)
+          - pattern: File(...)
+          - pattern: Directory(...)
+          - pattern: http.$M(...)
+          - pattern: Random(...)
+          - pattern: DateTime.now(...)
+          - pattern: Timer(...)
+          - pattern: Timer.periodic(...)
+          - pattern: Future.delayed(...)
+          - pattern: exit(...)
+      - pattern-inside:
+          pattern-either:
+            - pattern: $FN(...) { ... }
+            - pattern: $FN(...) => $EXPR;
+            - pattern: final $FN = (...) { ... }
+            - pattern: var $FN = (...) { ... }

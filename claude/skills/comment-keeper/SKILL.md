@@ -16,6 +16,7 @@ Comments and docs are part of the code. When code changes, its comments must cha
 When you change a function's name, parameters, return type, behavior, or **call site** — update every comment and doc block that describes it. A stale comment is worse than no comment: it actively misleads.
 
 **What triggers this rule:**
+
 - Renaming a function or parameter
 - Changing a function's signature or return type
 - Changing what an inline comment describes (e.g., changing the API endpoint the comment names)
@@ -23,14 +24,16 @@ When you change a function's name, parameters, return type, behavior, or **call 
 - **Moving a call site** — if you change where or when a function is called (e.g. calling it from `dispose()` instead of a dismiss callback), check the callee's own doc block for lifecycle claims like "when the sheet is dismissed" or "called from X" — they now describe the wrong trigger
 
 **What to update:**
+
 - JSDoc / docstrings above the function
 - Inline comments inside the function body
 - Any `@param`, `@returns`, `@throws` tags that are now wrong
-- **Lifecycle descriptions in callee docs** — any phrase like "when `X` happens", "called from `Y`", "on `Z` event", or "if the user taps back" that describes *when* or *from where* the function is invoked
+- **Lifecycle descriptions in callee docs** — any phrase like "when `X` happens", "called from `Y`", "on `Z` event", or "if the user taps back" that describes _when_ or _from where_ the function is invoked
 
 ### Rule 2: Add function-level documentation to new functions
 
 Every new function you write gets a doc block (JSDoc, docstring, etc.) that covers:
+
 - What the function does (one line)
 - Each non-obvious parameter and its expected format/range
 - The return value and its shape
@@ -39,6 +42,7 @@ Every new function you write gets a doc block (JSDoc, docstring, etc.) that cove
 **Developer can opt out:** If the developer explicitly says not to add function docs (e.g. "no JSDoc", "skip the doc block", "no comments for functions"), respect that for Rule 2 only. Rules 1 and 3 still apply.
 
 **Default is to add docs. Watch for rationalizations to skip them:**
+
 - "We'll document later" — later never comes
 - "Just a quick function" — quick functions get called everywhere
 - "The name is self-explanatory" — names don't explain parameter formats or edge cases
@@ -52,6 +56,7 @@ When you delete a function, block, or line, delete its comments too. A comment w
 A comment is required when the WHY is not obvious from reading the code. The test: would a competent developer unfamiliar with this codebase be surprised by this line?
 
 **Always comment:**
+
 - Magic numbers and unexplained constants: `price * 0.9 * 0.95` → what are these rates?
 - Business rules embedded in logic: discount tiers, access levels, fee structures
 - Workarounds and non-obvious choices: why this approach instead of the obvious one
@@ -59,11 +64,13 @@ A comment is required when the WHY is not obvious from reading the code. The tes
 - Regex patterns (what does this match?)
 
 **Do not add comments for:**
+
 - What the code mechanically does (the code already says that)
 - Standard library calls that do what they say
 - Simple conditionals with obvious intent
 
 **Red flags — STOP and add comment:**
+
 - "Clean code speaks for itself" — clean code explains WHAT, not WHY
 - "It's obvious" — magic numbers are never obvious to a new reader
 - "The variable name explains it" — names don't carry business rationale
@@ -73,7 +80,7 @@ A comment is required when the WHY is not obvious from reading the code. The tes
 Adapt to the language's standard comment format:
 
 | Language | Doc block | Inline clarification |
-|---|---|---|
+| --- | --- | --- |
 | TypeScript / JavaScript | `/** ... */` above function | `// above the line` |
 | Python | `"""..."""` docstring as first statement | `# above the line` |
 | Dart | `/// ` line doc above function | `// above the line` |
@@ -81,10 +88,11 @@ Adapt to the language's standard comment format:
 | Swift | `/// ` line doc above function | `// above the line` |
 
 Rules that apply in all languages:
+
 - **Clarifying comments go above the line** they explain, not end-of-line
 - **Never end-of-line** for multi-word explanations — they wrap and become unreadable
 - Exception: very short labels (e.g. `// 50% staff benefit`) are acceptable end-of-line when aligning a column of similar lines
-- **One paragraph = one line, in any comment style.** This applies to doc blocks (`/** */`, docstrings) and to a run of consecutive inline `//`/`#` lines forming one explanation. Do not hard-wrap a paragraph at ~80 columns across multiple comment lines — write it as a single long line (or single `//` line) and let the editor soft-wrap it for display. A blank comment line (`*` or `//` with nothing after it) still separates distinct paragraphs.
+- **One paragraph = one line, in any comment style.** This applies to doc blocks (`/** */`, docstrings), to a run of consecutive inline `//`/`#` lines forming one explanation, and to file-level headers (Rule 7). Do not hard-wrap a paragraph at ~80 columns across multiple comment lines — write it as a single long line (or single `//` line) and let the editor soft-wrap it for display. A blank comment line (`*` or `//` with nothing after it) still separates distinct paragraphs. This mirrors the global line-wrapping rule in `CLAUDE.md` — keep this rule in sync with that file rather than drifting from it.
 
 ```typescript
 // ✅ Above the line
@@ -112,19 +120,19 @@ await delay(Math.pow(2, attempt) * 100); // Exponential backoff: 100ms base, dou
 ```typescript
 // ❌ Same problem with a plain inline // comment, hard-wrapped across two lines
 try {
-  await job.remove();
+	await job.remove();
 } catch (err) {
-  // ServerError self-logs, but a raw BullMQ/Redis failure would otherwise
-  // vanish silently.
-  logger.error(err);
+	// ServerError self-logs, but a raw BullMQ/Redis failure would otherwise
+	// vanish silently.
+	logger.error(err);
 }
 
 // ✅ One line, editor soft-wraps it
 try {
-  await job.remove();
+	await job.remove();
 } catch (err) {
-  // ServerError self-logs, but a raw BullMQ/Redis failure would otherwise vanish silently.
-  logger.error(err);
+	// ServerError self-logs, but a raw BullMQ/Redis failure would otherwise vanish silently.
+	logger.error(err);
 }
 ```
 
@@ -133,6 +141,7 @@ try {
 `TODO` and `FIXME` comments must not be committed. They signal unfinished work and rot immediately — they accumulate, are never revisited, and mislead future readers about intent.
 
 **Instead:**
+
 - If the work needs doing: open a ticket and reference it in a comment, or finish it now
 - If it's a known limitation: write a comment that explains the constraint, not a placeholder
 
@@ -146,13 +155,14 @@ try {
 // Null handling not yet implemented — see PROJ-456
 ```
 
-The pre-commit check will block commits containing new `TODO` or `FIXME` lines. Remove or replace them before committing.
+Any `TODO` or `FIXME` in the diff must be removed or replaced as above; the pre-commit review flags them as debug artifacts.
 
 ### Rule 6: Add reference links for workarounds and external decisions
 
 When code works around a bug, implements a spec, or was shaped by a Stack Overflow answer or GitHub issue, leave a link comment. A future reader who sees unusual code will search for why — give them the answer directly.
 
 **Always link when:**
+
 - Working around a library/browser/OS bug
 - Implementing an algorithm from a paper, RFC, or external source
 - Following a non-obvious approach suggested by an issue or discussion
@@ -161,7 +171,7 @@ When code works around a bug, implements a spec, or was shaped by a Stack Overfl
 // ✅ Link to the root cause
 // Safari ignores pointer-events on SVG children — workaround via wrapper div
 // https://bugs.webkit.org/show_bug.cgi?id=64897
-div.style.pointerEvents = 'none';
+div.style.pointerEvents = "none";
 
 // ✅ Algorithm source
 // Luhn algorithm for credit card validation
@@ -173,18 +183,21 @@ div.style.pointerEvents = 'none';
 Two cases warrant a comment at the top of the file:
 
 **Non-obvious module purpose** — when the filename alone doesn't communicate what the file is for or why it exists:
+
 ```typescript
 // Middleware chain for request authentication.
 // All routes under /api pass through this before reaching handlers.
 ```
 
 **Complex exports** — when a file exports many things and a reader would benefit from a map:
+
 ```typescript
 // Discount calculation utilities.
 // Exports: applyDiscount, calculateTax, formatCurrency, DISCOUNT_TIERS
 ```
 
 Do NOT add a file header when:
+
 - The filename and directory make the purpose obvious (`UserCard.tsx`, `auth.middleware.ts`)
 - The file only exports one thing
 
@@ -211,7 +224,7 @@ For each symbol, run through every question. A "no" on any question is a finding
 #### 2a — Own doc block (at the definition site)
 
 | # | Question | Applies to |
-|---|---|---|
+| --- | --- | --- |
 | 1 | Does it have a doc block? | All exported symbols; all functions regardless of visibility |
 | 2 | Does the doc block's description match current behavior? | Any symbol with an existing doc block |
 | 3 | Is every parameter documented with name, type, and purpose? | Functions/methods |
@@ -220,12 +233,12 @@ For each symbol, run through every question. A "no" on any question is a finding
 | 6 | Are enum members individually documented if their meaning isn't obvious from the name? | Enums |
 | 7 | Are type/interface fields documented if non-obvious? | Types, interfaces |
 | 8 | Is the constant's value or allowed range explained? | Constants with magic values |
-| 8b | Is each paragraph written as a single unwrapped line (not hard-wrapped across multiple `*`/`//`/`#` lines)? | Multiline doc blocks and multi-line inline `//`/`#` comments |
+| 8b | Is each paragraph written as a single unwrapped line (not hard-wrapped across multiple `*`/`//`/`#` lines), per the `CLAUDE.md` line-wrapping rule? | Multiline doc blocks and multi-line inline `//`/`#` comments |
 
 #### 2b — Inline comments in the body
 
 | # | Question |
-|---|---|
+| --- | --- |
 | 9 | Do all inline comments still describe what the adjacent code does? |
 | 10 | Are magic numbers and unexplained constants commented? |
 | 11 | Are business rules embedded in logic explained (why, not just what)? |
@@ -246,7 +259,7 @@ For each symbol name, find every comment mentioning it across the repo:
 For each hit:
 
 | # | Question |
-|---|---|
+| --- | --- |
 | 15 | Does the comment's description of this symbol still match what the symbol actually does? |
 | 16 | If the symbol was renamed, does the comment still use the old name? |
 | 17 | If the symbol was deleted, is this comment now orphaned (referring to something that no longer exists)? |
@@ -268,7 +281,7 @@ If a function's **logic changed** (not just its name or signature), do this addi
 3. For each behavioral description, ask:
 
 | # | Question |
-|---|---|
+| --- | --- |
 | 21 | Does the description still hold under the new logic? |
 | 22 | Does the description name a side effect, invariant, or guarantee that the new logic no longer provides? |
 | 23 | Does the description omit a new behavior that callers would need to know about? |
@@ -280,9 +293,10 @@ If a function's **logic changed** (not just its name or signature), do this addi
 After all per-symbol checks are done:
 
 | # | Question |
-|---|---|
+| --- | --- |
 | 19 | Does the file need a header? (non-obvious module purpose, or many exports) |
 | 20 | Does the file have a header that's now wrong or outdated? |
+| 20b | If the header spans multiple lines, is each paragraph a single unwrapped line, per the `CLAUDE.md` line-wrapping rule (see question 8b)? |
 
 ### Step 4 — Report and fix
 
@@ -291,7 +305,7 @@ List every finding by symbol, question number, and file:line. Fix all of them. D
 ## Quick Reference
 
 | Situation | Action |
-|---|---|
+| --- | --- |
 | Moved a call site (changed where/when a function is called) | Check callee's doc block for lifecycle claims ("when X", "called from Y", "if the user taps back") — update to match new trigger; also search architecture docs |
 | Renamed a function | Update doc block name + description |
 | Changed param type/name | Update `@param` tags and inline refs |
@@ -312,6 +326,7 @@ List every finding by symbol, question number, and file:line. Fix all of them. D
 ## Common Mistakes
 
 **Keeping a stale doc block after renaming**
+
 ```typescript
 // ❌ Function renamed but JSDoc wasn't updated
 /**
@@ -329,6 +344,7 @@ async function loadUserProfile(userId: string): Promise<User> { ... }
 ```
 
 **Skipping docs by default (when developer hasn't opted out)**
+
 ```typescript
 // ❌ No doc block added without developer asking to skip — what currency code format? what does it return?
 export function formatCurrency(amount: number, currencyCode: string): string {
@@ -349,14 +365,15 @@ export function formatCurrency(amount: number, currencyCode: string): string { .
 ```
 
 **Letting "clean code" excuse unexplained business logic**
+
 ```typescript
 // ❌ Why 0.9? Why 0.95? Why 0.5? A new developer has no idea.
-if (userType === 'premium') return price * 0.9 * 0.95;
-if (userType === 'staff') return price * 0.5;
+if (userType === "premium") return price * 0.9 * 0.95;
+if (userType === "staff") return price * 0.5;
 return price * 0.9;
 
-// ✅ The numbers are explained — short end-of-line labels acceptable here because they're an aligned column
-if (userType === 'premium') return price * 0.9 * 0.95; // 10% loyalty + 5% upgrade discount
-if (userType === 'staff') return price * 0.5;           // 50% staff benefit
-return price * 0.9;                                     // standard 10% discount
+// ✅ The numbers are explained — short end-of-line labels are fine for brief magic-number notes like these
+if (userType === "premium") return price * 0.9 * 0.95; // 10% loyalty + 5% upgrade discount
+if (userType === "staff") return price * 0.5; // 50% staff benefit
+return price * 0.9; // standard 10% discount
 ```

@@ -18,6 +18,12 @@ If CRG returns no results, only a handful of indexed files, or results that seem
 
 - Always prefix debug `console.log` / `print` statements with `====>` so they're easy to spot and grep for in logs.
 
+## Waiting on background agents or the user
+
+- Never call `ScheduleWakeup` or start a `/loop` to poll for a dispatched `Agent`/`Task` call to finish, and never use either to "resume" waiting on a user response (e.g. a confirmation prompt). Both are for `/loop`'s own self-paced recurring work, nothing else.
+- Background agent completions are delivered automatically as task notifications when they land — just stop responding and let the next notification or user message arrive; there is nothing to poll.
+- Waiting on the user (e.g. "please review this diff and confirm") has no completion signal to poll for at all — the only thing that ends the wait is the user actually replying. Scheduling a wakeup to check on it does nothing but burn a cache miss and produce a confusing "resuming /loop wakeup" message instead of a direct reply.
+
 ## iOS Simulator
 
 - Do not navigate the simulator by tapping through screens — it is slow and error-prone. Instead, ask the user which specific screen to land on and they will navigate there directly.
@@ -97,6 +103,7 @@ Update the PR description to reflect current changes **before pushing code**, so
 - All tests must pass, lint must be clean, and code must be formatted before committing. Run the formatter, linter, and test suite before every commit and fix any failures first.
 - Before committing, remove unused code. Commented-out code must have an inline comment explaining why it is commented out but not deleted (e.g. a ticket number, a known reason it may be re-enabled). Commented-out code with no explanation is not allowed.
 - **Never commit unless the user explicitly asks.** After finishing implementation, stop and wait. Do not commit as a final step of any flow unless told to.
+- **Running `/pre-commit` is itself the explicit ask.** Its Steps 5 and 6 are designed to commit and push without pausing for a second confirmation — the permission prompts on `git-commit.sh` and `git push` are the gate. Do not layer an additional "want me to commit?" question on top of that flow; it defeats the purpose of the skill.
 
 ## Subagents
 

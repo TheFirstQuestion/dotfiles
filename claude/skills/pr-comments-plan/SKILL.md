@@ -85,11 +85,35 @@ Parse the JSON. If the array is empty, output:
 
 Then stop.
 
+### Step 3.5 — Cross-reference for comments already resolved in conversation
+
+GitHub's `isResolved` flag only catches inline threads where someone clicked "Resolve conversation" — it doesn't catch a thread resolved by discussion alone, and general/issue comments and synthetic review findings have no resolution flag at all. Before presenting the list, read every comment's full `replies` array, plus the full set of comments in chronological order (`created_at`), and determine which ones are already resolved even though they came through the fetch.
+
+A comment counts as resolved when:
+- A reply within its own `replies` array affirmatively confirms the fix was made (e.g., "Fixed in abc1234", "Done", "Good catch, updated", "Yep, changed it") — not a mere acknowledgment with no confirmed action ("will look into it", "let me check", "not sure yet" do **not** count).
+- A later comment or reply anywhere in the fetched set — not necessarily the same thread — explicitly states it addresses, duplicates, or supersedes an earlier one (e.g., "same issue as the comment above, fixed via one change", "duplicate of the auth.controller.ts comment, see that thread for the fix").
+
+Be conservative: this is a judgment call, not a keyword match. Only drop a comment when there's a clear affirmative statement that the issue was fixed or handled. If a reply is ambiguous, hedging, or just a question, leave the comment in the list — a false "resolved" silently hides something the user still needs to see, which is worse than one extra line in the list.
+
+Remove every comment that passes this bar from the working set before Step 4. Keep track of what was dropped and why (comment ID + one-line reason) — report it to the user right before the numbered list:
+
+```
+Filtered 2 already-resolved comment(s) before listing (not shown below):
+  [#456] @alice — reply "fixed in a1b2c3d" confirms the change was made
+  [#789] @bob — later comment #812 says "duplicate of this, see the fix in #790"
+```
+
+If nothing was filtered, skip this note entirely — don't print "Filtered 0 comments."
+
 ### Step 4 — Prompt for comment selection
 
-Print a numbered list of all unresolved comments, up to 10 per page:
+Build a numbered list of all remaining (unresolved) comments, up to 10 per page.
 
-Append `(bot)` after the author's handle when `author_type` is `"Bot"`; leave human authors unmarked. Append `(review)` after the author's handle when `synthetic` is `true` — these are review-level comments or findings embedded in a review body, not standalone inline/issue comments.
+**The list must be inside the `AskUserQuestion` call itself — in the `question` string — not printed as text beforehand.** The question dialog takes over the screen and hides any text written earlier in the turn, so a list printed before the call (or replaced by a prose summary like "Found 5 unresolved comments covering X, Y, Z") is never seen by the user, leaving them to pick numbers blind. Do not write a summary in place of the list, and do not write "listed above" anywhere. The only text allowed before the call is the Step 3.5 "Filtered N already-resolved" note, which is informational and not needed to make the selection.
+
+Keep each entry to the number/author/location line plus a one-line excerpt of the body, truncated to roughly 140 characters with `…` (the full body goes in the plan later). The count in the question and the numbers in the list must match the comments actually shown on the page.
+
+Append `(bot)` after the author's handle when `author_type` is `"Bot"`; leave human authors unmarked. `get_pr_comments.ts` always classifies any Copilot login (e.g. `copilot-pull-request-reviewer[bot]`, `Copilot`) as `"Bot"` regardless of what GitHub's API reports for that account, since Copilot's reviewer accounts don't consistently report back as type `Bot`. Append `(review)` after the author's handle when `synthetic` is `true` — these are review-level comments or findings embedded in a review body, not standalone inline/issue comments.
 
 ```
 Unresolved comments (page 1 of 2):
@@ -112,30 +136,35 @@ Unresolved comments (page 1 of 2):
        Define polling latency and trigger overshoot bounds — embedded in review #5383009117, no corresponding inline comment exists.
 ```
 
-Then use `AskUserQuestion` to ask which to address:
+Then use `AskUserQuestion` to ask which to address, embedding the list in the `question` string:
 
 ```javascript
 AskUserQuestion({
   questions: [
     {
-      question: 'Which comments would you like to address? (page N of M)',
+      question:
+        'Unresolved comments (page N of M):\n\n' +
+        '[1] @alice  src/modules/patient/patient.service.ts:42\n    The error here should use ServerError instead of throwing a raw Error.\n\n' +
+        '[2] @bob  (general)\n    Please add a migration for the new column before this merges.\n\n' +
+        // ...one entry per comment on this page, same format as the example above...
+        'Which would you like to address?',
       header: 'Selection',
       multiSelect: false,
       options: [
-        { label: 'All on this page', description: 'Select all comments listed above.' },
+        { label: 'All on this page', description: 'Select every comment listed in the question.' },
         { label: 'None on this page', description: 'Skip all comments on this page.' },
-        { label: 'Other', description: 'Type the numbers you want, e.g. 1,3,5' },
-        // If more pages remain, add:
-        // { label: 'None on this page (more pages follow)', description: '...' }
+        // Do NOT add an "Other" option — AskUserQuestion appends its own free-text "Other" automatically, and a hand-written one shows up as a duplicate. Tell the user in the question text that they can choose Other and type numbers like 1,3,5.
       ],
     },
   ],
 });
 ```
 
-- **All on this page** — add all comments on this page to the selection; if more pages remain, print the next page and ask again.
-- **None on this page** — skip this page; if more pages remain, print the next page and ask again.
-- **Other** — the user types comma-separated numbers (e.g. `1,3,5`); parse them, add to selection, then continue to next page if any remain.
+End the question text with a hint such as `(Choose "Other" and type numbers to pick specific ones, e.g. 1,3,5)`.
+
+- **All on this page** — add all comments on this page to the selection; if more pages remain, ask again with the next page's list.
+- **None on this page** — skip this page; if more pages remain, ask again with the next page's list.
+- **Other** (the built-in free-text option) — the user types comma-separated numbers (e.g. `1,3,5`); parse them, add to selection, then continue to next page if any remain.
 
 After all pages are shown, if nothing was selected across all pages output:
 
