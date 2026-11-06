@@ -88,10 +88,8 @@ I have specific settings and tweaks for my tools that I like. They also (maybe) 
 
 - update all of the everything
   - `run_script update`
-- log anything to the specific channel in my specific workspace
+- print a message (used by `run_script` to report when a script starts and finishes)
   - `log <message>`
-- alert me via notification on all my devices
-  - `alert <message>`
 - play a beep (helpful to chain after long-ish running commands)
   - `<do something>; notify`
 - initialize my personal folder structure
@@ -103,8 +101,6 @@ I have specific settings and tweaks for my tools that I like. They also (maybe) 
 
 - helpful snippets and syntax highlighting (especially for comments)
 - settings for plugins
-
-![usage screenshot](https://raw.githubusercontent.com/TheFirstQuestion/dotfiles/main/screenshot.png)
 
 <!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
 
