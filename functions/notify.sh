@@ -11,6 +11,6 @@ notify() {
   # Mac
   elif [[ "$OSTYPE" == "darwin"* ]]; then
     afplay /System/Library/Sounds/Submarine.aiff -v 10
-  fi
+  fi 
 
 }

@@ -23,6 +23,7 @@
 		"**/.ipynb_checkpoints": true,
 		"**/node_modules": true,
 		"package-lock.json": true,
+		"wiki-data": true
 	},
 	"python.defaultInterpreterPath": "/home/steven/miniconda3/envs/base/bin/python",
 	"window.zoomLevel": 0.6,
@@ -37,7 +38,7 @@
 	"notebook.output.textLineLimit": 100,
 	"editor.renderWhitespace": "none",
 	"[jsonc]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"workbench.colorCustomizations": {
 		"[An Old Hope]": {
@@ -51,8 +52,8 @@
 			"tab.activeBackground": "#363636",
 			"tab.border": "#444",
 			"tab.hoverBackground": "#343434",
-			"tab.hoverForeground": "#ccc",
-		},
+			"tab.hoverForeground": "#ccc"
+		}
 	},
 	"editor.tokenColorCustomizations": {
 		// Use Ctrl+Shift+P > Developer: Inspect Editor Tokens and Scopes to get the scope
@@ -61,40 +62,40 @@
 				"scope": "comment",
 				"settings": {
 					"fontStyle": "italic",
-					"foreground": "#ff0000",
-				},
+					"foreground": "#ff0000"
+				}
 			},
 			{
 				"scope": "comment.line",
 				"settings": {
 					"fontStyle": "italic",
-					"foreground": "#ff0000",
-				},
+					"foreground": "#ff0000"
+				}
 			},
 			{
 				"scope": "comment.line.double-slash",
 				"settings": {
 					"fontStyle": "italic",
-					"foreground": "#ff0000",
-				},
+					"foreground": "#ff0000"
+				}
 			},
 			{
 				"scope": "comment.block.documentation",
 				"settings": {
 					"fontStyle": "italic",
 					"foreground": "#ff0000",
-					"fontStyle": "bold",
-				},
+					"fontStyle": "bold"
+				}
 			},
 			{
 				"scope": "string.quoted.docstring.multi.python",
 				"settings": {
 					"fontStyle": "italic",
 					"foreground": "#ff0000",
-					"fontStyle": "bold",
-				},
-			},
-		],
+					"fontStyle": "bold"
+				}
+			}
+		]
 	},
 	"terminal.integrated.inheritEnv": false,
 	"indentRainbow.lightIndicatorStyleLineWidth": 4,
@@ -105,19 +106,19 @@
 	"editor.matchBrackets": "never",
 	"subtleBrackets.style": {
 		"borderWidth": "26px",
-		"borderColor": "rgba(255, 255, 255, 0.4)",
+		"borderColor": "rgba(255, 255, 255, 0.4)"
 	},
 	"subtleBrackets.disableNative": false,
 	"[markdown]": {
-		"editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+		"editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
 	},
 	"[javascriptreact]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"editor.wordWrapColumn": 120,
 	"editor.wrappingIndent": "deepIndent",
 	"[css]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"emmet.showAbbreviationSuggestions": false,
 	"emmet.excludeLanguages": ["markdown", "*"],
@@ -126,29 +127,29 @@
 	"notebook.lineNumbers": "on",
 	"python.analysis.diagnosticSeverityOverrides": {
 		"reportMissingImports": "none",
-		"reportMissingModuleSource": "none",
+		"reportMissingModuleSource": "none"
 	},
 	"workbench.editor.restoreViewState": false,
 	"window.restoreWindows": "none",
 	"explorer.confirmDragAndDrop": false,
 	"extensions.ignoreRecommendations": true,
 	"markdownlint.config": {
-		"no-inline-html": false,
+		"no-inline-html": false
 	},
 	"rainbow_csv.csv_lint_detect_trailing_spaces": true,
 	"rainbow_csv.enable_context_menu_head": true,
 	"rainbow_csv.enable_context_menu_tail": true,
 	"[javascript]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"alex-linter.noBinary": true,
 	"editor.tabCompletion": "on",
 	"editor.snippetSuggestions": "top",
 	"[html]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"[scss]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"explorer.confirmDelete": false,
 	"git.alwaysShowStagedChangesResourceGroup": true,
@@ -215,14 +216,14 @@
 		"upvote",
 		"worktree",
 		"worktrees",
-		"xkcd",
+		"xkcd"
 	],
 	"[json]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"[python]": {
 		"editor.defaultFormatter": "charliermarsh.ruff",
-		"editor.formatOnSave": true,
+		"editor.formatOnSave": true
 	},
 	"notebook.formatOnCellExecution": true,
 	"eslint.format.enable": true,
@@ -233,7 +234,7 @@
 		"*": false,
 		"plaintext": false,
 		"markdown": false,
-		"scminput": false,
+		"scminput": false
 	},
 	"workbench.welcomePage.extraAnnouncements": false,
 	"files.hotExit": "off",
@@ -244,6 +245,7 @@
 		"dunstrc": "editorconfig",
 		".env": "shellscript",
 		"*.env": "shellscript",
+		"*.vue": "vue"
 	},
 	"python.createEnvironment.contentButton": "hide",
 	"javascript.updateImportsOnFileMove.enabled": "always",
@@ -253,15 +255,15 @@
 	"python.linting.pylintEnabled": false,
 	"python.linting.enabled": true,
 	"[ignore]": {
-		"editor.defaultFormatter": "foxundermoon.shell-format",
+		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
 	"[shellscript]": {
-		"editor.defaultFormatter": "foxundermoon.shell-format",
+		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
 	"window.confirmSaveUntitledWorkspace": false,
 	"editor.stickyScroll.enabled": false,
 	"[dotenv]": {
-		"editor.defaultFormatter": "foxundermoon.shell-format",
+		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
 	"editor.minimap.renderCharacters": false,
 	"editor.inlineSuggest.suppressSuggestions": true,
@@ -281,12 +283,12 @@
 		"node_modules",
 		"vscode-extension",
 		".git/{info,lfs,logs,refs,objects}/**",
-		".git/{index,*refs,*HEAD}",
+		".git/{index,*refs,*HEAD}"
 	],
 	"[vue]": {},
 	"dart.devToolsLocation": {
 		"default": "beside",
-		"inspector": "beside",
+		"inspector": "beside"
 	},
 	"database-client.autoSync": true,
 	"chat.mcp.autostart": "newAndOutdated",
@@ -294,17 +296,17 @@
 		"editor.insertSpaces": true,
 		"editor.tabSize": 2,
 		"editor.autoIndent": "advanced",
-		"editor.defaultFormatter": "redhat.vscode-yaml",
+		"editor.defaultFormatter": "redhat.vscode-yaml"
 	},
 	"[github-actions-workflow]": {
-		"editor.defaultFormatter": "redhat.vscode-yaml",
+		"editor.defaultFormatter": "redhat.vscode-yaml"
 	},
 	"chat.editor.wordWrap": "on",
 	"chat.editor.fontSize": 14,
 	"chat.fontSize": 14,
 	"terminal.integrated.tabs.enabled": false,
 	"[sql]": {
-		"editor.defaultFormatter": "cweijan.vscode-postgresql-client2",
+		"editor.defaultFormatter": "cweijan.vscode-postgresql-client2"
 	},
 	"github.copilot.nextEditSuggestions.enabled": true,
 	"terminal.integrated.initialHint": false,
@@ -317,7 +319,7 @@
 	"cSpell.enabledNotifications": {
 		"Lines too Long": false,
 		"Average Word Length too Long": false,
-		"Maximum Word Length Exceeded": false,
+		"Maximum Word Length Exceeded": false
 	},
 	"scm.repositories.selectionMode": "single",
 	"python.analysis.typeCheckingMode": "standard",
@@ -331,4 +333,5 @@
 	"githubPullRequests.pullBranch": "never",
 	"claudeCode.archiveInactiveSessions": 2,
 	"claudeCode.respectGitIgnore": false,
+	"claudeCode.hideOnboarding": true
 }

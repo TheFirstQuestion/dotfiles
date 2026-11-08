@@ -296,6 +296,11 @@
             "type": "command",
             "command": "afplay /Users/steven/dotfiles/assets/ding.wav",
             "async": true
+          },
+          {
+            "type": "command",
+            "command": "paplay /home/steven/dotfiles/assets/ding.wav",
+            "async": true
           }
         ]
       }
