@@ -1,0 +1,140 @@
+rules:
+  # Six statement metavariables ($S1..$S6) followed by $...REST means the body has MORE than 5 statements. The body is bound as $...BODY and re-parsed by metavariable-pattern to get a true statement count (see "Counting body length" in semgrep/README.md).
+  - id: long-block-body-js
+    languages: [javascript, typescript]
+    severity: INFO
+    message: "Loop/if body has more than 5 statements — consider extracting it into a function."
+    patterns:
+      - pattern-either:
+          - patterns:
+              - pattern: if ($COND) { $...BODY }
+              - focus-metavariable: $COND
+          - patterns:
+              - pattern: while ($COND) { $...BODY }
+              - focus-metavariable: $COND
+          - patterns:
+              - pattern: for (...; $COND; ...) { $...BODY }
+              - focus-metavariable: $COND
+          - patterns:
+              - pattern: for ($VAR in $ITER) { $...BODY }
+              - focus-metavariable: $ITER
+          - patterns:
+              - pattern: for ($VAR of $ITER) { $...BODY }
+              - focus-metavariable: $ITER
+      - metavariable-pattern:
+          metavariable: $...BODY
+          patterns:
+            - pattern: $S1; $S2; $S3; $S4; $S5; $S6; $...REST
+
+  - id: long-block-body-py
+    languages: [python]
+    severity: INFO
+    message: "Loop/if body has more than 5 statements — consider extracting it into a function."
+    patterns:
+      - pattern-either:
+          - patterns:
+              - pattern: |
+                  if $COND:
+                      $...BODY
+              - focus-metavariable: $COND
+          - patterns:
+              - pattern: |
+                  while $COND:
+                      $...BODY
+              - focus-metavariable: $COND
+          - patterns:
+              - pattern: |
+                  for $VAR in $ITER:
+                      $...BODY
+              - focus-metavariable: $ITER
+      - metavariable-pattern:
+          metavariable: $...BODY
+          patterns:
+            - pattern: |
+                $S1
+                $S2
+                $S3
+                $S4
+                $S5
+                $S6
+                $...REST
+
+  # Dart rejects `$...BODY` in block patterns, so the JS/Python metavariable-pattern technique is unavailable; the statements are written directly instead (see "Dart / Flutter" in semgrep/README.md).
+  - id: long-block-body-dart
+    languages: [dart]
+    severity: INFO
+    message: "Loop/if body has more than 5 statements — consider extracting it into a function."
+    patterns:
+      - pattern-either:
+          - patterns:
+              - pattern: |
+                  if ($COND) {
+                    $S1;
+                    $S2;
+                    $S3;
+                    $S4;
+                    $S5;
+                    $S6;
+                    ...
+                  }
+              - focus-metavariable: $COND
+          - patterns:
+              - pattern: |
+                  while ($COND) {
+                    $S1;
+                    $S2;
+                    $S3;
+                    $S4;
+                    $S5;
+                    $S6;
+                    ...
+                  }
+              - focus-metavariable: $COND
+          - patterns:
+              - pattern: |
+                  for (...; $COND; ...) {
+                    $S1;
+                    $S2;
+                    $S3;
+                    $S4;
+                    $S5;
+                    $S6;
+                    ...
+                  }
+              - focus-metavariable: $COND
+          - patterns:
+              - pattern: |
+                  for (var $VAR in $ITER) {
+                    $S1;
+                    $S2;
+                    $S3;
+                    $S4;
+                    $S5;
+                    $S6;
+                    ...
+                  }
+              - focus-metavariable: $ITER
+          - patterns:
+              - pattern: |
+                  for (final $VAR in $ITER) {
+                    $S1;
+                    $S2;
+                    $S3;
+                    $S4;
+                    $S5;
+                    $S6;
+                    ...
+                  }
+              - focus-metavariable: $ITER
+          - patterns:
+              - pattern: |
+                  for ($VAR in $ITER) {
+                    $S1;
+                    $S2;
+                    $S3;
+                    $S4;
+                    $S5;
+                    $S6;
+                    ...
+                  }
+              - focus-metavariable: $ITER

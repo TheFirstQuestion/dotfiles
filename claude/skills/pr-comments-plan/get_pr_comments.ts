@@ -74,7 +74,21 @@ interface RawReview {
   created_at: string;
 }
 
-function authorTypeFromTypename(typename: string | undefined): 'Human' | 'Bot' | 'Unknown' {
+// Copilot's review accounts (e.g. copilot-pull-request-reviewer, Copilot itself) sometimes report back as __typename/type "User" rather than "Bot" depending on the GitHub API surface. Treat any Copilot login as a bot regardless of what the API reports.
+const COPILOT_LOGIN_RE = /copilot/i;
+
+/**
+ * Classifies a comment author as a bot or a human.
+ *
+ * @param login - The author's GitHub login; any login matching `COPILOT_LOGIN_RE` is forced to `'Bot'` (the Copilot override).
+ * @param typename - The GraphQL `__typename` / REST `type` reported by the API (`'Bot'`, `'User'`, ...).
+ * @returns `'Bot'` for Copilot logins or a `'Bot'` typename, `'Human'` for any other typename, and `'Unknown'` when no typename was reported.
+ */
+function authorTypeFromTypename(
+  login: string | undefined,
+  typename: string | undefined,
+): 'Human' | 'Bot' | 'Unknown' {
+  if (login !== undefined && COPILOT_LOGIN_RE.test(login)) return 'Bot';
   if (typename === undefined) return 'Unknown';
   return typename === 'Bot' ? 'Bot' : 'Human';
 }
@@ -172,7 +186,7 @@ function fetchInlineUnresolved(pr: string, slug: string): Comment[] {
       return {
         id: root.databaseId,
         author: root.author?.login ?? '(deleted)',
-        author_type: authorTypeFromTypename(root.author?.__typename),
+        author_type: authorTypeFromTypename(root.author?.login, root.author?.__typename),
         path: root.path,
         line: root.line ?? root.originalLine,
         body: root.body,
@@ -185,7 +199,7 @@ function fetchInlineUnresolved(pr: string, slug: string): Comment[] {
           .map((r) => ({
             id: r.databaseId,
             author: r.author?.login ?? '(deleted)',
-            author_type: authorTypeFromTypename(r.author?.__typename),
+            author_type: authorTypeFromTypename(r.author?.login, r.author?.__typename),
             body: r.body,
             created_at: r.createdAt,
           })),
@@ -194,8 +208,9 @@ function fetchInlineUnresolved(pr: string, slug: string): Comment[] {
 }
 
 function fetchGeneral(pr: string, slug: string): Comment[] {
+  // The author_type logic below mirrors authorTypeFromTypename (including the Copilot override via COPILOT_LOGIN_RE) — keep the two in sync.
   const jq =
-    '[.[] | {id:.id, author:(.user.login // "(deleted)"), author_type:(if .user == null then "Unknown" elif .user.type == "Bot" then "Bot" else "Human" end), path:"(general)", line:null, body:.body, created_at:.created_at}]';
+    '[.[] | {id:.id, author:(.user.login // "(deleted)"), author_type:(if .user == null then "Unknown" elif (.user.login // "" | test("copilot"; "i")) then "Bot" elif .user.type == "Bot" then "Bot" else "Human" end), path:"(general)", line:null, body:.body, created_at:.created_at}]';
   const raw = run([
     'api',
     `repos/${slug}/issues/${pr}/comments`,
@@ -210,8 +225,9 @@ function fetchGeneral(pr: string, slug: string): Comment[] {
 }
 
 function fetchReviews(pr: string, slug: string): RawReview[] {
+  // The author_type logic below mirrors authorTypeFromTypename (including the Copilot override via COPILOT_LOGIN_RE) — keep the two in sync.
   const jq =
-    '[.[] | select(.body != null and .body != "") | {id:.id, author:(.user.login // "(deleted)"), author_type:(if .user == null then "Unknown" elif .user.type == "Bot" then "Bot" else "Human" end), body:.body, created_at:.submitted_at}]';
+    '[.[] | select(.body != null and .body != "") | {id:.id, author:(.user.login // "(deleted)"), author_type:(if .user == null then "Unknown" elif (.user.login // "" | test("copilot"; "i")) then "Bot" elif .user.type == "Bot" then "Bot" else "Human" end), body:.body, created_at:.submitted_at}]';
   const raw = run([
     'api',
     `repos/${slug}/pulls/${pr}/reviews`,

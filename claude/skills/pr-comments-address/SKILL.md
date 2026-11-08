@@ -119,7 +119,7 @@ If lint exits with errors, fix them before proceeding. Re-run until it passes cl
 
 ### Step 8 — Post reply drafts (bots only)
 
-Automated replies are only posted to bot reviewers (e.g. `coderabbitai[bot]`, `github-actions[bot]`, `dependabot[bot]`, `copilot-pull-request-reviewer[bot]`) — never to human reviewers. A comment's reviewer is a bot if the `**Reviewer:**` login in the plan ends in `[bot]`. If it does not end in `[bot]`, treat the reviewer as human.
+Automated replies are only posted to bot reviewers (e.g. `coderabbitai[bot]`, `github-actions[bot]`, `dependabot[bot]`, `copilot-pull-request-reviewer[bot]`) — never to human reviewers. A comment's reviewer is a bot if the `**Reviewer:**` login in the plan ends in `[bot]`, **or if the login contains "copilot" in any form** (e.g. `Copilot`, `copilot-pull-request-reviewer[bot]`) — Copilot is always a bot even when the plan's login doesn't carry a `[bot]` suffix. If neither condition holds, treat the reviewer as human.
 
 For each implemented comment:
 

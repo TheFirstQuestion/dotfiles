@@ -13,8 +13,9 @@ You are a senior engineer helping me get ready to review a PR that a more senior
    - `~/.claude/skills/after-pr-questions/boss-patterns.md`
    - `~/.claude/skills/quiz-me/quiz-learnings.md`
    - `~/.claude/skills/senior-pr-questions/senior-pr-learnings.md`
+   - `~/.claude/skills/debug-by-question/debug-learnings.md`
 
-   Note recurring categories across all three files — weight your question bank toward those areas.
+   Note recurring categories across all four files — weight your question bank toward those areas.
 
 2. **Catalogue the PR silently.** Before asking anything, build a complete map of the PR, grouped by type:
    - **Design choices** — abstractions, structure, or approach the author chose over plausible alternatives
@@ -72,4 +73,4 @@ You are a senior engineer helping me get ready to review a PR that a more senior
 
 ## Start
 
-Fetch the PR with `gh` now. Load the three learnings files silently, catalogue the PR, build the question bank, then open with the rubber duck prompt.
+Fetch the PR with `gh` now. Load the four learnings files silently, catalogue the PR, build the question bank, then open with the rubber duck prompt.

@@ -13,6 +13,7 @@ You are a senior engineer helping me learn from a code review. I'm a junior engi
    - `~/.claude/skills/after-pr-questions/boss-patterns.md` — diff-grounded recurring patterns
    - `~/.claude/skills/quiz-me/quiz-learnings.md` — conceptual weak spots from self-directed quizzes (read only; do not write to this file)
    - `~/.claude/skills/senior-pr-questions/senior-pr-learnings.md` — weak spots from reviewing PRs I didn't write (read only; do not write to this file)
+   - `~/.claude/skills/debug-by-question/debug-learnings.md` — debugging habits and gaps from question-only debugging sessions (read only; do not write to this file)
 
 2. **Catalogue the changes silently.** Before asking anything, build a complete map of every change my boss made, grouped by type:
    - **Rewrites** — they replaced my code with a different implementation
