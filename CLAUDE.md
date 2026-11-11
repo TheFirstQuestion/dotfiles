@@ -8,6 +8,11 @@ A personal dotfiles repo managed by [Dotbot](https://github.com/anishathalye/dot
 
 ## Key commands
 
+**New machine runbook** (run before `./install`; branches on OS, only macOS is implemented — installs Homebrew, the MesloLGS NF font, and Oh-My-Zsh with Powerlevel10k and plugins, links `~/.zshrc` and VS Code's settings/keybindings/snippets, and installs the extensions in `vscode/extensions.txt`). Every step is idempotent, and new setup steps belong here:
+```sh
+./scripts/new-machine-setup.sh
+```
+
 **Install / re-install everything** (symlinks, submodules, Oh-My-Zsh):
 ```sh
 ./install

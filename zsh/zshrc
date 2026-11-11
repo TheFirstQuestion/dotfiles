@@ -11,6 +11,12 @@ fi
 # This file inits all my environment variables and sources all my custom functions
 source $HOME/dotfiles/scripts/init-env-vars.sh
 
+# Homebrew (macOS, Apple Silicon) -- installed by scripts/new-machine-setup.sh
+# `brew shellenv` puts /opt/homebrew/bin and /opt/homebrew/sbin ahead of /usr/bin in PATH (so brew's git, python, etc. win over Apple's), adds brew's zsh completions to fpath, sets HOMEBREW_PREFIX, HOMEBREW_CELLAR, HOMEBREW_REPOSITORY, and INFOPATH, and adjusts MANPATH only if it is already set. The /etc/paths.d entry the installer creates only appends to PATH, so it isn't enough on its own.
+# This lives here instead of ~/.zprofile (where the installer suggests) so it's tracked in dotfiles. It must stay above `source $ZSH/oh-my-zsh.sh` so compinit sees the completions and plugins can find brew tools.
+# The -x guard makes this a no-op on Linux and before Homebrew is installed. Intel Macs use /usr/local, which is already on PATH.
+[[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -124,6 +130,8 @@ path+=('/home/steven/go/bin/')
 # Flutter
 path+=("$HOME/Archive/07 Application Files/flutter/bin")
 path+=("$HOME/.pub-cache/bin")
+# VS Code's `code` command (macOS), so it works without running "Shell Command: Install 'code' command in PATH"
+path+=("/Applications/Visual Studio Code.app/Contents/Resources/app/bin")
 # Android Debug Bridge (ADB / Android Studio)
 path+=("$HOME/Library/Android/sdk/platform-tools")
 
@@ -162,4 +170,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-. "$HOME/.local/bin/env"
+# Written as if/fi (not `[[ ]] &&`) so a missing file doesn't leave .zshrc exiting with status 1, which shows as an error on the first prompt.
+if [[ -f "$HOME/.local/bin/env" ]]; then
+  . "$HOME/.local/bin/env"
+fi

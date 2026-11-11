@@ -20,7 +20,9 @@ fi
 # Install Oh-My-Zsh
 if [[ ! -d $HOME/.oh-my-zsh ]]; then
     echo "Installing Oh-My-Zsh..."
-    sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)" "" --keep-zshrc --unattended
+    # Download into a variable first so a failed download stops the script (set -e ignores failures inside an argument's command substitution). Uses curl because macOS ships without wget.
+    omz_installer="$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    sh -c "$omz_installer" "" --keep-zshrc --unattended
     echo "Oh-My-Zsh has been installed."
 fi
 

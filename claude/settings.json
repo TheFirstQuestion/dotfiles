@@ -1,8 +1,4 @@
 {
-  "env": {
-    "CLAUDE_CODE_USE_BEDROCK": "1",
-    "AWS_REGION": "us-east-2"
-  },
   "permissions": {
     "allow": [
       "Read(~/.claude/projects/*/tool-results/*)",

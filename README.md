@@ -128,13 +128,19 @@ These instructions will get you a copy of the project up and running.
     git clone https://github.com/TheFirstQuestion/dotfiles.git && cd dotfiles
     ```
 
-2. Run the install script:
+2. On a brand-new machine, run the new-machine runbook first (installs Homebrew, the Powerlevel10k font, Oh-My-Zsh, and VS Code settings and extensions on macOS; it asks for your password, so run it in a real terminal):
+
+    ```sh
+    ./scripts/new-machine-setup.sh
+    ```
+
+3. Run the install script:
 
     ```sh
     ./install
     ```
 
-3. In the future, you can update and reinstall by running:
+4. In the future, you can update and reinstall by running:
 
     ```sh
     dotbot
