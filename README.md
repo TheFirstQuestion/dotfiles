@@ -128,10 +128,16 @@ These instructions will get you a copy of the project up and running.
     git clone https://github.com/TheFirstQuestion/dotfiles.git && cd dotfiles
     ```
 
-2. On a brand-new machine, run the new-machine runbook first (installs Homebrew, the Powerlevel10k font, Oh-My-Zsh, and VS Code settings and extensions on macOS; it asks for your password, so run it in a real terminal):
+2. On a brand-new machine, run the new-machine runbook first (installs Homebrew, the GitHub CLI, the Powerlevel10k font, Oh-My-Zsh, and VS Code settings and extensions on macOS; it asks for your password, so run it in a real terminal). On macOS, install the prerequisites by hand before running it: [Visual Studio Code](https://code.visualstudio.com/) and [iTerm2](https://iterm2.com/), both in `/Applications`.
 
     ```sh
     ./scripts/new-machine-setup.sh
+    ```
+
+    Then sign in to GitHub once, and let it set up git's credentials so pushes work:
+
+    ```sh
+    gh auth login
     ```
 
 3. Run the install script:

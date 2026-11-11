@@ -3,6 +3,9 @@
 # Every step is idempotent: re-running the script skips anything that is already done.
 # Run it directly (not via run_script), since it is meant to work before zsh and the shell functions are set up:
 #   ~/dotfiles/scripts/new-machine-setup.sh
+# Prerequisites (macOS): install these apps by hand first; the script checks for them and stops if either is missing.
+#   - Visual Studio Code, in /Applications
+#   - iTerm2, in /Applications
 set -euo pipefail
 
 GREEN='\033[0;32m'
@@ -60,6 +63,25 @@ mac_install_homebrew() {
   eval "$(/opt/homebrew/bin/brew shellenv)"
 }
 
+# Command-line tools from Homebrew. Packages that are already installed are skipped (not upgraded; `brew upgrade` handles that).
+# - gh: GitHub CLI. After installing, run `gh auth login` once (interactive) and let it set up git's GitHub credentials so pushes work. The script prints this reminder.
+mac_install_brew_packages() {
+  step "Homebrew packages"
+  local packages=("gh")
+  local pkg
+  for pkg in "${packages[@]}"; do
+    if brew list --formula "$pkg" &>/dev/null; then
+      done_msg "$pkg already installed."
+    else
+      brew install "$pkg"
+      done_msg "Installed $pkg."
+    fi
+  done
+  if ! gh auth status &>/dev/null; then
+    done_msg "Run 'gh auth login' once to sign in to GitHub and set up git's credentials."
+  fi
+}
+
 # MesloLGS NF, the font Powerlevel10k is designed for. Each file downloads to a .part file first and is only renamed into place once complete, so an interrupted download is retried on the next run instead of being mistaken for an installed font. After installing, set it as the font in iTerm2 (Settings > Profiles > Text > Font).
 mac_install_p10k_font() {
   step "MesloLGS NF font (for Powerlevel10k)"
@@ -95,7 +117,7 @@ mac_install_vscode_extensions() {
   step "VS Code extensions"
   local code_bin="/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
   if [[ ! -x "$code_bin" ]]; then
-    done_msg "VS Code is not installed; skipping."
+    done_msg "VS Code's code command not found; skipping."
     return
   fi
   local id
@@ -108,8 +130,28 @@ mac_install_vscode_extensions() {
   done <"$DOTFILE_DIR/vscode/extensions.txt"
 }
 
+# Stop before changing anything if a prerequisite app (see the top of this file) is missing.
+mac_check_prerequisites() {
+  step "Prerequisites"
+  local app missing=0
+  # iTerm2's app bundle is named iTerm.app.
+  for app in "Visual Studio Code" "iTerm"; do
+    if [[ -d "/Applications/$app.app" ]]; then
+      done_msg "$app is installed."
+    else
+      echo "    Missing: /Applications/$app.app. Install it, then re-run this script." >&2
+      missing=1
+    fi
+  done
+  if ((missing)); then
+    exit 1
+  fi
+}
+
 setup_mac() {
+  mac_check_prerequisites
   mac_install_homebrew
+  mac_install_brew_packages
   mac_install_p10k_font
   install_oh_my_zsh
   mac_link_vscode
