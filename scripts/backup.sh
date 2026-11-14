@@ -90,7 +90,7 @@ if [ ! -d "$DESTINATION" ]; then
 fi
 
 # Note that we never check how much time has passed since the last backup
-# Automated backups (via cron) are handled in `cron/automated_backup.sh`
+# Automated backups (via cron) are handled in `archive/automated_backup.sh` (archived; no longer scheduled)
 
 # Once we've reached this point, the backup is going to happen, so start logging
 # Create the timestamped directory
@@ -118,7 +118,7 @@ echo
 # Copy .config directory, in case I mess something up with my dotfiles
 rsync -vhmPCa --exclude '*[Cc][Aa][Cc][Hh][Ee]*' --exclude="*google-chrome/*" --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" $HOME/.config/* "$thisBackupLogDir/dot_config"
 echo '✔ Copied .config!'
-# Copy ~/.local/share/applications, which holds .desktop files to integrate applications into rofi
+# Copy ~/.local/share/applications, which holds .desktop files to integrate applications into the launcher (rofi, now archived)
 rsync -vhmPCa --exclude-from="$DOTFILE_DIR/templates/gitignore" --exclude=".git/*" --exclude=".expo/*" $HOME/.local/share/applications/* "$thisBackupLogDir/local_share_applications"
 echo '✔ Copied .desktop files!'
 # Copy .zsh_history, in case I did some command that I don't remember

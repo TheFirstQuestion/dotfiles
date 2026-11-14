@@ -162,7 +162,6 @@
 	"cSpell.noConfigSearch": true,
 	"search.smartCase": true,
 	"scm.inputFontSize": 15,
-	"terminal.external.linuxExec": "Terminator",
 	"window.newWindowDimensions": "maximized",
 	"window.customMenuBarAltFocus": false,
 	"workbench.settings.openDefaultSettings": true,
