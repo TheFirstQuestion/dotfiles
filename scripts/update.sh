@@ -22,9 +22,6 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     sudo dnf clean packages -y
     echo 'Done!'
     echo
-
-    # Update Discord
-    run_script update_discord
   elif [[ "$ID" == "linuxmint"* ]]; then
     # Mint
     sudo -- sh -c 'apt-get update; apt-get upgrade -y; apt-get dist-upgrade -y; apt-get autoremove -y; apt-get autoclean -y'

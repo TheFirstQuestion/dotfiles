@@ -97,12 +97,16 @@ I have specific settings and tweaks for my tools that I like. They also (maybe) 
 
 ### Atom Upgrades
 
+Atom is retired; these configs now live in `archive/atom/`.
+
 - helpful snippets and syntax highlighting (especially for comments)
 - settings for plugins
 
 <!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
 
 ### Other Scripts I Use
+
+These are from my old Linux desktop setup, whose configs now live in `archive/`.
 
 - [autorandr](https://github.com/phillipberndt/autorandr/) automatically selects a display configuration based on connected devices
 - [tzupdate](https://github.com/cdown/tzupdate) is a fully automated utility to set the system time using geolocation
