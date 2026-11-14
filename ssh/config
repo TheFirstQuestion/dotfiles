@@ -1,12 +1,8 @@
+# Machine-specific hosts; must stay at the top so its values take precedence
+Include ~/.ssh/config.local
+
 Host *
     ServerAliveInterval 60
-
-Host myth myth.stanford.edu
-    HostName myth.stanford.edu
-    User sophiego
-    ControlMaster auto
-    ControlPath ~/.ssh/%r@%h:%p
-    ControlPersist yes
 
 Host pi mypi raspberrypi raspberrypi.local
     HostName raspberrypi.local
@@ -14,15 +10,3 @@ Host pi mypi raspberrypi raspberrypi.local
     ControlMaster auto
     ControlPersist yes
 
-Host nas NAS NAS.local
-    HostName NAS.local
-    User main
-    ControlMaster auto
-    ControlPersist yes
-    Port 50683
-
-Host sLaptop slaptop
-    HostName 10.30.83.168
-    User steven
-    ControlMaster auto
-    ControlPersist yes

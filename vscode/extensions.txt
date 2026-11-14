@@ -1,0 +1,32 @@
+# VS Code extensions, one ID per line. Installed by scripts/new-machine-setup.sh.
+# Rebuilt from the extensions vscode/settings.json configures, then trimmed by hand. To pick up new extensions, compare against `code --list-extensions` and add them here (don't overwrite this file with that output, since that drops the grouping and the trimming).
+
+# Theme
+Croccifixio.blackboard-pro
+
+# Formatters and linters
+esbenp.prettier-vscode
+dbaeumer.vscode-eslint
+charliermarsh.ruff
+ms-python.pylint
+DavidAnson.vscode-markdownlint
+foxundermoon.shell-format
+redhat.vscode-yaml
+semgrep.semgrep
+streetsidesoftware.code-spell-checker
+
+# Languages
+ms-python.python
+Dart-Code.flutter
+
+# Data
+mechatroner.rainbow-csv
+cweijan.vscode-database-client2
+
+# Editor UI
+oderwat.indent-rainbow
+rafamel.subtle-brackets
+
+# Git and AI
+GitHub.vscode-pull-request-github
+anthropic.claude-code
