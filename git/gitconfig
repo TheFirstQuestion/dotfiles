@@ -11,3 +11,6 @@ defaultBranch = main
 rebase = false
 [push]
 autoSetupRemote = true
+# Machine-specific settings; must stay at the end so its values take precedence
+[include]
+	path = ~/.gitconfig.local

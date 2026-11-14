@@ -64,9 +64,7 @@ I have specific settings and tweaks for my tools that I like. They also (maybe) 
 - auto `ls` and `git status` (super convenient!!!)
 - ssh shortcuts for my frequent servers
   - `ssh pi`
-  - `ssh nas`
-  - `ssh myth`
-  - `ssh sLaptop`
+  - other machine-specific hosts live in the untracked `~/.ssh/config.local`
 - move around the filesystem in one keystroke
   - `z <part of folder name>`
 - paste stuff into the terminal without accidentally running anything
