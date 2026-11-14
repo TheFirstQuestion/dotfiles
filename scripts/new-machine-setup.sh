@@ -65,9 +65,10 @@ mac_install_homebrew() {
 
 # Command-line tools from Homebrew. Packages that are already installed are skipped (not upgraded; `brew upgrade` handles that).
 # - gh: GitHub CLI. After installing, run `gh auth login` once (interactive) and let it set up git's GitHub credentials so pushes work. The script prints this reminder.
+# - node: provides npx, which the Claude Code status line (ccstatusline) falls back to when no local binary is installed, and which runs MCP servers such as chrome-devtools.
 mac_install_brew_packages() {
   step "Homebrew packages"
-  local packages=("gh")
+  local packages=("gh" "node")
   local pkg
   for pkg in "${packages[@]}"; do
     if brew list --formula "$pkg" &>/dev/null; then
