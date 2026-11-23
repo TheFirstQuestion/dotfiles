@@ -64,9 +64,7 @@ I have specific settings and tweaks for my tools that I like. They also (maybe) 
 - auto `ls` and `git status` (super convenient!!!)
 - ssh shortcuts for my frequent servers
   - `ssh pi`
-  - `ssh nas`
-  - `ssh myth`
-  - `ssh sLaptop`
+  - other machine-specific hosts live in the untracked `~/.ssh/config.local`
 - move around the filesystem in one keystroke
   - `z <part of folder name>`
 - paste stuff into the terminal without accidentally running anything
@@ -99,12 +97,16 @@ I have specific settings and tweaks for my tools that I like. They also (maybe) 
 
 ### Atom Upgrades
 
+Atom is retired; these configs now live in `archive/atom/`.
+
 - helpful snippets and syntax highlighting (especially for comments)
 - settings for plugins
 
 <!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
 
 ### Other Scripts I Use
+
+These are from my old Linux desktop setup, whose configs now live in `archive/`.
 
 - [autorandr](https://github.com/phillipberndt/autorandr/) automatically selects a display configuration based on connected devices
 - [tzupdate](https://github.com/cdown/tzupdate) is a fully automated utility to set the system time using geolocation
@@ -124,13 +126,25 @@ These instructions will get you a copy of the project up and running.
     git clone https://github.com/TheFirstQuestion/dotfiles.git && cd dotfiles
     ```
 
-2. Run the install script:
+2. On a brand-new machine, run the new-machine runbook first (installs Homebrew, the GitHub CLI, the Powerlevel10k font, Oh-My-Zsh, and VS Code settings and extensions on macOS; it asks for your password, so run it in a real terminal). On macOS, install the prerequisites by hand before running it: [Visual Studio Code](https://code.visualstudio.com/) and [iTerm2](https://iterm2.com/), both in `/Applications`.
+
+    ```sh
+    ./scripts/new-machine-setup.sh
+    ```
+
+    Then sign in to GitHub once, and let it set up git's credentials so pushes work:
+
+    ```sh
+    gh auth login
+    ```
+
+3. Run the install script:
 
     ```sh
     ./install
     ```
 
-3. In the future, you can update and reinstall by running:
+4. In the future, you can update and reinstall by running:
 
     ```sh
     dotbot

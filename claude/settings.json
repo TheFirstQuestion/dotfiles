@@ -1,8 +1,4 @@
 {
-  "env": {
-    "CLAUDE_CODE_USE_BEDROCK": "1",
-    "AWS_REGION": "us-east-2"
-  },
   "permissions": {
     "allow": [
       "Read(~/.claude/projects/*/tool-results/*)",
@@ -296,6 +292,11 @@
             "type": "command",
             "command": "afplay /Users/steven/dotfiles/assets/ding.wav",
             "async": true
+          },
+          {
+            "type": "command",
+            "command": "paplay /home/steven/dotfiles/assets/ding.wav",
+            "async": true
           }
         ]
       }
@@ -375,5 +376,6 @@
     }
   },
   "effortLevel": "high",
-  "tui": "fullscreen"
+  "tui": "fullscreen",
+  "theme": "dark"
 }

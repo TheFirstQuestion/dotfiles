@@ -31,12 +31,4 @@ find "$HOME/Downloads" -type f -mtime +30 -exec trash-put {} \;
 
 echo
 
-# Sync Dropbox
-echo "Synching Dropbox..."
-run_script dropbox_sync
-
-# Update Discord
-echo "Updating Discord..."
-run_script update_discord
-
 echo 'Done!'

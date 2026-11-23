@@ -7,3 +7,4 @@ claude-at() {
   fi
   cd "$1" && claude
 }
+# TODO: invalid name on Linux
