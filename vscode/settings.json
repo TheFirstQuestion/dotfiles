@@ -214,6 +214,7 @@
 		"upserted",
 		"upserts",
 		"upvote",
+		"Wordmark",
 		"worktree",
 		"worktrees",
 		"xkcd"
@@ -333,5 +334,6 @@
 	"githubPullRequests.pullBranch": "never",
 	"claudeCode.archiveInactiveSessions": 2,
 	"claudeCode.respectGitIgnore": false,
-	"claudeCode.hideOnboarding": true
+	"claudeCode.hideOnboarding": true,
+	"githubPullRequests.fileListLayout": "flat"
 }

@@ -34,7 +34,7 @@ If CRG returns no results, only a handful of indexed files, or results that seem
 
 ## Code editing rules
 
-- Never remove existing comments from code, even if they appear redundant or obvious.
+- AI can never independently remove existing comments from code, even if they appear redundant or obvious.
 - Code must be clean (no errors, no lint warnings) before a task is considered done. Keep editing until `flutter analyze` (or the equivalent linter for the project) passes cleanly.
 - For multiline comments (docstrings, block comments), keep each paragraph on its own line and let the editor handle line wrapping. Do not hard-wrap paragraphs into short lines — a paragraph should be one long line in the source, not manually broken at ~80 columns.
 - Same rule for Markdown docs and similar prose files (README, plans, notes): write each paragraph as one long line and let the editor soft-wrap it. Do not insert manual line breaks to wrap paragraphs at ~80 columns.

@@ -128,7 +128,7 @@ Fix anything that can be fixed automatically. For judgment calls, present the fi
    mktemp "${TMPDIR:-/tmp}/claude-live-skills.XXXXXX"
    ```
 
-   Use the path `mktemp` prints (call it `LIVE_SKILLS_FILE`) for the `Write` call and for step 2 below.
+   `mktemp` creates the file (empty), and `Write` refuses to overwrite an existing file that hasn't been `Read` in this session. So `Read` the path `mktemp` printed first (call it `LIVE_SKILLS_FILE`) — it's empty, but that satisfies the read-before-write check — then `Write` the listing to it, and use the same path for step 2 below.
 
 2. Run:
 
@@ -136,7 +136,7 @@ Fix anything that can be fixed automatically. For judgment calls, present the fi
    ~/.claude/skills/pre-commit/filter-candidates.sh "$LIVE_SKILLS_FILE"
    ```
 
-3. The script's Repo/User-defined/Plugin sections **are** the candidate set — Never-ask exclusions are already applied; do not further filter by whether a skill seems relevant to this diff. The trailing "Sometimes-ask skills in the candidate set" section lists only the handful of gated skills that survived, each with its exact gate condition — run that one concrete check per flagged skill (e.g. `find node_modules/dimer-ts-utils`) and drop it from the candidate set if the check fails.
+3. The script's Repo/User-defined/Plugin sections **are** the candidate set — Never-ask exclusions are already applied; do not further filter by whether a skill seems relevant to this diff. The trailing "Sometimes-ask skills in the candidate set" section lists only the handful of gated skills that survived, each with its exact gate condition — run that one concrete check per flagged skill (e.g. `ls -d node_modules/@dimer-health/ts-utils`) and drop it from the candidate set if the check fails.
 
 Also glance at `ls .claude/skills/ 2>/dev/null` — the script can only classify names present in the live-skills file from step 1, so if a repo skill exists but wasn't in that listing, add it to the candidate set manually.
 
@@ -159,7 +159,7 @@ Also glance at `ls .claude/skills/ 2>/dev/null` — the script can only classify
 
 | Skill | Source | Ask only if... |
 | --- | --- | --- |
-| `dimer-ts-utils:use-ts-utils` | Plugin | `node_modules/dimer-ts-utils` or `node_modules/@dimer/ts-utils` exists |
+| `dimer-ts-utils:use-ts-utils` | Plugin | `node_modules/@dimer-health/ts-utils` exists (the plugin is named `dimer-ts-utils`, but the npm package is `@dimer-health/ts-utils`) |
 | `dataviz` | Plugin | The diff touches charting/plotting code (a charting-lib dependency or chart-rendering file) |
 | `andrej-karpathy-skills:karpathy-guidelines` | Plugin | The repo contains ML/training code (e.g. a PyTorch/JAX dependency, training notebooks) |
 
@@ -249,7 +249,7 @@ If you show the user any diff or ask them to look at changes at any point during
 git add -u
 ```
 
-If there are new untracked files that belong in this commit, ask the user whether to include them before proceeding:
+If there are new untracked files that obviously belong in this commit, stage them too. If unsure, ask the user whether to include them before proceeding:
 
 > "New untracked files found: `<list>`. Stage these too? (yes / no)"
 
@@ -261,11 +261,9 @@ Then ask the user to do a final human pass:
 
 Wait for the user to confirm they've done this before proceeding. **Do not call `ScheduleWakeup` or start a `/loop` to "resume" this wait** — there is no completion signal to poll for here, only the user's actual reply. See the global CLAUDE.md "Waiting on background agents or the user" section.
 
-If the user requests changes during this review, make them, then **re-run `git add -u`** (and stage any newly confirmed untracked files) before asking the user to review again.
+If the user requests changes during this review, make them and do not stage before asking the user to review again.
 
 **Assume any change on disk after you ask for this review is the user's own edit.** The user may edit files directly while reviewing. Once they reply, run `git status` and `git diff` (unstaged changes) to see what changed, treat those differences as intentional, and never revert, overwrite, or flag them as "unintended" or "unexpected". Re-run `git add -u` to stage them, and re-run format/lint (Step 1 commands) if any of the edited files are affected so Step 5 still sees a clean tree.
-
-**RULE: Never ask the user to review unstaged changes. `git add -u` must run before every review prompt, without exception.**
 
 **Mark the Step 4 task `completed` after the user confirms.**
 
@@ -349,14 +347,18 @@ git log HEAD..origin/<base-branch> --oneline
 ```
 
 - If there are **no incoming changes**: nothing to resolve — push now.
-- If there are **incoming changes**: check for conflicts using the pre-allowed script:
+- If there are **incoming changes**: first check for conflicts using the pre-allowed script, so the user can make an informed choice:
 
   ```bash
   ~/.claude/scripts/check-conflicts.sh origin/<base-branch>
   ```
 
-  - If **no conflicts** (exit 0): safe to push as-is.
-  - If **conflicts found** (exit 1): stop before pushing. Tell the user conflicts were found against `<base-branch>` and offer to resolve them now via the `sync-branch` skill (e.g. invoke it with `<base-branch>` as the argument — it defaults the into-branch to the current branch) before continuing. Do not push with known conflicts left unresolved. Only proceed to push after the user has either run `sync-branch` to resolve them or explicitly decided to push anyway.
+  Then **stop before pushing and ask the user whether they want to bring the incoming changes in using the `sync-branch` skill** (invoke it with `<base-branch>` as the argument — it defaults the into-branch to the current branch). Always ask when there are incoming changes, even if the conflict check is clean. Include in the question how many commits are incoming and the conflict result:
+
+  - If **no conflicts** (exit 0): say the incoming changes merge cleanly and that syncing is optional.
+  - If **conflicts found** (exit 1): say conflicts were found against `<base-branch>` and recommend syncing now to resolve them.
+
+  If the user says yes, run `sync-branch`, then push. If the user says no, push as-is — except when conflicts were found, in which case do not push unless the user has explicitly decided to push anyway.
 
 Then push:
 
@@ -389,7 +391,7 @@ Proceed to Step 7.
 | Including a Sometimes-ask skill without running its detection command | Silent over-inclusion without evidence risks asking about something that can't actually apply here | Only include a Sometimes-ask skill if a concrete command confirms its tech marker exists somewhere in the repo; never guess |
 | Improvising a one-off exclusion instead of updating the Never-ask table | Classification drifts between runs, defeating the point of a fixed rule | If a skill isn't on the Never-ask or Sometimes-ask table, it's Always-ask this run; update the SKILL.md table afterward if it should be reclassified — don't decide ad hoc mid-run |
 | Presenting a plugin skill from `list-skills.sh` that isn't in this session's live available-skills listing | User selects it, then the `Skill`/`Agent` call fails because the name isn't valid this session | Feed `filter-candidates.sh` the live listing (not `list-skills.sh`'s raw output) as input — it's a structural invokability check, done before tech-absence filtering, not a relevance judgment |
-| Writing the live-skills listing to a fixed filename (e.g. `claude-live-skills.txt`) | Concurrent `/pre-commit` runs in other sessions clobber each other's file mid-read | Generate a unique path per run with `mktemp "${TMPDIR:-/tmp}/claude-live-skills.XXXXXX"` and use that path for both the `Write` and `filter-candidates.sh` calls |
+| Writing the live-skills listing to a fixed filename (e.g. `claude-live-skills.txt`) | Concurrent `/pre-commit` runs in other sessions clobber each other's file mid-read | Generate a unique path per run with `mktemp "${TMPDIR:-/tmp}/claude-live-skills.XXXXXX"` and use that path for both the `Write` and `filter-candidates.sh` calls (`Read` it before the `Write` — `mktemp` already created it) |
 | Manually reading `list-skills.sh` output and eyeballing it against the Never-ask/Sometimes-ask tables | Slow, and error-prone across 100+ installed-but-unrelated plugin skills | Run `~/.claude/skills/pre-commit/filter-candidates.sh <live-skills-file>` — it parses both tables straight out of this file and does the filtering |
 | Adding a Never-ask/Sometimes-ask table entry with trailing prose in the Skills/Skill cell (e.g. `` `quiz-me` (see Step 7) ``) | `filter-candidates.sh` parses that cell as one literal comma-separated skill list; trailing prose becomes part of the "name" and never matches, so the skill silently isn't filtered | Keep each Skills/Skill cell as bare, comma-separated, backtick-quoted names only — put any annotation in the Category column instead |
 | Using `Skill` tool calls for reviewers | Skills only load instructions into current context — no parallel work happens | Use `Agent` tool calls, one per reviewer, in a single message |
@@ -398,12 +400,12 @@ Proceed to Step 7.
 | Calling `ScheduleWakeup`/`/loop` to "resume" waiting on the user's Step 4 confirmation | There is no notification to wait for — only the user's reply ends the wait; produces a confusing "resuming /loop wakeup" message instead of letting the user just answer | Never schedule a wakeup or loop for user confirmation at any step; see global CLAUDE.md "Waiting on background agents or the user" |
 | Checking for conflicts before committing, or skipping the check because "I just synced" | Checking too early means the conflict picture can be stale by the time you actually push (more commits may have landed on trunk during review/testing); skipping it risks pushing a branch that conflicts on merge | Always fetch, resolve the trunk branch, and check for conflicts in Step 6 — immediately before `git push`, every run, no exceptions |
 | Pushing despite `check-conflicts.sh` reporting conflicts, without offering `sync-branch` | Defers a known problem to PR-merge time instead of resolving it now | On conflicts, stop and offer the `sync-branch` skill before pushing; only push anyway if the user explicitly says to |
+| Pushing straight away when there are incoming changes but no conflicts, without asking about `sync-branch` | The user never gets the chance to bring trunk's changes in (and re-test against them) before the push | Whenever `git log HEAD..origin/<base-branch>` is non-empty, ask whether to sync via `sync-branch` before pushing, even if the conflict check is clean |
 | Assuming the trunk branch is always `main` | Conflict check silently compares against the wrong branch and misses real incoming changes on repos whose trunk is `dev` or something else | Resolve the base branch with `git symbolic-ref refs/remotes/origin/HEAD --short` (or `git remote show origin`) instead of hardcoding `main` |
 | Staging with `git add .` instead of `git add -u` | Accidentally includes untracked secrets or build artifacts | Always use `git add -u` in Step 4; stage new files individually |
 | Not re-running lint after auto-format | Format may introduce lint violations | Re-run lint if any files were auto-formatted in Step 1 |
 | Writing gate hash before running lint-staged | lint-staged reformats during `git commit`, invalidating the hash | Run `pnpm lint && git add -u` in Step 5 before writing the hash |
 | Completing Steps 0–4 but forgetting to run Step 5 or Step 6 | Gate hash never written, or commit never pushed | Steps 5 and 6 are mandatory — the skill isn't done until the commit is pushed |
-| Presenting a diff or asking for review without staging first | User reviews unstaged changes that don't match what will be committed | Always run `git add -u` before any review prompt or diff presentation |
 | Committing with a free-form subject or body lines longer than 80 characters | Inconsistent history, breaks changelog/semantic-release tooling, and wraps badly in `git log` | Use `<type>(<scope>): <description>` for the subject and hard-wrap body lines at 80 characters; verify both before running `git-commit.sh` |
 | Committing without a ticket number in the message | Commit can't be traced to its ticket in `git log`, changelogs, or Jira | Pull the ticket from the branch name, PR, or recent commits; if none is found, ask the user before running `git-commit.sh` |
 | Treating changes that appear on disk after the Step 4 review prompt as unexpected, or reverting them | Destroys the user's own review edits | Assume post-prompt on-disk changes are the user's; inspect them with `git diff`, re-stage with `git add -u`, and re-run format/lint if affected |
