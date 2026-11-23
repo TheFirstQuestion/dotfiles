@@ -46,8 +46,14 @@ while IFS= read -r line; do
 
   matched=""
 
+  # Test files routinely contain dummy credentials (e.g. clientSecret: 'client-secret'), so the heuristic checks (keyword=value, credentialed URLs) are skipped there. The high-confidence checks (known token prefixes, JWTs, private keys) still run so a real leaked key in a fixture is caught.
+  is_test_file=0
+  if [[ "$current_file" =~ (\.(test|spec)\.[A-Za-z0-9]+$|(^|/)(__tests__|__mocks__|tests?|spec)/|(^|/)test_[^/]+\.py$|_test\.(go|py|dart)$) ]]; then
+    is_test_file=1
+  fi
+
   # 1. Keyword = value patterns
-  if echo "$content" | grep -iqE "(password|secret|token|api_key|apikey|private_key|access_key|auth_key)[[:space:]]*[=:][[:space:]]*[\"']?[A-Za-z0-9+/._@!#\$%^&*-]{8,}"; then
+  if [[ "$is_test_file" -eq 0 ]] && echo "$content" | grep -iqE "(password|secret|token|api_key|apikey|private_key|access_key|auth_key)[[:space:]]*[=:][[:space:]]*[\"']?[A-Za-z0-9+/._@!#\$%^&*-]{8,}"; then
     # Suppress known safe patterns
     if ! echo "$content" | grep -iqE '(example|placeholder|your_|fake[-_]|<[a-z]|>|xxx|redacted|process\.env\b|os\.environ\b|config\.|getenv\(|parseStringEnv\(|parseNumberEnv\(|headers\.authorization|secretsmanager|secretName|secretArn|secretRef|keyName|keyId|tokenName|\.env\b|:[[:space:]]*[A-Z][A-Za-z]|=[[:space:]]*[a-z][a-z0-9_]*\.|\?\?[[:space:]]*[\"'"'"'][\"'"'"'])'; then
       matched="keyword-match"
@@ -70,7 +76,7 @@ while IFS= read -r line; do
   fi
 
   # 5. Credentialed URLs
-  if [[ -z "$matched" ]] && echo "$content" | grep -qE 'https?://[^/\s:]+:[^/\s@]{3,}@'; then
+  if [[ -z "$matched" && "$is_test_file" -eq 0 ]] && echo "$content" | grep -qE 'https?://[^/\s:]+:[^/\s@]{3,}@'; then
     if ! echo "$content" | grep -iqE '(example|placeholder|<|>|xxx|user:password)'; then
       matched="credentialed-url"
     fi

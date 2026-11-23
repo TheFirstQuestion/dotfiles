@@ -49,7 +49,7 @@ Every new function you write gets a doc block (JSDoc, docstring, etc.) that cove
 
 ### Rule 2b: Delete comments when their code is deleted
 
-When you delete a function, block, or line, delete its comments too. A comment with no code is dead weight and causes confusion. This resolves the tension with the global "never remove comments" rule: that rule means don't silently drop a comment that still applies — it does not mean preserve orphaned comments after their code is gone.
+When you delete a function, block, or line, delete its comments too. A comment with no code is dead weight and causes confusion. Do not preserve orphaned comments after their code is gone.
 
 ### Rule 3: Add clarifying comments for non-obvious code
 
